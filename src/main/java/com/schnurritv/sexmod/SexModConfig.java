@@ -43,6 +43,9 @@ public class SexModConfig {
     public static final ForgeConfigSpec.DoubleValue GIRL_ATTACK_DAMAGE;
     public static final ForgeConfigSpec.BooleanValue GIRLS_PICKUP_ITEMS;
 
+    // ── Clothing ──
+    public static final ForgeConfigSpec.IntValue CLOTHING_AFFECTION_THRESHOLD;
+
     // ── Affection ──
     public static final ForgeConfigSpec.IntValue AFFECTION_MAX;
     public static final ForgeConfigSpec.DoubleValue AFFECTION_DECAY_PER_DAY;
@@ -126,12 +129,16 @@ public class SexModConfig {
         GIRLS_PICKUP_ITEMS         = SERVER_BUILDER.define("girls_pickup_items", true);
         SERVER_BUILDER.pop();
 
+        SERVER_BUILDER.push("Clothing");
+        CLOTHING_AFFECTION_THRESHOLD = SERVER_BUILDER.defineInRange("clothing_affection_threshold", 50, 0, 100);
+        SERVER_BUILDER.pop();
+
         SERVER_BUILDER.push("Affection System");
         AFFECTION_MAX                = SERVER_BUILDER.defineInRange("affection_max", 100, 10, 1000);
-        AFFECTION_DECAY_PER_DAY       = SERVER_BUILDER.defineInRange("affection_decay_per_day", 1.0, 0.0, 20.0);
-        DAILY_GIFT_LIMIT             = SERVER_BUILDER.defineInRange("daily_gift_limit", 5, 1, 50);
-        AFFECTION_SCENE_THRESHOLD_LOW  = SERVER_BUILDER.defineInRange("scene_threshold_low", 30, 0, 100);
-        AFFECTION_SCENE_THRESHOLD_HIGH = SERVER_BUILDER.defineInRange("scene_threshold_high", 60, 0, 100);
+        AFFECTION_DECAY_PER_DAY       = SERVER_BUILDER.defineInRange("affection_decay_per_day", 2.0, 0.0, 20.0);
+        DAILY_GIFT_LIMIT             = SERVER_BUILDER.defineInRange("daily_gift_limit", 3, 1, 50);
+        AFFECTION_SCENE_THRESHOLD_LOW  = SERVER_BUILDER.defineInRange("scene_threshold_low", 40, 0, 100);
+        AFFECTION_SCENE_THRESHOLD_HIGH = SERVER_BUILDER.defineInRange("scene_threshold_high", 70, 0, 100);
         AFFECTION_DIALOGUE_THRESHOLD  = SERVER_BUILDER.defineInRange("dialogue_threshold", 15, 0, 100);
         SERVER_BUILDER.pop();
 

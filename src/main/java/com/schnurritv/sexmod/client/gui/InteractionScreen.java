@@ -1,6 +1,7 @@
 package com.schnurritv.sexmod.client.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.schnurritv.sexmod.SexModConfig;
 import com.schnurritv.sexmod.entity.BaseGirlEntity;
 import com.schnurritv.sexmod.entity.SexEntity;
 import com.schnurritv.sexmod.networking.NetworkHandler;
@@ -88,6 +89,17 @@ public class InteractionScreen extends Screen {
         actions.add(new Action(following ? "✋ Stop Following" : "👣 Follow Me", 
                      following ? ActionType.STAY : ActionType.FOLLOW, false));
 
+        // Clothing toggle (only for characters with separate dressed/nude geo)
+        if (girl.canUndress()) {
+            int clothing = girl.getEntityData().get(SexEntity.CLOTHING_STATE);
+            boolean isDressed = clothing == 0;
+            int threshold = SexModConfig.CLOTHING_AFFECTION_THRESHOLD.get();
+            boolean clothingUnlocked = aff >= threshold;
+            String label = isDressed ? "👗 Remove Clothes" : "👗 Put On Clothes";
+            String lockText = clothingUnlocked ? "" : " [❤ " + threshold + "]";
+            actions.add(new Action(label + lockText, ActionType.CLOTHING, !clothingUnlocked));
+        }
+
         // Quest
         boolean hasQuest = girl.getQuestManager().hasActiveQuest();
         QuestManager.Quest q = girl.getQuestManager().getActiveQuest();
@@ -167,7 +179,7 @@ public class InteractionScreen extends Screen {
 
     private record Action(String label, ActionType type, boolean locked) {}
     private enum ActionType {
-        FOLLOW, STAY, GIFT, SCENE_MISSIONARY, SCENE_DOGGY, SCENE_BLOWJOB, SCENE_BOOBJOB,
+        FOLLOW, STAY, GIFT, CLOTHING, SCENE_MISSIONARY, SCENE_DOGGY, SCENE_BLOWJOB, SCENE_BOOBJOB,
         SCENE_STOP, SCENE_LOCKED, QUEST_START, QUEST_TURNIN, RETURN_ITEMS, NONE
     }
 
@@ -355,6 +367,13 @@ public class InteractionScreen extends Screen {
             case RETURN_ITEMS -> {
                 // Send to server to handle
                 NetworkHandler.sendSceneAction(girl.getId(), "ReturnItems");
+            }
+            case CLOTHING -> {
+                int currentState = girl.getEntityData().get(SexEntity.CLOTHING_STATE);
+                int newState = currentState == 0 ? 1 : 0;
+                com.schnurritv.sexmod.networking.NetworkHandler.sendToServer(
+                    new com.schnurritv.sexmod.networking.ClothingTogglePacket(girl.getId(), newState));
+                onClose();
             }
         }
     }

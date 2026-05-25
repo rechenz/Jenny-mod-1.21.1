@@ -162,6 +162,8 @@ public abstract class BaseGirlEntity extends SexEntity {
     public int getAffection() { return this.entityData.get(AFFECTION_VALUE); }
     // ── Quest accessor ──
     public QuestManager getQuestManager() { return questManager; }
+    /** Convenience: reset active quest (for commands/debug). */
+    public void resetQuest() { questManager.resetQuest(); }
 
     // ── Capability ──
     @Override
@@ -256,8 +258,8 @@ public abstract class BaseGirlEntity extends SexEntity {
         // Calculate affection gain
         int gain;
         if (held.getItem() instanceof GiftItem gift) {
-            // Check if it's her favorite: +10 bonus
-            if (isFavoriteGift(held)) gain = gift.getAffectionValue() + 10;
+            // Check if it's her favorite: +5 bonus
+            if (isFavoriteGift(held)) gain = gift.getAffectionValue() + 5;
             else gain = gift.getAffectionValue();
         } else {
             // Vanilla gift fallback
@@ -275,6 +277,11 @@ public abstract class BaseGirlEntity extends SexEntity {
                 case "minecraft:poppy", "minecraft:dandelion", "minecraft:rose_bush", "minecraft:sunflower" -> 4;
                 default         -> 2;
             };
+
+            // Vanilla items have diminishing returns as affection grows
+            int currentAff = affectionData.getAffection();
+            if (currentAff >= 60) gain = Math.max(1, gain / 3);
+            else if (currentAff >= 30) gain = Math.max(2, gain / 2);
         }
 
         // CAT: fish items give +50% extra affection
@@ -282,9 +289,9 @@ public abstract class BaseGirlEntity extends SexEntity {
             gain = (int)(gain * 1.5f);
         }
 
-        // First gift bonus
+        // First gift bonus (reduced)
         boolean firstGift = affectionData.getAffection() == 0;
-        if (firstGift) gain += 10;
+        if (firstGift) gain += 5;
 
         affectionData.addAffection(gain, SexModConfig.AFFECTION_MAX.get());
         affectionData.recordGift(currentDay);
@@ -388,6 +395,14 @@ public abstract class BaseGirlEntity extends SexEntity {
         actions.add("Doggy");
         actions.add("Blowjob");
         actions.add("Boobjob");
+    }
+
+    /**
+     * Whether this character supports manual clothing toggle.
+     * True if dressed & nude geo files are different.
+     */
+    public boolean canUndress() {
+        return !getGeoFileName().equals(getNudeGeoFileName());
     }
 
     public abstract String getGirlName();

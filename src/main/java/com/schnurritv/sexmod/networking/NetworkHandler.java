@@ -10,6 +10,10 @@ import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.network.SimpleChannel;
 
 public class NetworkHandler {
+
+    public static <MSG> void sendToServer(MSG packet) {
+        INSTANCE.send(packet, PacketDistributor.SERVER.noArg());
+    }
     private static final int VERSION = 2;
     public static final SimpleChannel INSTANCE = ChannelBuilder.named(net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(Main.MODID, "main"))
             .networkProtocolVersion(VERSION)
@@ -50,6 +54,12 @@ public class NetworkHandler {
                 .encoder(GalathGrabPacket::encode)
                 .decoder(GalathGrabPacket::decode)
                 .consumerMainThread(GalathGrabPacket::handle)
+                .add();
+
+        INSTANCE.messageBuilder(ClothingTogglePacket.class, NetworkDirection.PLAY_TO_SERVER)
+                .encoder(ClothingTogglePacket::encode)
+                .decoder(ClothingTogglePacket::decode)
+                .consumerMainThread(ClothingTogglePacket::handle)
                 .add();
     }
 

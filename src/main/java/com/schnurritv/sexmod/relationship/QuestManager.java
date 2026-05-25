@@ -44,191 +44,191 @@ public class QuestManager {
         // ================================================================
         register("jenny", new Quest("jenny_gear", QuestType.FETCH,
             "Gamer Challenge: Bring me a Copper Gear! I want to build a better controller!",
-            "sexmod:copper_gear", 1, 25, "sexmod:red_rose", "jenny"));
+            "sexmod:copper_gear", 1, 20, "sexmod:red_rose", "jenny"));
         register("jenny", new Quest("jenny_redstone", QuestType.FETCH,
             "Gamer Challenge: I need 10 Redstone for my custom keyboard!",
-            "minecraft:redstone", 10, 30, "sexmod:enchanted_quill", "jenny"));
+            "minecraft:redstone", 10, 25, "sexmod:enchanted_quill", "jenny"));
         register("jenny", new Quest("jenny_comparator", QuestType.FETCH,
             "Gamer Challenge: Bring me a Redstone Comparator — I'm building a scoreboard!",
-            "minecraft:comparator", 1, 20, "", "jenny"));
+            "minecraft:comparator", 1, 15, "", "jenny"));
 
         // ================================================================
         // ELLIE: "Enchantment Hunt" — fetch enchanted books / XP bottles
         // ================================================================
         register("ellie", new Quest("ellie_xp", QuestType.FETCH,
             "Enchantment Hunt: Bring me 8 Bottles o' Enchanting! Mommy needs power!",
-            "minecraft:experience_bottle", 8, 35, "sexmod:enchanted_quill", "ellie"));
+            "minecraft:experience_bottle", 8, 25, "sexmod:enchanted_quill", "ellie"));
         register("ellie", new Quest("ellie_book", QuestType.FETCH,
             "Enchantment Hunt: I need an Enchanted Book! Any enchantment will do.",
-            "minecraft:enchanted_book", 1, 30, "", "ellie"));
+            "minecraft:enchanted_book", 1, 20, "", "ellie"));
         register("ellie", new Quest("ellie_lapis", QuestType.FETCH,
             "Enchantment Hunt: Bring me 16 Lapis Lazuli. Fuel the magic!",
-            "minecraft:lapis_lazuli", 16, 25, "", "ellie"));
+            "minecraft:lapis_lazuli", 16, 20, "", "ellie"));
 
         // ================================================================
         // ALLIE: "Herb Gathering" — fetch flowers and potion ingredients
         // ================================================================
         register("allie", new Quest("allie_flowers", QuestType.FETCH,
             "Herb Gathering: Bring me 10 Poppies! They're good for healing salves.",
-            "minecraft:poppy", 10, 20, "sexmod:moonlight_lily", "allie"));
+            "minecraft:poppy", 10, 15, "sexmod:moonlight_lily", "allie"));
         register("allie", new Quest("allie_dandelion", QuestType.FETCH,
             "Herb Gathering: I need 8 Dandelions for a calming tea.",
-            "minecraft:dandelion", 8, 25, "", "allie"));
+            "minecraft:dandelion", 8, 20, "", "allie"));
         register("allie", new Quest("allie_golden_apple", QuestType.FETCH,
             "Herb Gathering: Can you find me a Golden Apple? Medicine for emergencies.",
-            "minecraft:golden_apple", 1, 35, "sexmod:healing_charm", "allie"));
+            "minecraft:golden_apple", 1, 25, "sexmod:healing_charm", "allie"));
         register("allie", new Quest("allie_melon", QuestType.FETCH,
             "Herb Gathering: Bring me 6 Melon Slices! They're hydrating and sweet.",
-            "minecraft:melon_slice", 6, 20, "", "allie"));
+            "minecraft:melon_slice", 6, 15, "", "allie"));
 
         // ================================================================
         // BIA: "Relic Hunt" — fetch ancient/rare items
         // ================================================================
         register("bia", new Quest("bia_coins", QuestType.FETCH,
             "Relic Hunt: Bring me an Ancient Coin! The relics call to each other!",
-            "sexmod:ancient_coin", 1, 30, "sexmod:ancient_coin", "bia"));
+            "sexmod:ancient_coin", 1, 25, "sexmod:ancient_coin", "bia"));
         register("bia", new Quest("bia_echo", QuestType.FETCH,
             "Relic Hunt: Find me 3 Echo Shards! They whisper ancient secrets.",
-            "minecraft:echo_shard", 3, 35, "", "bia"));
+            "minecraft:echo_shard", 3, 25, "", "bia"));
         register("bia", new Quest("bia_amethyst", QuestType.FETCH,
             "Relic Hunt: Bring me 6 Amethyst Shards! Their glow is hypnotic.",
-            "minecraft:amethyst_shard", 6, 25, "", "bia"));
+            "minecraft:amethyst_shard", 6, 20, "", "bia"));
 
         // ================================================================
         // BEE: "Pollen Run" — fetch honey/flowers/bonemeal
         // ================================================================
         register("bee", new Quest("bee_honeycomb", QuestType.FETCH,
             "Pollen Run: Bring me 8 Honeycombs! The hive will love these!",
-            "minecraft:honeycomb", 8, 25, "sexmod:golden_honeycomb", "bee"));
+            "minecraft:honeycomb", 8, 20, "sexmod:golden_honeycomb", "bee"));
         register("bee", new Quest("bee_flowers", QuestType.FETCH,
             "Pollen Run: I need 12 Sunflowers! They're the tallest and prettiest!",
-            "minecraft:sunflower", 12, 30, "", "bee"));
+            "minecraft:sunflower", 12, 25, "", "bee"));
         register("bee", new Quest("bee_bonemeal", QuestType.FETCH,
             "Pollen Run: Bring me 10 Bone Meal! Gotta make more flowers grow!",
-            "minecraft:bone_meal", 10, 20, "", "bee"));
+            "minecraft:bone_meal", 10, 15, "", "bee"));
 
         // ================================================================
         // CAT/LUNA: "Fish Feast" — fetch different fish types
         // ================================================================
         register("cat", new Quest("cat_cod", QuestType.FETCH,
             "Fish Feast: Bring me 5 Raw Cod! I'm starving! Nya~",
-            "minecraft:cod", 5, 20, "", "cat"));
+            "minecraft:cod", 5, 15, "", "cat"));
         register("cat", new Quest("cat_salmon", QuestType.FETCH,
             "Fish Feast: I need 4 Salmon! The pink ones are my favorite!",
-            "minecraft:salmon", 4, 25, "", "cat"));
+            "minecraft:salmon", 4, 20, "", "cat"));
         register("cat", new Quest("cat_tropical", QuestType.FETCH,
             "Fish Feast: Bring me a Tropical Fish! They're so colorful and tasty!",
-            "minecraft:tropical_fish", 1, 30, "sexmod:silver_bell", "cat"));
+            "minecraft:tropical_fish", 1, 25, "sexmod:silver_bell", "cat"));
 
         // ================================================================
         // GOBLIN: "Treasure Snatch" — fetch valuables
         // ================================================================
         register("goblin", new Quest("goblin_gold", QuestType.FETCH,
             "Treasure Snatch: Bring me 4 Gold Ingots! My hoard needs more shine!",
-            "minecraft:gold_ingot", 4, 30, "", "goblin"));
+            "minecraft:gold_ingot", 4, 25, "", "goblin"));
         register("goblin", new Quest("goblin_emerald", QuestType.FETCH,
             "Treasure Snatch: I need 3 Emeralds! Green is my lucky color!",
-            "minecraft:emerald", 3, 35, "", "goblin"));
+            "minecraft:emerald", 3, 25, "", "goblin"));
         register("goblin", new Quest("goblin_diamond", QuestType.FETCH,
             "Treasure Snatch: ONE Diamond! The biggest, shiniest one you can find!",
-            "minecraft:diamond", 1, 40, "sexmod:ancient_coin", "goblin"));
+            "minecraft:diamond", 1, 25, "sexmod:ancient_coin", "goblin"));
 
         // ================================================================
         // KOBOLD: "Shiny Collection" — fetch shiny things
         // ================================================================
         register("kobold", new Quest("kobold_nuggets", QuestType.FETCH,
             "Shiny Collection: Kobold needs 16 Gold Nuggets! They're so sparkly!",
-            "minecraft:gold_nugget", 16, 20, "", "kobold"));
+            "minecraft:gold_nugget", 16, 15, "", "kobold"));
         register("kobold", new Quest("kobold_glowstone", QuestType.FETCH,
             "Shiny Collection: Bring 8 Glowstone Dust! Makes the cave pretty!",
-            "minecraft:glowstone_dust", 8, 25, "", "kobold"));
+            "minecraft:glowstone_dust", 8, 20, "", "kobold"));
         register("kobold", new Quest("kobold_amethyst", QuestType.FETCH,
             "Shiny Collection: Kobold wants 4 Amethyst Shards! Purple and sparkly!",
-            "minecraft:amethyst_shard", 4, 30, "sexmod:diamond_ring", "kobold"));
+            "minecraft:amethyst_shard", 4, 25, "sexmod:diamond_ring", "kobold"));
 
         // ================================================================
         // SLIME: "Absorption Test" — fetch organic items
         // ================================================================
         register("slime", new Quest("slime_balls", QuestType.FETCH,
             "Absorption Test: Bring me 6 Slime Balls! For science! For slime!",
-            "minecraft:slime_ball", 6, 25, "sexmod:crystal_slime", "slime"));
+            "minecraft:slime_ball", 6, 20, "sexmod:crystal_slime", "slime"));
         register("slime", new Quest("slime_rotten", QuestType.FETCH,
             "Absorption Test: I need 12 Rotten Flesh. What? It's for... experiments.",
-            "minecraft:rotten_flesh", 12, 20, "", "slime"));
+            "minecraft:rotten_flesh", 12, 15, "", "slime"));
         register("slime", new Quest("slime_bones", QuestType.FETCH,
             "Absorption Test: Bring me 8 Bones! I want to see if I can absorb minerals!",
-            "minecraft:bone", 8, 25, "", "slime"));
+            "minecraft:bone", 8, 20, "", "slime"));
 
         // ================================================================
         // GALATH: "Void Offering" — fetch ender pearls, obsidian, nether star
         // ================================================================
         register("galath", new Quest("galath_pearls", QuestType.FETCH,
             "Void Offering: Bring me 8 Ender Pearls. The void hungers.",
-            "minecraft:ender_pearl", 8, 35, "", "galath"));
+            "minecraft:ender_pearl", 8, 25, "", "galath"));
         register("galath", new Quest("galath_obsidian", QuestType.FETCH,
             "Void Offering: I require 10 Obsidian. To contain the darkness.",
-            "minecraft:obsidian", 10, 30, "sexmod:dragon_scale", "galath"));
+            "minecraft:obsidian", 10, 25, "sexmod:dragon_scale", "galath"));
         register("galath", new Quest("galath_star", QuestType.FETCH,
             "Void Offering: Bring me a Nether Star. True power demands sacrifice.",
-            "minecraft:nether_star", 1, 50, "sexmod:galath_coin", "galath"));
+            "minecraft:nether_star", 1, 25, "sexmod:galath_coin", "galath"));
 
         // ================================================================
         // MANGLELIE: "Memory Fragments" — fetch echo shards, amethyst, XP bottles
         // ================================================================
         register("manglelie", new Quest("manglelie_echo", QuestType.FETCH,
             "Memory Fragments: Bring me 4 Echo Shards. I need to remember...",
-            "minecraft:echo_shard", 4, 30, "sexmod:memory_crystal", "manglelie"));
+            "minecraft:echo_shard", 4, 25, "sexmod:memory_crystal", "manglelie"));
         register("manglelie", new Quest("manglelie_amethyst", QuestType.FETCH,
             "Memory Fragments: 8 Amethyst Shards. They spark with forgotten light.",
-            "minecraft:amethyst_shard", 8, 25, "", "manglelie"));
+            "minecraft:amethyst_shard", 8, 20, "", "manglelie"));
         register("manglelie", new Quest("manglelie_xp", QuestType.FETCH,
             "Memory Fragments: Bring me 6 Bottles o' Enchanting. Knowledge heals the past.",
-            "minecraft:experience_bottle", 6, 35, "", "manglelie"));
+            "minecraft:experience_bottle", 6, 25, "", "manglelie"));
 
         // ================================================================
         // LUCY: "Comfort Food" — fetch food items
         // ================================================================
         register("lucy", new Quest("lucy_cake", QuestType.FETCH,
             "Comfort Food: Bring me 2 Cakes! Everyone deserves dessert!",
-            "minecraft:cake", 2, 25, "", "lucy"));
+            "minecraft:cake", 2, 20, "", "lucy"));
         register("lucy", new Quest("lucy_cookies", QuestType.FETCH,
             "Comfort Food: I need 16 Cookies! Perfect for a cozy afternoon!",
-            "minecraft:cookie", 16, 20, "", "lucy"));
+            "minecraft:cookie", 16, 15, "", "lucy"));
         register("lucy", new Quest("lucy_bread", QuestType.FETCH,
             "Comfort Food: Bring me 6 Bread. Simple, warm, and satisfying.",
-            "minecraft:bread", 6, 20, "", "lucy"));
+            "minecraft:bread", 6, 15, "", "lucy"));
         register("lucy", new Quest("lucy_gapple", QuestType.FETCH,
             "Comfort Food: A Golden Apple! For when you need a little extra care.",
-            "minecraft:golden_apple", 1, 35, "sexmod:healing_charm", "lucy"));
+            "minecraft:golden_apple", 1, 25, "sexmod:healing_charm", "lucy"));
 
         // ================================================================
         // MIKA: "Lucky Charms" — fetch emeralds, rabbit foot, gold nuggets
         // ================================================================
         register("mika", new Quest("mika_emeralds", QuestType.FETCH,
             "Lucky Charms: Bring me 5 Emeralds! They bring good fortune!",
-            "minecraft:emerald", 5, 30, "", "mika"));
+            "minecraft:emerald", 5, 25, "", "mika"));
         register("mika", new Quest("mika_rabbit", QuestType.FETCH,
             "Lucky Charms: A Rabbit's Foot! The luckiest charm of all!",
-            "minecraft:rabbit_foot", 1, 35, "sexmod:diamond_ring", "mika"));
+            "minecraft:rabbit_foot", 1, 25, "sexmod:diamond_ring", "mika"));
         register("mika", new Quest("mika_gold_nuggets", QuestType.FETCH,
             "Lucky Charms: Bring me 12 Gold Nuggets! Tiny treasures all around!",
-            "minecraft:gold_nugget", 12, 20, "", "mika"));
+            "minecraft:gold_nugget", 12, 15, "", "mika"));
 
         // ================================================================
         // MOMO: "Research Materials" — fetch books, paper, ink sacs, feathers
         // ================================================================
         register("momo", new Quest("momo_books", QuestType.FETCH,
             "Research Materials: Bring me 3 Books! I have so much to document!",
-            "minecraft:book", 3, 25, "", "momo"));
+            "minecraft:book", 3, 20, "", "momo"));
         register("momo", new Quest("momo_paper", QuestType.FETCH,
             "Research Materials: I need 12 Paper! Notes pile up faster than expected!",
-            "minecraft:paper", 12, 20, "", "momo"));
+            "minecraft:paper", 12, 15, "", "momo"));
         register("momo", new Quest("momo_ink", QuestType.FETCH,
             "Research Materials: Bring me 4 Ink Sacs and a Feather! Time to write!",
-            "minecraft:ink_sac", 4, 25, "sexmod:enchanted_quill", "momo"));
+            "minecraft:ink_sac", 4, 20, "sexmod:enchanted_quill", "momo"));
         register("momo", new Quest("momo_feather", QuestType.FETCH,
             "Research Materials: I need 2 Feathers. For the quill, obviously.",
-            "minecraft:feather", 2, 20, "", "momo"));
+            "minecraft:feather", 2, 15, "", "momo"));
 
         // ================================================================
         // KILL QUESTS — "Eliminate mobs for the character"
@@ -237,32 +237,32 @@ public class QuestManager {
         // Jenny: kill 5 zombies
         register("jenny", new Quest("jenny_kill_zombie", QuestType.KILL,
             "Gamer Challenge: Take out 5 Zombies! They're lagging my neighborhood!",
-            "minecraft:zombie", 5, 35, "", "jenny", "ZOMBIE", "", 0));
+            "minecraft:zombie", 5, 25, "", "jenny", "ZOMBIE", "", 0));
 
         // Ellie: kill 8 skeletons
         register("ellie", new Quest("ellie_kill_skeleton", QuestType.KILL,
             "Enchantment Hunt: Destroy 8 Skeletons! Their bones have no soul and they lack grace!",
-            "minecraft:skeleton", 8, 40, "sexmod:enchanted_quill", "ellie", "SKELETON", "", 0));
+            "minecraft:skeleton", 8, 30, "sexmod:enchanted_quill", "ellie", "SKELETON", "", 0));
 
         // Allie: kill 6 spiders
         register("allie", new Quest("allie_kill_spider", QuestType.KILL,
             "Herb Gathering: Eliminate 6 Spiders! Their webs are contaminating my herb garden!",
-            "minecraft:spider", 6, 35, "sexmod:moonlight_lily", "allie", "SPIDER", "", 0));
+            "minecraft:spider", 6, 25, "sexmod:moonlight_lily", "allie", "SPIDER", "", 0));
 
         // Bia: kill 3 endermen
         register("bia", new Quest("bia_kill_enderman", QuestType.KILL,
             "Relic Hunt: Vanquish 3 Endermen! Their presence disrupts the ancient energy.",
-            "minecraft:enderman", 3, 50, "sexmod:ancient_coin", "bia", "ENDERMAN", "", 0));
+            "minecraft:enderman", 3, 30, "sexmod:ancient_coin", "bia", "ENDERMAN", "", 0));
 
         // Goblin: kill 10 zombies (cave territory)
         register("goblin", new Quest("goblin_kill_zombie", QuestType.KILL,
             "Treasure Snatch: Smash 10 Zombies! This cave is MY territory!",
-            "minecraft:zombie", 10, 35, "", "goblin", "ZOMBIE", "", 0));
+            "minecraft:zombie", 10, 25, "", "goblin", "ZOMBIE", "", 0));
 
         // Galath: kill 5 wither skeletons (nether quest)
         register("galath", new Quest("galath_kill_wither", QuestType.KILL,
             "Void Offering: Destroy 5 Wither Skeletons! Their dark essence fuels my power.",
-            "minecraft:wither_skeleton", 5, 50, "sexmod:galath_coin", "galath", "WITHER_SKELETON", "", 0));
+            "minecraft:wither_skeleton", 5, 30, "sexmod:galath_coin", "galath", "WITHER_SKELETON", "", 0));
 
         // ================================================================
         // ESCORT QUESTS — "Take me to a special location"
@@ -271,17 +271,17 @@ public class QuestManager {
         // Cat: escort to ocean
         register("cat", new Quest("cat_escort_ocean", QuestType.ESCORT,
             "Fish Feast: Take me to the ocean shore! I want to feel the sea breeze!",
-            "", 1, 40, "sexmod:silver_bell", "cat", "", "BEACH", 0));
+            "", 1, 25, "sexmod:silver_bell", "cat", "", "BEACH", 0));
 
         // Kobold: escort to deep cave
         register("kobold", new Quest("kobold_escort_cave", QuestType.ESCORT,
             "Shiny Collection: Guide me to a deeper cave (Y<30)! There's better treasure down there!",
-            "", 1, 40, "sexmod:diamond_ring", "kobold", "", "DEEP_CAVE", 0));
+            "", 1, 25, "sexmod:diamond_ring", "kobold", "", "DEEP_CAVE", 0));
 
         // Bee: escort to flower forest
         register("bee", new Quest("bee_escort_flowers", QuestType.ESCORT,
             "Pollen Run: I heard there's a Flower Forest nearby! Take me there — imagine the pollen!",
-            "", 1, 35, "sexmod:golden_honeycomb", "bee", "", "FLOWER_FOREST", 0));
+            "", 1, 20, "sexmod:golden_honeycomb", "bee", "", "FLOWER_FOREST", 0));
 
         // ================================================================
         // DEFEND QUESTS — "Protect me from waves of mobs"
@@ -290,17 +290,17 @@ public class QuestManager {
         // Ellie: defend 3 waves
         register("ellie", new Quest("ellie_defend", QuestType.DEFEND,
             "Mommy's Emergency: Monsters attack in 3 waves! Protect me, darling!",
-            "", 3, 60, "sexmod:dragon_scale", "ellie", "", "", 3));
+            "", 3, 35, "sexmod:dragon_scale", "ellie", "", "", 3));
 
         // Bia: defend 3 waves
         register("bia", new Quest("bia_defend", QuestType.DEFEND,
             "Ancient Ritual: They sense my power and will come in 3 waves! Defend the ritual site!",
-            "", 3, 60, "sexmod:memory_crystal", "bia", "", "", 3));
+            "", 3, 35, "sexmod:memory_crystal", "bia", "", "", 3));
 
         // Galath: defend 5 waves
         register("galath", new Quest("galath_defend", QuestType.DEFEND,
             "Void Siege: The void sends its minions in 5 waves! Prove yourself, mortal!",
-            "", 5, 80, "sexmod:galath_coin", "galath", "", "", 5));
+            "", 5, 40, "sexmod:galath_coin", "galath", "", "", 5));
     }
 
     private static void register(String girl, Quest quest) {
@@ -441,6 +441,15 @@ public class QuestManager {
         defendWave = 0;
         defendWaveMobs = 0;
         mobKillCount = 0;
+    }
+
+    /** Reset the active quest and all per-entity progress. Does not clear completed quests list. */
+    public void resetQuest() {
+        this.activeQuestId = "";
+        this.questProgress = 0;
+        this.defendWave = 0;
+        this.defendWaveMobs = 0;
+        this.mobKillCount = 0;
     }
 
     /** Get affection reward for completing current quest */
