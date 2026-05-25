@@ -17,14 +17,15 @@ public class LucyEntity extends BaseGirlEntity {
     // Lucy/Mika/Momo: animations use "animation.default.*" prefix, not "animation.lucy.*"
     @Override public String getAnimationPrefix() { return "default"; }
 
-    // Lucy: blowjob_*, doggy_*, paizuri_* + animation.ellie.missionary_slow
+    // Lucy: blowjob_*, doggy_*, paizuri_*, missionary_* under animation.default.* prefix
     @Override
     public String getSceneAnimationPath(SexModAnimation animation) {
         String p = getAnimationPrefix();
         return switch (animation) {
-            case MISSIONARY_START, MISSIONARY_SLOW  -> "animation.ellie.missionary_slow";
-            case MISSIONARY_FAST                    -> "animation.ellie.missionary_slow";
-            case MISSIONARY_CUM                     -> "animation.ellie.missionary_slow";
+            case MISSIONARY_START                     -> "animation." + p + ".missionary_start";
+            case MISSIONARY_SLOW                      -> "animation." + p + ".missionary_slow";
+            case MISSIONARY_FAST                      -> "animation." + p + ".missionary_fast";
+            case MISSIONARY_CUM                       -> "animation." + p + ".missionary_cum";
             case BLOWJOBINTRO                   -> "animation." + p + ".blowjob_intro";
             case BLOWJOBSUCK                    -> "animation." + p + ".blowjob_slow";
             case BLOWJOBTHRUST                  -> "animation." + p + ".blowjob_fast";

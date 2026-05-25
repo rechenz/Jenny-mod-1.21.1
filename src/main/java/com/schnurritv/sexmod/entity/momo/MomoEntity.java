@@ -20,9 +20,10 @@ public class MomoEntity extends BaseGirlEntity {
     public String getSceneAnimationPath(SexModAnimation animation) {
         String p = getAnimationPrefix();
         return switch (animation) {
-            case MISSIONARY_START, MISSIONARY_SLOW  -> "animation.ellie.missionary_slow";
-            case MISSIONARY_FAST                    -> "animation.ellie.missionary_slow";
-            case MISSIONARY_CUM                     -> "animation.ellie.missionary_slow";
+            case MISSIONARY_START                     -> "animation." + p + ".missionary_start";
+            case MISSIONARY_SLOW                      -> "animation." + p + ".missionary_slow";
+            case MISSIONARY_FAST                      -> "animation." + p + ".missionary_fast";
+            case MISSIONARY_CUM                       -> "animation." + p + ".missionary_cum";
             case BLOWJOBINTRO                   -> "animation." + p + ".blowjob_intro";
             case BLOWJOBSUCK                    -> "animation." + p + ".blowjob_slow";
             case BLOWJOBTHRUST                  -> "animation." + p + ".blowjob_fast";

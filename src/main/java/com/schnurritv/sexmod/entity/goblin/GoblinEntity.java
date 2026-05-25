@@ -35,26 +35,39 @@ public class GoblinEntity extends BaseGirlEntity {
     @Override public boolean showStandardBoobjob() { return true; }
 
     // Goblin: breeding_*, nelson_*, paizuri_*, catch_*
+    // Correct mapping:
+    //   Missionary → breeding_* (on-back)
+    //   Blowjob → nelson_* (nelson hold)
+    //   Boobjob → paizuri_* (paizuri = boobjob)
+    //   Doggy → catch_* (catch/thief positions)
     @Override
     public String getSceneAnimationPath(SexModAnimation animation) {
         String p = getAnimationPrefix();
         return switch (animation) {
+            // Missionary → breeding_* (on-back breeding poses)
             case MISSIONARY_START   -> "animation." + p + ".breeding_intro_1";
             case MISSIONARY_SLOW    -> "animation." + p + ".breeding_slow_1l";
             case MISSIONARY_FAST    -> "animation." + p + ".breeding_fast_1s";
             case MISSIONARY_CUM     -> "animation." + p + ".breeding_cum_1";
-            case BLOWJOBINTRO      -> "animation." + p + ".paizuri_start";
-            case BLOWJOBSUCK       -> "animation." + p + ".paizuri_slow";
-            case BLOWJOBTHRUST     -> "animation." + p + ".paizuri_fast";
-            case BLOWJOBCUM        -> "animation." + p + ".paizuri_cum";
-            case PAIZURI_START      -> "animation." + p + ".nelson_intro";
-            case PAIZURI_SLOW       -> "animation." + p + ".nelson_slow";
-            case PAIZURI_FAST       -> "animation." + p + ".nelson_fastc";
-            case PAIZURI_CUM        -> "animation." + p + ".nelson_cum";
+
+            // Blowjob → nelson_* (nelson-style hold for oral)
+            case BLOWJOBINTRO      -> "animation." + p + ".nelson_intro";
+            case BLOWJOBSUCK       -> "animation." + p + ".nelson_slow";
+            case BLOWJOBTHRUST     -> "animation." + p + ".nelson_fasts";
+            case BLOWJOBCUM        -> "animation." + p + ".nelson_cum";
+
+            // Boobjob (paizuri) → paizuri_* (actual paizuri = boobjob)
+            case PAIZURI_START      -> "animation." + p + ".paizuri_start";
+            case PAIZURI_SLOW       -> "animation." + p + ".paizuri_slow";
+            case PAIZURI_FAST       -> "animation." + p + ".paizuri_fast";
+            case PAIZURI_CUM        -> "animation." + p + ".paizuri_cum";
+
+            // Doggy → catch_* (thief/catch positions)
             case DOGGYSTART, DOGGYGOONBED, DOGGYWAIT -> "animation." + p + ".catch_1personBj_idle";
-            case DOGGYSLOW         -> "animation." + p + ".catch_1personBj";
-            case DOGGYFAST         -> "animation." + p + ".catch_3personBj";
-            case DOGGYCUM          -> "animation." + p + ".breeding_cum_1";
+            case DOGGYSLOW         -> "animation." + p + ".catch_1person";
+            case DOGGYFAST         -> "animation." + p + ".catch_1personBj";
+            case DOGGYCUM          -> "animation." + p + ".catch_3personBj";
+
             default -> "animation." + p + ".idle";
         };
     }

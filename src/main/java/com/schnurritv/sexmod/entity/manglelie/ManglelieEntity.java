@@ -22,7 +22,15 @@ public class ManglelieEntity extends BaseGirlEntity {
     @Override public String getGeoFileName() { return "manglelie"; }
     @Override public String getNudeGeoFileName() { return "manglelie"; }
 
-    // Manglelie: bed_slow + shared.* (double holding, bed)
+    // Manglelie only has solo: bed_slow. Everything else is shared (requires Galath).
+    // Only expose Missionary in UI since other scenes lack solo animations.
+    @Override public boolean showStandardMissionary() { return true; }
+    @Override public boolean showStandardBlowjob() { return false; }
+    @Override public boolean showStandardDoggy() { return false; }
+    @Override public boolean showStandardBoobjob() { return false; }
+    @Override public boolean supportsScene(String name) { return "Missionary".equals(name); }
+
+    // Manglelie: bed_slow + shared.* (bed scenes only)
     @Override
     public String getSceneAnimationPath(SexModAnimation animation) {
         String p = getAnimationPrefix();
@@ -30,14 +38,7 @@ public class ManglelieEntity extends BaseGirlEntity {
             case MISSIONARY_START, MISSIONARY_SLOW  -> "animation." + p + ".bed_slow";
             case MISSIONARY_FAST                    -> "animation.shared.bed_fast";
             case MISSIONARY_CUM                     -> "animation.shared.bed_cum";
-            case BLOWJOBINTRO, PAIZURI_START        -> "animation.shared.double_holding_slow";
-            case BLOWJOBSUCK, PAIZURI_SLOW          -> "animation.shared.double_holding_slow1";
-            case BLOWJOBTHRUST, PAIZURI_FAST        -> "animation.shared.double_holding_slow2";
-            case BLOWJOBCUM, PAIZURI_CUM            -> "animation.shared.double_holding_cum";
-            case DOGGYSTART, DOGGYGOONBED, DOGGYWAIT -> "animation." + p + ".bed_slow";
-            case DOGGYSLOW                           -> "animation.shared.bed_slow";
-            case DOGGYFAST                           -> "animation.shared.bed_fast";
-            case DOGGYCUM                            -> "animation.shared.bed_cum";
+            // Fallback: if any other scene is somehow triggered, use shared.bed_slow
             default -> "animation." + p + ".idle";
         };
     }

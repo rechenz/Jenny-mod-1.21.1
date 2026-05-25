@@ -14,27 +14,40 @@ public class KoboldEntity extends BaseGirlEntity {
     @Override public String getGeoFileName() { return "armored"; }
     @Override public String getNudeGeoFileName() { return "armored"; }
 
-    // Kobold: blowjob* + mating_press* (capitalized suffixes)
+    // Kobold: blowjob* + mating_press_* + anal* animations
+    // Scene mapping:
+    //   Blowjob → blowjobStart/SlowL/Fast/Cum
+    //   Missionary → mating_press_start/soft/hard/cum
+    //   Doggy → analStart/Soft/Hard/Cum
+    //   Boobjob → ??? reuse mating_press variants (kobold has no dedicated paizuri)
     @Override
     public String getSceneAnimationPath(SexModAnimation animation) {
         String p = getAnimationPrefix();
         return switch (animation) {
+            // Missionary → mating_press (on-back breeding)
             case MISSIONARY_START  -> "animation." + p + ".mating_press_start";
-            case MISSIONARY_SLOW   -> "animation." + p + ".mating_press_slow";
+            case MISSIONARY_SLOW   -> "animation." + p + ".mating_press_soft";
             case MISSIONARY_FAST   -> "animation." + p + ".mating_press_hard";
             case MISSIONARY_CUM    -> "animation." + p + ".mating_press_cum";
+
+            // Blowjob → blowjobStart/SlowL/Fast/Cum
             case BLOWJOBINTRO      -> "animation." + p + ".blowjobStart";
             case BLOWJOBSUCK       -> "animation." + p + ".blowjobSlowL";
             case BLOWJOBTHRUST     -> "animation." + p + ".blowjobFast";
             case BLOWJOBCUM        -> "animation." + p + ".blowjobCum";
-            case PAIZURI_START     -> "animation." + p + ".analStart";
-            case PAIZURI_SLOW      -> "animation." + p + ".analSoft";
-            case PAIZURI_FAST      -> "animation." + p + ".analHard";
-            case PAIZURI_CUM       -> "animation." + p + ".analCum";
-            case DOGGYSTART, DOGGYGOONBED, DOGGYWAIT -> "animation." + p + ".mating_press_start";
-            case DOGGYSLOW         -> "animation." + p + ".mating_press_slow";
-            case DOGGYFAST         -> "animation." + p + ".mating_press_hard";
-            case DOGGYCUM          -> "animation." + p + ".mating_press_cum";
+
+            // Doggy → analStart/Soft/Hard/Cum
+            case DOGGYSTART, DOGGYGOONBED, DOGGYWAIT -> "animation." + p + ".analStart";
+            case DOGGYSLOW         -> "animation." + p + ".analSoft";
+            case DOGGYFAST         -> "animation." + p + ".analHard";
+            case DOGGYCUM          -> "animation." + p + ".analCum";
+
+            // Boobjob → mating_press (kobold has no dedicated paizuri, reuse mating_press)
+            case PAIZURI_START     -> "animation." + p + ".mating_press_start";
+            case PAIZURI_SLOW      -> "animation." + p + ".mating_press_soft";
+            case PAIZURI_FAST      -> "animation." + p + ".mating_press_hard";
+            case PAIZURI_CUM       -> "animation." + p + ".mating_press_cum";
+
             default -> "animation." + p + ".idle";
         };
     }
