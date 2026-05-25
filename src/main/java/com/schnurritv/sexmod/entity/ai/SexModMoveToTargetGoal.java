@@ -25,6 +25,7 @@ public class SexModMoveToTargetGoal extends Goal {
         if ("0|0|0".equals(targetPosStr)) return false;
 
         String[] parts = targetPosStr.split("\\|");
+        if (parts.length < 3) return false;
         this.x = Double.parseDouble(parts[0]);
         this.y = Double.parseDouble(parts[1]);
         this.z = Double.parseDouble(parts[2]);

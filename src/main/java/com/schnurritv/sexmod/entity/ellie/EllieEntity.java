@@ -12,6 +12,8 @@ import net.minecraft.world.phys.AABB;
 public class EllieEntity extends BaseGirlEntity {
     public EllieEntity(EntityType<? extends PathfinderMob> type, Level level) { super(type, level); }
     @Override public String getGirlName() { return "ellie"; }
+    @Override public String getGeoFileName() { return "dressed"; }
+    @Override public String getNudeGeoFileName() { return "nude"; }
 
     private int combatCooldown = 0;
 
@@ -22,10 +24,8 @@ public class EllieEntity extends BaseGirlEntity {
         if (this.getEntityData().get(IS_LOCKED)) return;
         if (combatCooldown > 0) { combatCooldown--; return; }
         combatCooldown = 40;
-
         Player owner = findOwner();
         if (owner == null) return;
-
         AABB scanArea = owner.getBoundingBox().inflate(12);
         for (LivingEntity target : this.level().getEntitiesOfClass(LivingEntity.class, scanArea,
                 e -> e instanceof Monster && e.isAlive() && e.distanceToSqr(owner) < 144)) {

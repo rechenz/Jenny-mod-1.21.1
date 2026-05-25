@@ -280,6 +280,9 @@ public class DialogueDB {
         put("scene_locked",       "I... I don't think we're that close yet. Maybe someday.");
         put("follow_start",      "Alright, lead the way!");
         put("follow_stop",       "I'll wait here then.");
+        put("quest_complete",    "You actually did it! I'm impressed. Here, take this as thanks.");
+        put("quest_new",         "I've been thinking... could you help me with something?");
+        put("jealous_warning",   "I saw you talking to another girl. ...I'm not jealous. I'm just... noting it.");
     }
 
     static {

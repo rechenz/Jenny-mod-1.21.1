@@ -6,14 +6,13 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.network.chat.Component;
-import com.schnurritv.sexmod.relationship.DialogueDB;
 
 public class BiaEntity extends BaseGirlEntity {
     public BiaEntity(EntityType<? extends PathfinderMob> type, Level level) { super(type, level); }
     @Override public String getGirlName() { return "bia"; }
+    @Override public String getGeoFileName() { return "biadressed"; }
+    @Override public String getNudeGeoFileName() { return "bianude"; }
 
-    // Bia: Grants night vision to owner when nearby
     private int buffCooldown = 0;
 
     @Override
@@ -21,10 +20,8 @@ public class BiaEntity extends BaseGirlEntity {
         super.tick();
         if (this.level().isClientSide) return;
         if (this.getEntityData().get(IS_LOCKED)) return;
-
         if (buffCooldown > 0) { buffCooldown--; return; }
         buffCooldown = 200;
-
         String uuid = this.entityData.get(MASTER_UUID);
         if (uuid.isEmpty()) return;
         try {

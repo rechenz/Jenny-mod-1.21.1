@@ -55,6 +55,7 @@ public class SexModFollowGoal extends Goal {
 
     @Override
     public void tick() {
+        if (this.owner == null) return;
         this.girl.getLookControl().setLookAt(this.owner, 10.0F, (float)this.girl.getMaxHeadXRot());
         if (--this.timeToRecalcPath <= 0) {
             this.timeToRecalcPath = 10;

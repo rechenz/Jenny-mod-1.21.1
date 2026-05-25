@@ -2,7 +2,9 @@ package com.schnurritv.sexmod.networking;
 
 import com.schnurritv.sexmod.entity.SexEntity;
 import com.schnurritv.sexmod.entity.SexModAnimation;
+import com.schnurritv.sexmod.relationship.QuestManager;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.event.network.CustomPayloadEvent;
 
@@ -21,7 +23,7 @@ public class SceneActionPacket {
     }
 
     public static SceneActionPacket decode(FriendlyByteBuf buf) {
-        return new SceneActionPacket(buf.readInt(), buf.readUtf());
+        return new SceneActionPacket(buf.readInt(), buf.readUtf(32));
     }
 
     public static void handle(SceneActionPacket msg, CustomPayloadEvent.Context ctx) {
@@ -60,6 +62,33 @@ public class SceneActionPacket {
                         case "Blowjob" -> com.schnurritv.sexmod.scene.SceneManager.startBlowjob(girl, player);
                         case "Boobjob" -> com.schnurritv.sexmod.scene.SceneManager.startBoobjob(girl, player);
                         case "Stop" -> com.schnurritv.sexmod.scene.SceneManager.stopScene(girl);
+                        case "QuestStart" -> {
+                            QuestManager.Quest q = girl.getQuestManager().getAvailableQuest(girl.getGirlName());
+                            if (q != null) {
+                                girl.getQuestManager().startQuest(q);
+                                player.displayClientMessage(Component.literal(
+                                    "<" + girl.getGirlName() + "> " + q.description()), false);
+                                player.displayClientMessage(Component.literal(
+                                    "§6Quest started! Deliver " + q.targetCount() + "x " + 
+                                    net.minecraft.core.registries.BuiltInRegistries.ITEM.get(
+                                        net.minecraft.resources.ResourceLocation.parse(q.targetItem())
+                                    ).getDescription().getString()), false);
+                            } else {
+                                player.displayClientMessage(Component.literal(
+                                    "<" + girl.getGirlName() + "> I don't have anything for you right now."), false);
+                            }
+                        }
+                        case "QuestTurnin" -> {
+                            QuestManager.Quest activeQ = girl.getQuestManager().getActiveQuest();
+                            if (activeQ != null) {
+                                player.displayClientMessage(Component.literal(
+                                    "<" + girl.getGirlName() + "> Hand me the items directly! I need " +
+                                    (activeQ.targetCount() - girl.getQuestManager().getProgress()) + " more."), false);
+                            } else {
+                                player.displayClientMessage(Component.literal(
+                                    "<" + girl.getGirlName() + "> There's no active quest. Ask me for one!"), false);
+                            }
+                        }
                     }
                 }
             }

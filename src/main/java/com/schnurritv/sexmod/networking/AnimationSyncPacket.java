@@ -20,7 +20,7 @@ public class AnimationSyncPacket {
     }
 
     public static AnimationSyncPacket decode(FriendlyByteBuf buf) {
-        return new AnimationSyncPacket(buf.readInt(), buf.readUtf());
+        return new AnimationSyncPacket(buf.readInt(), buf.readUtf(64));
     }
 
     public static void handle(AnimationSyncPacket msg, CustomPayloadEvent.Context ctx) {

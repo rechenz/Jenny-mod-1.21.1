@@ -37,6 +37,8 @@ public class ModItems {
     public static final RegistryObject<Item> HEALING_CHARM     = register("healing_charm", "A charm that slowly heals nearby girls. Passive aura effect.");
     public static final RegistryObject<Item> BOND_BRACELET     = register("bond_bracelet", "Wearing this strengthens the bond with your companion. Slows affection decay.");
     public static final RegistryObject<Item> MEMORY_CRYSTAL    = register("memory_crystal", "Stores a girl's home position. Right-click to set, use to recall.");
+    public static final RegistryObject<Item> GUIDE_BOOK        = ITEMS.register("guide_book",
+        () -> new GuideBookItem(new Item.Properties()));
 
     // ── Helper ──
     private static RegistryObject<Item> register(String name, String tooltip) {

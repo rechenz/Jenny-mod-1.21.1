@@ -10,6 +10,7 @@ import net.minecraft.world.effect.MobEffects;
 public class AllieEntity extends BaseGirlEntity {
     public AllieEntity(EntityType<? extends PathfinderMob> type, Level level) { super(type, level); }
     @Override public String getGirlName() { return "allie"; }
+    @Override public String getNudeGeoFileName() { return "armored"; }
 
     private int healCooldown = 0;
 

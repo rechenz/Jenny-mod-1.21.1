@@ -20,7 +20,7 @@ public class MovementStatePacket {
     }
 
     public static MovementStatePacket decode(FriendlyByteBuf buf) {
-        return new MovementStatePacket(buf.readInt(), buf.readUtf());
+        return new MovementStatePacket(buf.readInt(), buf.readUtf(32));
     }
 
     public static void handle(MovementStatePacket msg, CustomPayloadEvent.Context ctx) {

@@ -5,6 +5,7 @@ import com.schnurritv.sexmod.SexModConfig;
 import com.schnurritv.sexmod.item.GiftItem;
 import com.schnurritv.sexmod.relationship.AffectionData;
 import com.schnurritv.sexmod.relationship.DialogueDB;
+import com.schnurritv.sexmod.relationship.QuestManager;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -59,6 +60,8 @@ public abstract class BaseGirlEntity extends SexEntity {
 
     // ── Affection data (server-authoritative, synced to client) ──
     private final AffectionData affectionData = new AffectionData();
+    // ── Quest system ──
+    private final QuestManager questManager = new QuestManager();
 
     protected BaseGirlEntity(EntityType<? extends PathfinderMob> type, Level level) {
         super(type, level);
@@ -92,6 +95,7 @@ public abstract class BaseGirlEntity extends SexEntity {
         super.addAdditionalSaveData(compound);
         compound.put("Inventory", inventory.serializeNBT(this.registryAccess()));
         compound.put("AffectionData", affectionData.toNBT());
+        compound.put("QuestData", questManager.toNBT());
     }
 
     @Override
@@ -103,6 +107,9 @@ public abstract class BaseGirlEntity extends SexEntity {
         if (compound.contains("AffectionData")) {
             affectionData.fromNBT(compound.getCompound("AffectionData"));
             syncAffection();
+        }
+        if (compound.contains("QuestData")) {
+            questManager.fromNBT(compound.getCompound("QuestData"));
         }
     }
 
@@ -141,6 +148,8 @@ public abstract class BaseGirlEntity extends SexEntity {
     // ── Affection getters ──
     public AffectionData getAffectionData() { return affectionData; }
     public int getAffection() { return this.entityData.get(AFFECTION_VALUE); }
+    // ── Quest accessor ──
+    public QuestManager getQuestManager() { return questManager; }
 
     // ── Capability ──
     @Override
@@ -164,10 +173,47 @@ public abstract class BaseGirlEntity extends SexEntity {
             return handleGift(player, held, hand);
         }
 
-        // Otherwise open interaction wheel (client only)
+        // Quest turn-in: if has active quest, try to complete it
+        if (questManager.hasActiveQuest() && !(held.getItem() instanceof GiftItem)) {
+            com.schnurritv.sexmod.relationship.QuestManager.Quest q = questManager.getActiveQuest();
+            if (q != null && q.type() == QuestManager.QuestType.FETCH) {
+                String itemId = net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(held.getItem()).toString();
+                if (itemId.equals(q.targetItem())) {
+                    int turnIn = Math.min(held.getCount(), q.targetCount() - questManager.getProgress());
+                    if (turnIn > 0) {
+                        questManager.addProgress(q.targetItem(), turnIn);
+                        if (!player.isCreative()) held.shrink(turnIn);
+                        if (!questManager.hasActiveQuest()) {
+                            // Quest complete!
+                            int reward = q.rewardAffection();
+                            affectionData.addAffection(reward, SexModConfig.AFFECTION_MAX.get());
+                            syncAffection();
+                            player.displayClientMessage(Component.literal("<" + getGirlName() + "> " + 
+                                DialogueDB.getRandom("quest_complete")), false);
+                            player.displayClientMessage(Component.literal("❤ +" + reward + " Quest Reward!"), true);
+                            if (!q.rewardItem().isEmpty()) {
+                                net.minecraft.world.item.Item rewardItem = net.minecraft.core.registries.BuiltInRegistries.ITEM.get(
+                                    net.minecraft.resources.ResourceLocation.parse(q.rewardItem()));
+                                if (rewardItem != null && rewardItem != net.minecraft.world.item.Items.AIR) {
+                                    player.getInventory().add(new ItemStack(rewardItem, 1));
+                                    player.displayClientMessage(Component.literal("§6Received: " + rewardItem.getDescription().getString()), true);
+                                }
+                            }
+                        } else {
+                            player.displayClientMessage(Component.literal("<" + getGirlName() + "> " +
+                                "Still need " + (questManager.getTarget() - questManager.getProgress()) + " more!"), false);
+                        }
+                        if (this.level().isClientSide) return InteractionResult.SUCCESS;
+                        return InteractionResult.SUCCESS;
+                    }
+                }
+            }
+        }
+
+        // Otherwise open interaction screen (client only)
         if (this.level().isClientSide) {
             DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
-                Minecraft.getInstance().setScreen(new InteractionScreen(this, getAvailableActions()));
+                Minecraft.getInstance().setScreen(new InteractionScreen(this));
             });
             return InteractionResult.SUCCESS;
         }
@@ -310,13 +356,49 @@ public abstract class BaseGirlEntity extends SexEntity {
         return getGirlName();
     }
 
-    // ── Tick: apply affection decay ──
+    // ── Tick: apply affection decay + jealousy ──
     @Override
     public void tick() {
         super.tick();
         if (!this.level().isClientSide) {
             long currentDay = this.level().getDayTime() / 24000;
             affectionData.applyDecay(currentDay, SexModConfig.AFFECTION_DECAY_PER_DAY.get());
+
+            // Jealousy check: if player has high affection with another nearby girl,
+            // this girl gets jealous and loses affection periodically.
+            if (affectionData.getAffection() >= 20 && !affectionData.getOwnerUUID().isEmpty()
+                && this.tickCount % 600 == 0 && RAND.nextFloat() < 0.3f) {
+                checkJealousy();
+            }
+        }
+    }
+
+    private static final java.util.Random RAND = new java.util.Random();
+    private long lastJealousyMessage = 0;
+
+    private void checkJealousy() {
+        String myOwner = affectionData.getOwnerUUID();
+        for (var entity : this.level().getEntitiesOfClass(BaseGirlEntity.class,
+                this.getBoundingBox().inflate(16.0D))) {
+            if (entity == this) continue;
+            if (entity.getAffectionData().getAffection() >= 20
+                && myOwner.equals(entity.getAffectionData().getOwnerUUID())) {
+                // Jealousy triggered! Lose 1-3 affection
+                int loss = 1 + RAND.nextInt(3);
+                affectionData.addAffection(-loss, SexModConfig.AFFECTION_MAX.get());
+                syncAffection();
+
+                long now = this.level().getGameTime();
+                if (now - lastJealousyMessage > 24000) {
+                    lastJealousyMessage = now;
+                    var owner = this.level().getPlayerByUUID(java.util.UUID.fromString(myOwner));
+                    if (owner != null) {
+                        owner.displayClientMessage(Component.literal(
+                            "<" + getGirlName() + "> " + DialogueDB.getRandom("jealous_warning")), false);
+                    }
+                }
+                break;
+            }
         }
     }
 }
