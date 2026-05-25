@@ -12,114 +12,105 @@ import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.block.state.BlockState;
 
 /**
- * Generates small themed cottages for human characters on first spawn.
+ * Generates small cottages for human characters on first spawn.
+ * House: 5×4×5 (x×y×z), door on south, bed against north wall, char spawns 1 block outside south.
  */
 public class GirlHouseGenerator {
 
+    /** House size: ±2 from center. Interior: 3×3 at ±1. */
+    private static final int RADIUS = 2;
+    private static final int WALL_HEIGHT = 4; // floor at Y+0, walls Y+1..Y+3, roof at Y+4
+
     /**
-     * Generate a small cottage at the given position.
-     * House is 5x4x5 (w x h x d), wood frame + cobblestone base.
-     * @return true if house was generated
+     * Generate a cottage at center, return spawn position (outside door).
      */
-    public static boolean generateCottage(Level level, BlockPos center) {
-        if (level.isClientSide()) return false;
+    public static BlockPos generateCottage(Level level, BlockPos center) {
+        if (level.isClientSide()) return center;
 
-        // Find ground level: search downward from 2 blocks above center
-        int baseY = center.getY();
-        if (baseY < 1) baseY = 1;
+        int baseY = columnGroundLevel(level, center);
 
-        // Level the ground: fill uneven terrain under the house
-        for (int x = -2; x <= 2; x++) {
-            for (int z = -2; z <= 2; z++) {
-                BlockPos check = center.offset(x, 0, z);
-                // Find the topmost solid block below the house
-                int topY = level.getHeightmapPos(net.minecraft.world.level.levelgen.Heightmap.Types.WORLD_SURFACE, check).getY();
-                if (topY > baseY + 3) {
-                    // On a hill — clear trees above
-                    for (int y = baseY + 5; y <= topY; y++) {
-                        level.setBlock(new BlockPos(check.getX(), y, check.getZ()), Blocks.AIR.defaultBlockState(), 3);
-                    }
+        // ── Foundation: flatten ground ──
+        for (int x = -RADIUS; x <= RADIUS; x++) {
+            for (int z = -RADIUS; z <= RADIUS; z++) {
+                BlockPos p = center.offset(x, 0, z);
+                int groundY = level.getHeightmapPos(
+                    net.minecraft.world.level.levelgen.Heightmap.Types.WORLD_SURFACE, p).getY();
+                // Clear above
+                for (int y = baseY + 1; y <= Math.max(groundY, baseY + WALL_HEIGHT); y++) {
+                    level.setBlock(new BlockPos(p.getX(), y, p.getZ()), Blocks.AIR.defaultBlockState(), 3);
                 }
-                // Fill ground up to baseY-1
-                int groundFill = Math.min(topY, baseY - 1);
-                for (int y = groundFill; y < baseY; y++) {
-                    BlockPos fill = new BlockPos(check.getX(), y, check.getZ());
-                    level.setBlock(fill, Blocks.DIRT.defaultBlockState(), 3);
+                // Fill ground to baseY-1, place floor at baseY
+                for (int y = groundY; y < baseY; y++) {
+                    level.setBlock(new BlockPos(p.getX(), y, p.getZ()), Blocks.DIRT.defaultBlockState(), 3);
                 }
             }
         }
 
-        // Floor: oak planks at baseY
-        for (int x = -2; x <= 2; x++) {
-            for (int z = -2; z <= 2; z++) {
+        // ── Floor: oak planks ──
+        for (int x = -RADIUS; x <= RADIUS; x++) {
+            for (int z = -RADIUS; z <= RADIUS; z++) {
                 level.setBlock(center.offset(x, 0, z), Blocks.OAK_PLANKS.defaultBlockState(), 3);
             }
         }
 
-        // Walls
-        for (int x = -2; x <= 2; x++) {
-            for (int z = -2; z <= 2; z++) {
-                // Skip interior (3x3 area)
-                if (x >= -1 && x <= 1 && z >= -1 && z <= 1) continue;
-                // Skip door position on south wall (center of south)
-                if (x == 0 && z == 2) continue;
-                // Skip window position on east wall
-                if (x == 2 && z == 0) continue;
+        // ── Walls + roof ──
+        for (int x = -RADIUS; x <= RADIUS; x++) {
+            for (int z = -RADIUS; z <= RADIUS; z++) {
+                boolean isEdge = Math.abs(x) == RADIUS || Math.abs(z) == RADIUS;
+                if (!isEdge) continue; // interior: skip
+
+                // Door gap on south wall center
+                if (x == 0 && z == RADIUS) continue;
+                // Window on east wall center
+                boolean isWindow = (x == RADIUS && z == 0);
 
                 for (int y = 1; y <= 3; y++) {
-                    BlockPos wall = center.offset(x, y, z);
+                    BlockPos w = center.offset(x, y, z);
                     if (y == 3) {
-                        // Top row: logs
-                        level.setBlock(wall, Blocks.OAK_LOG.defaultBlockState(), 3);
-                    } else if (Math.abs(x) == 2 && Math.abs(z) == 2) {
-                        // Corners: cobblestone base (y=1, y=2)
-                        level.setBlock(wall, Blocks.COBBLESTONE.defaultBlockState(), 3);
+                        level.setBlock(w, Blocks.OAK_LOG.defaultBlockState(), 3);
+                    } else if (y == 2 && isWindow) {
+                        level.setBlock(w, Blocks.GLASS_PANE.defaultBlockState(), 3);
+                    } else if (Math.abs(x) == RADIUS && Math.abs(z) == RADIUS && y <= 2) {
+                        level.setBlock(w, Blocks.COBBLESTONE.defaultBlockState(), 3);
                     } else {
-                        level.setBlock(wall, Blocks.OAK_PLANKS.defaultBlockState(), 3);
+                        level.setBlock(w, Blocks.OAK_PLANKS.defaultBlockState(), 3);
                     }
                 }
             }
         }
 
-        // Roof (A-shape: stairs on rim + slabs in the middle, at baseY+4)
-        for (int x = -2; x <= 2; x++) {
-            for (int z = -2; z <= 2; z++) {
-                BlockPos roof = center.offset(x, 4, z);
-                boolean isEdge = Math.abs(x) == 2 || Math.abs(z) == 2;
+        // ── Roof: stair rim + slab center ──
+        for (int x = -RADIUS; x <= RADIUS; x++) {
+            for (int z = -RADIUS; z <= RADIUS; z++) {
+                BlockPos r = center.offset(x, 4, z);
+                boolean isEdge = Math.abs(x) == RADIUS || Math.abs(z) == RADIUS;
                 if (isEdge) {
-                    Direction facing = getInwardDirection(x, z);
-                    BlockState stairs = Blocks.OAK_STAIRS.defaultBlockState()
+                    Direction facing = (x == -RADIUS) ? Direction.EAST :
+                                       (x == RADIUS) ? Direction.WEST :
+                                       (z == -RADIUS) ? Direction.SOUTH : Direction.NORTH;
+                    level.setBlock(r, Blocks.OAK_STAIRS.defaultBlockState()
                         .setValue(StairBlock.FACING, facing)
-                        .setValue(StairBlock.SHAPE, net.minecraft.world.level.block.state.properties.StairsShape.STRAIGHT);
-                    level.setBlock(roof, stairs, 3);
+                        .setValue(StairBlock.SHAPE,
+                            net.minecraft.world.level.block.state.properties.StairsShape.STRAIGHT), 3);
                 } else {
-                    // Slab in the center
-                    level.setBlock(roof, Blocks.OAK_SLAB.defaultBlockState(), 3);
+                    level.setBlock(r, Blocks.OAK_SLAB.defaultBlockState(), 3);
                 }
             }
         }
 
-        // Door (south side)
-        BlockPos door = center.offset(0, 1, 2);
-        BlockState doorLower = Blocks.OAK_DOOR.defaultBlockState()
+        // ── Door: south wall, center ──
+        BlockPos door = center.offset(0, 1, RADIUS);
+        level.setBlock(door, Blocks.OAK_DOOR.defaultBlockState()
             .setValue(DoorBlock.FACING, Direction.SOUTH)
-            .setValue(DoorBlock.HALF, DoubleBlockHalf.LOWER);
-        BlockState doorUpper = Blocks.OAK_DOOR.defaultBlockState()
+            .setValue(DoorBlock.HALF, DoubleBlockHalf.LOWER), 3);
+        level.setBlock(door.above(), Blocks.OAK_DOOR.defaultBlockState()
             .setValue(DoorBlock.FACING, Direction.SOUTH)
-            .setValue(DoorBlock.HALF, DoubleBlockHalf.UPPER);
-        level.setBlock(door, doorLower, 3);
-        level.setBlock(door.above(), doorUpper, 3);
+            .setValue(DoorBlock.HALF, DoubleBlockHalf.UPPER), 3);
 
-        // Window (east wall)
-        BlockPos window = center.offset(2, 2, 0);
-        level.setBlock(window, Blocks.GLASS_PANE.defaultBlockState(), 3);
-
-        // Torches (interior)
-        level.setBlock(center.offset(-1, 2, 1), Blocks.TORCH.defaultBlockState(), 3);
-        level.setBlock(center.offset(1, 2, -1), Blocks.TORCH.defaultBlockState(), 3);
-
-        // Bed (inside, against north wall, head at north)
-        BlockPos bedHead = center.offset(0, 1, -1);
+        // ── Bed: against north wall. Head at north (inside), foot toward center ──
+        // Bed occupies 2 blocks: head at north edge (-RADIUS,0,0) at z=-1, foot at z=0  
+        // This leaves z=+1 clear for walking
+        BlockPos bedHead = center.offset(0, 1, -(RADIUS + 0)); // north wall
         BlockPos bedFoot = bedHead.south();
         level.setBlock(bedHead, Blocks.RED_BED.defaultBlockState()
             .setValue(net.minecraft.world.level.block.HorizontalDirectionalBlock.FACING, Direction.SOUTH)
@@ -128,27 +119,40 @@ public class GirlHouseGenerator {
             .setValue(net.minecraft.world.level.block.HorizontalDirectionalBlock.FACING, Direction.SOUTH)
             .setValue(BedBlock.PART, BedPart.FOOT), 3);
 
-        // Crafting table (center of room)
-        level.setBlock(center.offset(0, 1, 0), Blocks.CRAFTING_TABLE.defaultBlockState(), 3);
+        // ── Furniture ──
+        // Chest: west wall
+        level.setBlock(center.offset(-(RADIUS + 0), 1, 0), Blocks.CHEST.defaultBlockState()
+            .setValue(net.minecraft.world.level.block.ChestBlock.FACING, Direction.EAST), 3);
+        // Crafting table: east wall, south of window
+        level.setBlock(center.offset(RADIUS, 1, 1), Blocks.CRAFTING_TABLE.defaultBlockState(), 3);
+        // Torches
+        level.setBlock(center.offset(-1, 2, 1), Blocks.TORCH.defaultBlockState(), 3);
+        level.setBlock(center.offset(1, 2, -1), Blocks.TORCH.defaultBlockState(), 3);
 
-        // Chest (west wall)
-        level.setBlock(center.offset(-1, 1, 0), Blocks.CHEST.defaultBlockState()
-            .setValue(net.minecraft.world.level.block.ChestBlock.FACING, Direction.WEST), 3);
-
-        // Small flower garden in front
-        BlockPos garden = center.offset(0, 0, 3);
+        // ── Garden in front of door ──
+        BlockPos garden = center.offset(0, 0, RADIUS + 1);
         if (level.getBlockState(garden).isAir() || level.getBlockState(garden).canBeReplaced()) {
             level.setBlock(garden, Blocks.GRASS_BLOCK.defaultBlockState(), 3);
             level.setBlock(garden.above(), Blocks.POPPY.defaultBlockState(), 3);
+            level.setBlock(garden.east().above(), Blocks.DANDELION.defaultBlockState(), 3);
         }
 
-        return true;
+        // ── Spawn position: 2 blocks south of door (outside, clear) ──
+        BlockPos spawnPos = center.offset(0, 0, RADIUS + 2);
+        // Clear any blocks at spawn position
+        level.setBlock(spawnPos, Blocks.AIR.defaultBlockState(), 3);
+        level.setBlock(spawnPos.above(), Blocks.AIR.defaultBlockState(), 3);
+
+        return spawnPos;
     }
 
-    private static Direction getInwardDirection(int dx, int dz) {
-        if (dx == -2) return Direction.EAST;
-        if (dx == 2) return Direction.WEST;
-        if (dz == -2) return Direction.SOUTH;
-        return Direction.NORTH;
+    /** Get consistent ground level using the center column. */
+    private static int columnGroundLevel(Level level, BlockPos center) {
+        int y = level.getHeightmapPos(
+            net.minecraft.world.level.levelgen.Heightmap.Types.WORLD_SURFACE, center).getY();
+        // Don't go below sea level (build on surface)
+        int seaLevel = level.getSeaLevel();
+        if (y < seaLevel) y = seaLevel + 2;
+        return y;
     }
 }
