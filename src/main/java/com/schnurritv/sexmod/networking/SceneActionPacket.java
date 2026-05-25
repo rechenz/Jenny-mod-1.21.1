@@ -68,22 +68,36 @@ public class SceneActionPacket {
                                 girl.getQuestManager().startQuest(q);
                                 player.displayClientMessage(Component.literal(
                                     "<" + girl.getGirlName() + "> " + q.description()), false);
-                                player.displayClientMessage(Component.literal(
-                                    "§6Quest started! Deliver " + q.targetCount() + "x " + 
-                                    net.minecraft.core.registries.BuiltInRegistries.ITEM.get(
-                                        net.minecraft.resources.ResourceLocation.parse(q.targetItem())
-                                    ).getDescription().getString()), false);
+                                String questTypeLabel = switch (q.type()) {
+                                    case FETCH -> "§6Quest started! Bring " + q.targetCount() + "x " +
+                                        net.minecraft.core.registries.BuiltInRegistries.ITEM.get(
+                                            net.minecraft.resources.ResourceLocation.parse(q.targetItem())
+                                        ).getDescription().getString();
+                                    case KILL -> "§cQuest started! Kill " + q.targetCount() + "x " + q.targetMob();
+                                    case ESCORT -> "§bQuest started! Escort " + q.girlName() + " to the destination!";
+                                    case DEFEND -> "§5Quest started! Survive " + q.defendWaveCount() + " waves of mobs!";
+                                };
+                                player.displayClientMessage(Component.literal(questTypeLabel), false);
                             } else {
                                 player.displayClientMessage(Component.literal(
                                     "<" + girl.getGirlName() + "> I don't have anything for you right now."), false);
                             }
                         }
                         case "QuestTurnin" -> {
-                            QuestManager.Quest activeQ = girl.getQuestManager().getActiveQuest();
+                            QuestManager activeQm = girl.getQuestManager();
+                            QuestManager.Quest activeQ = activeQm.getActiveQuest();
                             if (activeQ != null) {
+                                String turninMsg = switch (activeQ.type()) {
+                                    case FETCH -> "Hand me the items directly! I need " +
+                                        (activeQ.targetCount() - activeQm.getProgress()) + " more.";
+                                    case KILL -> "Keep killing! You've taken out " +
+                                        activeQm.getProgress() + "/" + activeQ.targetCount() + " so far!";
+                                    case ESCORT -> "Stay close and guide me to the destination!";
+                                    case DEFEND -> "Stay alert! We're on wave " + (activeQm.getDefendWave() + 1) +
+                                        "/" + activeQ.defendWaveCount() + "!";
+                                };
                                 player.displayClientMessage(Component.literal(
-                                    "<" + girl.getGirlName() + "> Hand me the items directly! I need " +
-                                    (activeQ.targetCount() - girl.getQuestManager().getProgress()) + " more."), false);
+                                    "<" + girl.getGirlName() + "> " + turninMsg), false);
                             } else {
                                 player.displayClientMessage(Component.literal(
                                     "<" + girl.getGirlName() + "> There's no active quest. Ask me for one!"), false);

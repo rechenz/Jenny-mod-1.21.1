@@ -426,7 +426,7 @@ public abstract class BaseGirlEntity extends SexEntity {
         return true; // default for humans
     }
 
-    // ── Tick: apply affection decay + jealousy + first-spawn house ──
+    // ── Tick: apply affection decay + jealousy + first-spawn house + quest checks ──
     @Override
     public void tick() {
         super.tick();
@@ -447,11 +447,86 @@ public abstract class BaseGirlEntity extends SexEntity {
                 && this.tickCount % 600 == 0 && RAND.nextFloat() < 0.3f) {
                 checkJealousy();
             }
+
+            // ── ESCORT quest: check if owner reached destination ──
+            if (questManager.hasActiveQuest() && this.tickCount % 40 == 0) {
+                QuestManager.Quest activeQ = questManager.getActiveQuest();
+                if (activeQ != null && activeQ.type() == QuestManager.QuestType.ESCORT) {
+                    String ownerUUID = affectionData.getOwnerUUID();
+                    if (!ownerUUID.isEmpty()) {
+                        Player owner = this.level().getPlayerByUUID(java.util.UUID.fromString(ownerUUID));
+                        if (owner != null && owner.distanceToSqr(this) < 64.0) {
+                            net.minecraft.core.Holder<net.minecraft.world.level.biome.Biome> biomeHolder = this.level().getBiome(owner.blockPosition());
+                            String biomeName = biomeHolder.getRegisteredName();
+                            boolean completed = questManager.checkEscortDestination(biomeName, owner.blockPosition().getY());
+                            if (completed) {
+                                int reward = activeQ.rewardAffection();
+                                affectionData.addAffection(reward, SexModConfig.AFFECTION_MAX.get());
+                                syncAffection();
+                                owner.displayClientMessage(Component.literal("<" + getGirlName() + "> " +
+                                    DialogueDB.getRandom("quest_complete")), false);
+                                owner.displayClientMessage(Component.literal("\u00a7a\u2611 ESCORT Complete! \u2764 +" + reward), true);
+                                if (!activeQ.rewardItem().isEmpty()) {
+                                    net.minecraft.world.item.Item rewardItem = net.minecraft.core.registries.BuiltInRegistries.ITEM.get(
+                                        net.minecraft.resources.ResourceLocation.parse(activeQ.rewardItem()));
+                                    if (rewardItem != null && rewardItem != net.minecraft.world.item.Items.AIR) {
+                                        owner.getInventory().add(new net.minecraft.world.item.ItemStack(rewardItem, 1));
+                                        owner.displayClientMessage(Component.literal("\u00a76Received: " + rewardItem.getDescription().getString()), true);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 
     private static final java.util.Random RAND = new java.util.Random();
     private long lastJealousyMessage = 0;
+
+    /**
+     * Called from LivingDeathEvent when a mob dies near this character.
+     * If the active quest is KILL and the mob matches, progress is added.
+     */
+    public void tryAdvanceKillQuest(net.minecraft.world.entity.LivingEntity killedMob, Player killer) {
+        if (this.level().isClientSide) return;
+        QuestManager.Quest q = questManager.getActiveQuest();
+        if (q == null || q.type() != QuestManager.QuestType.KILL) return;
+
+        String mobKey = net.minecraft.core.registries.BuiltInRegistries.ENTITY_TYPE.getKey(killedMob.getType()).toString();
+        boolean matched = questManager.addProgress(mobKey, 1);
+        if (matched) {
+            // Quest completed!
+            int reward = q.rewardAffection();
+            affectionData.addAffection(reward, SexModConfig.AFFECTION_MAX.get());
+            syncAffection();
+            killer.displayClientMessage(Component.literal("<" + getGirlName() + "> " +
+                DialogueDB.getRandom("quest_complete")), false);
+            killer.displayClientMessage(Component.literal("\u00a7a\u2611 " + getQuestTypeLabel(q.type()) + " Quest Complete! \u2764 +" + reward), true);
+            if (!q.rewardItem().isEmpty()) {
+                net.minecraft.world.item.Item rewardItem = net.minecraft.core.registries.BuiltInRegistries.ITEM.get(
+                    net.minecraft.resources.ResourceLocation.parse(q.rewardItem()));
+                if (rewardItem != null && rewardItem != net.minecraft.world.item.Items.AIR) {
+                    killer.getInventory().add(new net.minecraft.world.item.ItemStack(rewardItem, 1));
+                    killer.displayClientMessage(Component.literal("\u00a76Received: " + rewardItem.getDescription().getString()), true);
+                }
+            }
+        } else {
+            // Still progressing
+            killer.displayClientMessage(Component.literal(
+                "  \u2694 KILL progress: " + questManager.getProgress() + "/" + questManager.getTarget()), true);
+        }
+    }
+
+    private static String getQuestTypeLabel(QuestManager.QuestType type) {
+        return switch (type) {
+            case FETCH -> "FETCH";
+            case KILL -> "KILL";
+            case ESCORT -> "ESCORT";
+            case DEFEND -> "DEFEND";
+        };
+    }
 
     private void checkJealousy() {
         String myOwner = affectionData.getOwnerUUID();
