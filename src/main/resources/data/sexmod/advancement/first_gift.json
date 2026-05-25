@@ -1,0 +1,14 @@
+{
+  "parent": "sexmod:meet_first_girl",
+  "display": {
+    "icon": { "item": "sexmod:teddy_bear" },
+    "title": { "translate": "advancements.sexmod.first_gift.title" },
+    "description": { "translate": "advancements.sexmod.first_gift.description" },
+    "frame": "task"
+  },
+  "criteria": {
+    "first_gift": {
+      "trigger": "minecraft:impossible"
+    }
+  }
+}

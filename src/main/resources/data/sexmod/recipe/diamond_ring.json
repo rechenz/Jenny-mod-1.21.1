@@ -1,0 +1,9 @@
+﻿{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [" D ","G G"," G "],
+  "key": {
+    "D": { "item": "minecraft:diamond" },
+    "G": { "item": "minecraft:gold_ingot" }
+  },
+  "result": { "id": "sexmod:diamond_ring", "count": 1 }
+}

@@ -1,0 +1,9 @@
+﻿{
+  "type": "minecraft:crafting_shaped",
+  "pattern": ["W W","SWS","WSW"],
+  "key": {
+    "W": { "item": "minecraft:white_wool" },
+    "S": { "item": "minecraft:string" }
+  },
+  "result": { "id": "sexmod:teddy_bear", "count": 1 }
+}

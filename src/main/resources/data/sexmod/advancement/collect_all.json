@@ -1,0 +1,14 @@
+{
+  "parent": "sexmod:meet_first_girl",
+  "display": {
+    "icon": { "item": "sexmod:summoning_whistle" },
+    "title": { "translate": "advancements.sexmod.collect_all.title" },
+    "description": { "translate": "advancements.sexmod.collect_all.description" },
+    "frame": "challenge"
+  },
+  "criteria": {
+    "collect_all": {
+      "trigger": "minecraft:impossible"
+    }
+  }
+}

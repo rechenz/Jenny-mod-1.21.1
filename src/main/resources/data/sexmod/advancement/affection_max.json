@@ -1,0 +1,14 @@
+{
+  "parent": "sexmod:meet_first_girl",
+  "display": {
+    "icon": { "item": "sexmod:diamond_ring" },
+    "title": { "translate": "advancements.sexmod.affection_max.title" },
+    "description": { "translate": "advancements.sexmod.affection_max.description" },
+    "frame": "challenge"
+  },
+  "criteria": {
+    "affection_100": {
+      "trigger": "minecraft:impossible"
+    }
+  }
+}

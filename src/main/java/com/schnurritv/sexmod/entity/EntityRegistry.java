@@ -1,6 +1,7 @@
 package com.schnurritv.sexmod.entity;
 
 import com.schnurritv.sexmod.Main;
+import com.schnurritv.sexmod.item.ModItems;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EntityType;
@@ -16,6 +17,7 @@ import net.minecraftforge.registries.RegistryObject;
 public class EntityRegistry {
     public static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, Main.MODID);
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, Main.MODID);
+    public static final DeferredRegister<Item> MOD_ITEMS = ModItems.ITEMS;
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, Main.MODID);
 
     // Entities
@@ -80,6 +82,7 @@ public class EntityRegistry {
                     .title(Component.translatable("itemGroup.sexmod"))
                     .icon(() -> new ItemStack(JENNY_SPAWN_EGG.get()))
                     .displayItems((parameters, output) -> {
+                        // Spawn eggs
                         output.accept(JENNY_SPAWN_EGG.get());
                         output.accept(ELLIE_SPAWN_EGG.get());
                         output.accept(SLIME_SPAWN_EGG.get());
@@ -89,12 +92,33 @@ public class EntityRegistry {
                         output.accept(GOBLIN_SPAWN_EGG.get());
                         output.accept(KOBOLD_SPAWN_EGG.get());
                         output.accept(CAT_SPAWN_EGG.get());
+                        // Gifts
+                        output.accept(ModItems.RED_ROSE.get());
+                        output.accept(ModItems.CHOCOLATE_BOX.get());
+                        output.accept(ModItems.TEDDY_BEAR.get());
+                        output.accept(ModItems.LOVE_LETTER.get());
+                        output.accept(ModItems.DIAMOND_RING.get());
+                        output.accept(ModItems.COPPER_GEAR.get());
+                        output.accept(ModItems.ENCHANTED_QUILL.get());
+                        output.accept(ModItems.MOONLIGHT_LILY.get());
+                        output.accept(ModItems.ANCIENT_COIN.get());
+                        output.accept(ModItems.GOLDEN_HONEYCOMB.get());
+                        output.accept(ModItems.SILVER_BELL.get());
+                        output.accept(ModItems.MYSTIC_HERB.get());
+                        output.accept(ModItems.DRAGON_SCALE.get());
+                        output.accept(ModItems.CRYSTAL_SLIME.get());
+                        // Utility
+                        output.accept(ModItems.SUMMONING_WHISTLE.get());
+                        output.accept(ModItems.HEALING_CHARM.get());
+                        output.accept(ModItems.BOND_BRACELET.get());
+                        output.accept(ModItems.MEMORY_CRYSTAL.get());
                     })
                     .build());
 
     public static void register(net.minecraftforge.eventbus.api.IEventBus bus) {
         ENTITIES.register(bus);
         ITEMS.register(bus);
+        MOD_ITEMS.register(bus);
         CREATIVE_MODE_TABS.register(bus);
     }
 }

@@ -30,6 +30,9 @@ public class InteractionScreen extends Screen {
     private static final int TEXT_NORMAL = 0xFFCCCCCC;
     private static final int TEXT_HOVER = 0xFFFFFFFF;
 
+    private static final int BG_LOCKED = 0x90333333;
+    private static final int TEXT_LOCKED = 0xFF888888;
+
     public InteractionScreen(BaseGirlEntity girl, List<String> actions) {
         super(Component.literal("Interaction"));
         this.girl = girl;
@@ -38,24 +41,29 @@ public class InteractionScreen extends Screen {
 
     @Override
     public void render(GuiGraphics g, int mouseX, int mouseY, float partialTick) {
-        // Semi-transparent dark overlay
         g.fill(0, 0, this.width, this.height, 0x60000000);
         super.render(g, mouseX, mouseY, partialTick);
 
         int midX = this.width / 2;
         int midY = this.height / 2;
 
-        // Title — girl's name
+        // Title — girl's name + affection
         String title = girl.getGirlName().substring(0, 1).toUpperCase() + girl.getGirlName().substring(1);
+        String subtitle = "❤ " + girl.getAffection();
         int titleW = this.font.width(title);
-        g.fill(midX - titleW / 2 - 6, midY - RADIUS - 28, midX + titleW / 2 + 6, midY - RADIUS - 8, 0xC0331133);
-        g.drawString(this.font, title, midX - titleW / 2, midY - RADIUS - 24, 0xFFFF88CC, true);
+        int subW = this.font.width(subtitle);
+        g.fill(midX - titleW / 2 - 6, midY - RADIUS - 34, midX + titleW / 2 + 6, midY - RADIUS - 4, 0xC0331133);
+        g.drawString(this.font, title, midX - titleW / 2, midY - RADIUS - 30, 0xFFFF88CC, true);
+        g.drawString(this.font, subtitle, midX - subW / 2, midY - RADIUS - 18, 0xFFFF8888, true);
 
         hoveredIndex = -1;
         RenderSystem.enableBlend();
 
         for (int i = 0; i < actions.size(); i++) {
             String action = actions.get(i);
+            boolean locked = action.startsWith("?");
+            String cleanAction = locked ? action.substring(2) : action;
+
             double angle = -Math.PI / 2 + (2 * Math.PI * i) / actions.size();
             int cx = midX + (int) (Math.cos(angle) * RADIUS);
             int cy = midY + (int) (Math.sin(angle) * RADIUS);
@@ -68,12 +76,14 @@ public class InteractionScreen extends Screen {
             boolean hovered = mouseX >= x1 && mouseX <= x2 && mouseY >= y1 && mouseY <= y2;
             if (hovered) hoveredIndex = i;
 
-            boolean isScene = isSceneAction(action);
-            boolean isStop = "Stop".equals(action);
+            boolean isScene = isSceneAction(cleanAction);
+            boolean isStop = "Stop".equals(cleanAction);
 
             // Background
             int bg;
-            if (isStop) {
+            if (locked) {
+                bg = BG_LOCKED;
+            } else if (isStop) {
                 bg = hovered ? BG_STOP_HOVER : BG_STOP;
             } else if (isScene) {
                 bg = hovered ? BG_SCENE_HOVER : BG_SCENE;
@@ -89,10 +99,10 @@ public class InteractionScreen extends Screen {
             g.fill(x1, y1, x1 + 1, y2, border);
             g.fill(x2 - 1, y1, x2, y2, border);
 
-            // Text centered
-            String label = getLabel(action);
+            // Text
+            String label = locked ? ("🔒 " + cleanAction) : getLabel(cleanAction);
             int textW = this.font.width(label);
-            int color = hovered ? TEXT_HOVER : TEXT_NORMAL;
+            int color = locked ? TEXT_LOCKED : (hovered ? TEXT_HOVER : TEXT_NORMAL);
             g.drawString(this.font, label, cx - textW / 2, cy - 4, color, true);
         }
     }
@@ -127,6 +137,20 @@ public class InteractionScreen extends Screen {
     }
 
     private void handleAction(String action) {
+        // Locked actions: strip "? " prefix
+        if (action.startsWith("?")) {
+            String realAction = action.substring(2);
+            if (isSceneAction(realAction)) {
+                // Show locked message
+                var player = net.minecraft.client.Minecraft.getInstance().player;
+                if (player != null) {
+                    player.displayClientMessage(net.minecraft.network.chat.Component.literal(
+                        "<" + girl.getGirlName() + "> " + com.schnurritv.sexmod.relationship.DialogueDB.getSceneLocked(girl.getGirlName())), false);
+                }
+            }
+            return;
+        }
+
         if ("Follow".equals(action)) {
             NetworkHandler.sendMovementStateUpdate(girl.getId(), "FOLLOW");
             girl.getEntityData().set(SexEntity.MASTER_UUID, net.minecraft.client.Minecraft.getInstance().player.getUUID().toString());

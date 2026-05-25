@@ -1,0 +1,13 @@
+{
+  "display": {
+    "icon": { "item": "sexmod:red_rose" },
+    "title": { "translate": "advancements.sexmod.root.title" },
+    "description": { "translate": "advancements.sexmod.root.description" },
+    "background": "minecraft:textures/block/pink_wool.png",
+    "frame": "task",
+    "show_toast": false,
+    "announce_to_chat": false,
+    "hidden": false
+  },
+  "criteria": { "tick": { "trigger": "minecraft:tick" } }
+}

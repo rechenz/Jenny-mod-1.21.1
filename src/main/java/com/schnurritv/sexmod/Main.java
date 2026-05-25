@@ -17,7 +17,8 @@ public class Main {
     public Main() {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
         EntityRegistry.register(FMLJavaModLoadingContext.get().getModEventBus());
-        net.minecraftforge.fml.ModLoadingContext.get().registerConfig(net.minecraftforge.fml.config.ModConfig.Type.CLIENT, SexModConfig.SPEC);
+        net.minecraftforge.fml.ModLoadingContext.get().registerConfig(net.minecraftforge.fml.config.ModConfig.Type.CLIENT, SexModConfig.CLIENT_SPEC);
+        net.minecraftforge.fml.ModLoadingContext.get().registerConfig(net.minecraftforge.fml.config.ModConfig.Type.SERVER, SexModConfig.SERVER_SPEC);
         MinecraftForge.EVENT_BUS.register(this);
     }
 

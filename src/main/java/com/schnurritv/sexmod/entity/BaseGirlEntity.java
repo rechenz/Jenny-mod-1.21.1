@@ -1,30 +1,38 @@
 package com.schnurritv.sexmod.entity;
 
+import com.schnurritv.sexmod.Main;
+import com.schnurritv.sexmod.SexModConfig;
+import com.schnurritv.sexmod.item.GiftItem;
+import com.schnurritv.sexmod.relationship.AffectionData;
+import com.schnurritv.sexmod.relationship.DialogueDB;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.ai.goal.*;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
+import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import com.schnurritv.sexmod.client.gui.InteractionScreen;
 import com.schnurritv.sexmod.entity.ai.SexModFollowGoal;
-import net.minecraft.client.Minecraft;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.ai.goal.*;
-import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.api.distmarker.Dist;
+import java.util.ArrayList;
 import java.util.List;
 
 public abstract class BaseGirlEntity extends SexEntity {
@@ -38,12 +46,19 @@ public abstract class BaseGirlEntity extends SexEntity {
 
     private final LazyOptional<IItemHandler> inventoryHandler = LazyOptional.of(() -> inventory);
 
+    // ── Synced data for inventory display ──
     public static final EntityDataAccessor<ItemStack> ITEM_0 = SynchedEntityData.defineId(BaseGirlEntity.class, EntityDataSerializers.ITEM_STACK);
     public static final EntityDataAccessor<ItemStack> ITEM_1 = SynchedEntityData.defineId(BaseGirlEntity.class, EntityDataSerializers.ITEM_STACK);
     public static final EntityDataAccessor<ItemStack> ITEM_2 = SynchedEntityData.defineId(BaseGirlEntity.class, EntityDataSerializers.ITEM_STACK);
     public static final EntityDataAccessor<ItemStack> ITEM_3 = SynchedEntityData.defineId(BaseGirlEntity.class, EntityDataSerializers.ITEM_STACK);
     public static final EntityDataAccessor<ItemStack> ITEM_4 = SynchedEntityData.defineId(BaseGirlEntity.class, EntityDataSerializers.ITEM_STACK);
     public static final EntityDataAccessor<ItemStack> ITEM_5 = SynchedEntityData.defineId(BaseGirlEntity.class, EntityDataSerializers.ITEM_STACK);
+
+    // ── Affection sync ──
+    public static final EntityDataAccessor<Integer> AFFECTION_VALUE = SynchedEntityData.defineId(BaseGirlEntity.class, EntityDataSerializers.INT);
+
+    // ── Affection data (server-authoritative, synced to client) ──
+    private final AffectionData affectionData = new AffectionData();
 
     protected BaseGirlEntity(EntityType<? extends PathfinderMob> type, Level level) {
         super(type, level);
@@ -68,12 +83,15 @@ public abstract class BaseGirlEntity extends SexEntity {
         builder.define(ITEM_3, ItemStack.EMPTY);
         builder.define(ITEM_4, ItemStack.EMPTY);
         builder.define(ITEM_5, ItemStack.EMPTY);
+        builder.define(AFFECTION_VALUE, 0);
     }
 
+    // ── NBT save/load ──
     @Override
     public void addAdditionalSaveData(CompoundTag compound) {
         super.addAdditionalSaveData(compound);
         compound.put("Inventory", inventory.serializeNBT(this.registryAccess()));
+        compound.put("AffectionData", affectionData.toNBT());
     }
 
     @Override
@@ -81,6 +99,10 @@ public abstract class BaseGirlEntity extends SexEntity {
         super.readAdditionalSaveData(compound);
         if (compound.contains("Inventory")) {
             inventory.deserializeNBT(this.registryAccess(), compound.getCompound("Inventory"));
+        }
+        if (compound.contains("AffectionData")) {
+            affectionData.fromNBT(compound.getCompound("AffectionData"));
+            syncAffection();
         }
     }
 
@@ -102,6 +124,25 @@ public abstract class BaseGirlEntity extends SexEntity {
         this.entityData.set(ITEM_5, inventory.getStackInSlot(5));
     }
 
+    private void syncAffection() {
+        if (!this.level().isClientSide) {
+            this.entityData.set(AFFECTION_VALUE, affectionData.getAffection());
+        }
+    }
+
+    @Override
+    public void onSyncedDataUpdated(EntityDataAccessor<?> key) {
+        super.onSyncedDataUpdated(key);
+        if (IS_LOCKED.equals(key)) {
+            updateSyncedInventory();
+        }
+    }
+
+    // ── Affection getters ──
+    public AffectionData getAffectionData() { return affectionData; }
+    public int getAffection() { return this.entityData.get(AFFECTION_VALUE); }
+
+    // ── Capability ──
     @Override
     public <T> @NotNull LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
         if (cap == ForgeCapabilities.ITEM_HANDLER) {
@@ -110,16 +151,20 @@ public abstract class BaseGirlEntity extends SexEntity {
         return super.getCapability(cap, side);
     }
 
-    @Override
-    public void onSyncedDataUpdated(net.minecraft.network.syncher.EntityDataAccessor<?> key) {
-        super.onSyncedDataUpdated(key);
-        if (IS_LOCKED.equals(key)) {
-            updateSyncedInventory();
-        }
-    }
-
+    // ── Interaction (gift giving + menu) ──
     @Override
     public InteractionResult mobInteract(Player player, InteractionHand hand) {
+        ItemStack held = player.getItemInHand(hand);
+
+        // Check if holding a gift item
+        if (isGiftItem(held)) {
+            if (this.level().isClientSide) {
+                return InteractionResult.SUCCESS;
+            }
+            return handleGift(player, held, hand);
+        }
+
+        // Otherwise open interaction wheel (client only)
         if (this.level().isClientSide) {
             DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
                 Minecraft.getInstance().setScreen(new InteractionScreen(this, getAvailableActions()));
@@ -129,8 +174,133 @@ public abstract class BaseGirlEntity extends SexEntity {
         return InteractionResult.CONSUME;
     }
 
+    private boolean isGiftItem(ItemStack stack) {
+        return stack.getItem() instanceof GiftItem || stack.getItem() == Items.DIAMOND
+            || stack.getItem() == Items.GOLD_INGOT || stack.getItem() == Items.EMERALD
+            || stack.getItem() == Items.CAKE || stack.getItem() == Items.COOKIE
+            || stack.getItem() == Items.POPPY || stack.getItem() == Items.DANDELION
+            || stack.getItem() == Items.ROSE_BUSH || stack.getItem() == Items.SUNFLOWER;
+    }
+
+    private InteractionResult handleGift(Player player, ItemStack held, InteractionHand hand) {
+        long currentDay = this.level().getDayTime() / 24000;
+
+        if (!affectionData.canGiveGift(currentDay, SexModConfig.DAILY_GIFT_LIMIT.get())) {
+            player.displayClientMessage(Component.literal(
+                "<" + getGirlName() + "> " + DialogueDB.getRandom("gift_limit_reached")), false);
+            return InteractionResult.SUCCESS;
+        }
+
+        // Calculate affection gain
+        int gain;
+        if (held.getItem() instanceof GiftItem gift) {
+            // Check if it's her favorite
+            if (isFavoriteGift(held)) gain = gift.getAffectionValue() + 5;
+            else gain = gift.getAffectionValue();
+        } else {
+            // Vanilla gift fallback
+            gain = switch (held.getItem().toString()) {
+                case "diamond"  -> 20;
+                case "emerald"  -> 12;
+                case "gold_ingot" -> 8;
+                case "cake"     -> 6;
+                case "cookie"   -> 3;
+                case "poppy", "dandelion", "rose_bush", "sunflower" -> 4;
+                default         -> 2;
+            };
+        }
+
+        // First gift bonus
+        boolean firstGift = affectionData.getAffection() == 0;
+        if (firstGift) gain += 10;
+
+        affectionData.addAffection(gain, SexModConfig.AFFECTION_MAX.get());
+        affectionData.recordGift(currentDay);
+        if (affectionData.getOwnerUUID().isEmpty()) {
+            affectionData.setOwner(player.getUUID().toString());
+        }
+        syncAffection();
+
+        // Consume item
+        if (!player.isCreative()) {
+            held.shrink(1);
+        }
+
+        // Feedback
+        String reaction = firstGift
+            ? DialogueDB.getRandom("gift_first_ever")
+            : DialogueDB.getGiftReaction(getGirlName(), gain);
+        player.displayClientMessage(Component.literal("<" + getGirlName() + "> " + reaction), false);
+        player.displayClientMessage(Component.literal("❤ +" + gain + " (Total: " + affectionData.getAffection() + ")"), true);
+
+        // Spawn heart particles (client)
+        if (SexModConfig.HEART_PARTICLES.get()) {
+            this.level().broadcastEntityEvent(this, (byte) 7); // heart event
+        }
+
+        return InteractionResult.SUCCESS;
+    }
+
+    private boolean isFavoriteGift(ItemStack stack) {
+        String name = getGirlName().toLowerCase();
+        String itemName = stack.getItem().toString(); // "sexmod:copper_gear"
+        return switch (name) {
+            case "jenny"  -> itemName.contains("copper_gear");
+            case "ellie"  -> itemName.contains("enchanted_quill");
+            case "allie"  -> itemName.contains("moonlight_lily");
+            case "bia"    -> itemName.contains("ancient_coin");
+            case "bee"    -> itemName.contains("golden_honeycomb");
+            case "cat"    -> itemName.contains("silver_bell");
+            case "goblin" -> itemName.contains("mystic_herb");
+            case "kobold" -> itemName.contains("dragon_scale");
+            case "slime"  -> itemName.contains("crystal_slime");
+            default       -> false;
+        };
+    }
+
+    // ── Scene unlocking ──
     public List<String> getAvailableActions() {
-        return List.of("Follow", "Stay");
+        List<String> actions = new ArrayList<>();
+        actions.add("Follow");
+        actions.add("Stay");
+
+        if (!SexModConfig.SCENES_REQUIRE_AFFECTION.get()) {
+            // If config disables affection gating, show all scenes
+            addAllScenes(actions);
+            actions.add("Stop");
+            return actions;
+        }
+
+        int aff = affectionData.getAffection();
+
+        if (aff >= SexModConfig.AFFECTION_SCENE_THRESHOLD_LOW.get()) {
+            actions.add("Missionary");
+            actions.add("Blowjob");
+        }
+        if (aff >= SexModConfig.AFFECTION_SCENE_THRESHOLD_HIGH.get()) {
+            actions.add("Doggy");
+            actions.add("Boobjob");
+        }
+
+        // Show locked scenes as greyed out
+        if (aff < SexModConfig.AFFECTION_SCENE_THRESHOLD_LOW.get()) {
+            actions.add("? Missionary");
+            actions.add("? Blowjob");
+        }
+        if (aff < SexModConfig.AFFECTION_SCENE_THRESHOLD_HIGH.get()) {
+            if (!actions.contains("? Doggy")) actions.add("? Doggy");
+            if (!actions.contains("? Boobjob")) actions.add("? Boobjob");
+        }
+
+        actions.add("Stop");
+        return actions;
+    }
+
+    private void addAllScenes(List<String> actions) {
+        actions.add("Missionary");
+        actions.add("Doggy");
+        actions.add("Blowjob");
+        actions.add("Boobjob");
     }
 
     public abstract String getGirlName();
@@ -138,5 +308,15 @@ public abstract class BaseGirlEntity extends SexEntity {
     @Override
     public String getModelName() {
         return getGirlName();
+    }
+
+    // ── Tick: apply affection decay ──
+    @Override
+    public void tick() {
+        super.tick();
+        if (!this.level().isClientSide) {
+            long currentDay = this.level().getDayTime() / 24000;
+            affectionData.applyDecay(currentDay, SexModConfig.AFFECTION_DECAY_PER_DAY.get());
+        }
     }
 }

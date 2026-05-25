@@ -1,0 +1,10 @@
+﻿{
+  "type": "minecraft:crafting_shaped",
+  "pattern": ["CCC","SMS","CCC"],
+  "key": {
+    "C": { "item": "minecraft:cocoa_beans" },
+    "S": { "item": "minecraft:sugar" },
+    "M": { "item": "minecraft:milk_bucket" }
+  },
+  "result": { "id": "sexmod:chocolate_box", "count": 1 }
+}

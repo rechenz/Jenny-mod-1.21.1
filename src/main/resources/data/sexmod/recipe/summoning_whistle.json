@@ -1,0 +1,9 @@
+﻿{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [" G ","E E"," G "],
+  "key": {
+    "G": { "item": "minecraft:gold_ingot" },
+    "E": { "item": "minecraft:ender_pearl" }
+  },
+  "result": { "id": "sexmod:summoning_whistle", "count": 1 }
+}
