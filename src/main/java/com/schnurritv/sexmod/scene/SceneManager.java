@@ -15,7 +15,7 @@ public class SceneManager {
     private static BlockPos getBedFoot(BaseGirlEntity girl) {
         Level level = girl.level();
         BlockPos pos = girl.blockPosition();
-        for (BlockPos p : BlockPos.betweenClosed(pos.offset(-2, -1, -2), pos.offset(2, 1, 2))) {
+        for (BlockPos p : BlockPos.betweenClosed(pos.offset(-5, -2, -5), pos.offset(5, 2, 5))) {
             net.minecraft.world.level.block.state.BlockState state = level.getBlockState(p);
             if (state.getBlock() instanceof BedBlock) {
                 if (state.getValue(BedBlock.PART) == net.minecraft.world.level.block.state.properties.BedPart.HEAD) {
