@@ -104,31 +104,50 @@ public class InteractionScreen extends Screen {
             actions.add(new Action("💰 Return Stolen Items (" + goblin.getStealCount() + ")", ActionType.RETURN_ITEMS, false));
         }
 
-        // ---- Scenes ----
+                // ---- Scenes (character-specific) ----
         int lowThreshold = com.schnurritv.sexmod.SexModConfig.AFFECTION_SCENE_THRESHOLD_LOW.get();
         int highThreshold = com.schnurritv.sexmod.SexModConfig.AFFECTION_SCENE_THRESHOLD_HIGH.get();
 
         boolean lowUnlocked = aff >= lowThreshold;
         boolean highUnlocked = aff >= highThreshold;
 
-        if (lowUnlocked) {
-            actions.add(new Action("♥ Missionary", ActionType.SCENE_MISSIONARY, false));
-            actions.add(new Action("♥ Blowjob", ActionType.SCENE_BLOWJOB, false));
+        if (girl.hasSingleUnifiedScene()) {
+            // Single unified scene character (Bee, Cat) — one button
+            String label = girl.getUnifiedSceneStartLabel().isEmpty() ? "♥ Play" : girl.getUnifiedSceneStartLabel();
+            if (lowUnlocked) {
+                actions.add(new Action(label, ActionType.SCENE_MISSIONARY, false));
+            } else {
+                actions.add(new Action(label + "  [❤ " + lowThreshold + "]", ActionType.SCENE_LOCKED, true));
+            }
         } else {
-            actions.add(new Action("♥ Missionary  [❤ " + lowThreshold + "]", ActionType.SCENE_LOCKED, true));
-            actions.add(new Action("♥ Blowjob  [❤ " + lowThreshold + "]", ActionType.SCENE_LOCKED, true));
-        }
+            // Standard multi-scene character
+            boolean hasMissionary = girl.supportsScene("Missionary");
+            boolean hasBlowjob = girl.supportsScene("Blowjob");
+            boolean hasDoggy = girl.supportsScene("Doggy");
+            boolean hasBoobjob = girl.supportsScene("Boobjob");
 
-        if (highUnlocked) {
-            actions.add(new Action("♥ Doggy", ActionType.SCENE_DOGGY, false));
-            actions.add(new Action("♥ Boobjob", ActionType.SCENE_BOOBJOB, false));
-        } else {
-            actions.add(new Action("♥ Doggy  [❤ " + highThreshold + "]", ActionType.SCENE_LOCKED, true));
-            actions.add(new Action("♥ Boobjob  [❤ " + highThreshold + "]", ActionType.SCENE_LOCKED, true));
+            if (hasMissionary || hasBlowjob) {
+                if (lowUnlocked) {
+                    if (hasMissionary) actions.add(new Action("♥ Missionary", ActionType.SCENE_MISSIONARY, false));
+                    if (hasBlowjob) actions.add(new Action("♥ Blowjob", ActionType.SCENE_BLOWJOB, false));
+                } else {
+                    if (hasMissionary) actions.add(new Action("♥ Missionary  [❤ " + lowThreshold + "]", ActionType.SCENE_LOCKED, true));
+                    if (hasBlowjob) actions.add(new Action("♥ Blowjob  [❤ " + lowThreshold + "]", ActionType.SCENE_LOCKED, true));
+                }
+            }
+
+            if (hasDoggy || hasBoobjob) {
+                if (highUnlocked) {
+                    if (hasDoggy) actions.add(new Action("♥ Doggy", ActionType.SCENE_DOGGY, false));
+                    if (hasBoobjob) actions.add(new Action("♥ Boobjob", ActionType.SCENE_BOOBJOB, false));
+                } else {
+                    if (hasDoggy) actions.add(new Action("♥ Doggy  [❤ " + highThreshold + "]", ActionType.SCENE_LOCKED, true));
+                    if (hasBoobjob) actions.add(new Action("♥ Boobjob  [❤ " + highThreshold + "]", ActionType.SCENE_LOCKED, true));
+                }
+            }
         }
 
         actions.add(new Action("■ Stop Scene", ActionType.SCENE_STOP, false));
-
         return actions;
     }
 
@@ -296,7 +315,13 @@ public class InteractionScreen extends Screen {
                 player.displayClientMessage(Component.literal(
                     "§dShe likes: Diamond, Emerald, flowers, or special mod gifts."), false);
             }
-            case SCENE_MISSIONARY -> NetworkHandler.sendSceneAction(girl.getId(), "Missionary");
+            case SCENE_MISSIONARY -> {
+                if (girl.hasSingleUnifiedScene()) {
+                    NetworkHandler.sendSceneAction(girl.getId(), "Blowjob");
+                } else {
+                    NetworkHandler.sendSceneAction(girl.getId(), "Missionary");
+                }
+            }
             case SCENE_DOGGY      -> NetworkHandler.sendSceneAction(girl.getId(), "Doggy");
             case SCENE_BLOWJOB    -> NetworkHandler.sendSceneAction(girl.getId(), "Blowjob");
             case SCENE_BOOBJOB    -> NetworkHandler.sendSceneAction(girl.getId(), "Boobjob");

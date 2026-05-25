@@ -13,6 +13,10 @@ public class BeeEntity extends BaseGirlEntity {
     @Override public String getGirlName() { return "bee"; }
     @Override public String getNudeGeoFileName() { return "armored"; }
 
+    @Override public boolean supportsScene(String name) { return false; }
+    @Override public boolean hasSingleUnifiedScene() { return true; }
+    @Override public String getUnifiedSceneStartLabel() { return "♥ Play"; }
+
     // Bee: sex_* (single scene, all phases map to the same 4 states)
     @Override
     public String getSceneAnimationPath(SexModAnimation animation) {

@@ -154,6 +154,22 @@ public abstract class SexEntity extends PathfinderMob implements GeoEntity {
         super.travel(pos);
     }
 
+    private static SexModAnimation getNextPhase(SexModAnimation current) {
+        return switch (current) {
+            case BLOWJOBSUCK  -> SexModAnimation.BLOWJOBTHRUST;
+            case BLOWJOBTHRUST -> SexModAnimation.BLOWJOBCUM;
+            case MISSIONARY_SLOW -> SexModAnimation.MISSIONARY_FAST;
+            case MISSIONARY_FAST -> SexModAnimation.MISSIONARY_CUM;
+            case PAIZURI_SLOW  -> SexModAnimation.PAIZURI_FAST;
+            case PAIZURI_FAST  -> SexModAnimation.PAIZURI_CUM;
+            case DOGGYSTART    -> SexModAnimation.DOGGYSLOW;
+            case DOGGYSLOW     -> SexModAnimation.DOGGYFAST;
+            case DOGGYFAST     -> SexModAnimation.DOGGYCUM;
+            case DOGGYWAIT     -> SexModAnimation.DOGGYSTART;
+            default -> null;
+        };
+    }
+
     protected void handleAnimationSequencing() {
         SexModAnimation current = getSexModAnimation();
         String followUpName = this.entityData.get(ANIMATION_FOLLOW_UP);
@@ -176,6 +192,11 @@ public abstract class SexEntity extends PathfinderMob implements GeoEntity {
                 setSexModAnimation(followUp);
                 this.entityData.set(ANIMATION_TICKS, 0);
                 this.entityData.set(ANIMATION_FOLLOW_UP, "null");
+                // Auto-advance to next phase
+                SexModAnimation next = getNextPhase(followUp);
+                if (next != null) {
+                    this.entityData.set(ANIMATION_FOLLOW_UP, next.name());
+                }
             } catch (IllegalArgumentException e) {
                 this.entityData.set(ANIMATION_FOLLOW_UP, "null");
             }

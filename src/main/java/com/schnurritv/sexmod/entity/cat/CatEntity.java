@@ -20,6 +20,12 @@ public class CatEntity extends BaseGirlEntity {
 
     // Cat uses "animation.cat.*" prefix (same as modelName) — OK
 
+    @Override public boolean supportsScene(String name) {
+        return name.equals("Missionary") || name.equals("Blowjob");
+    }
+
+    @Override public boolean hasSingleUnifiedScene() { return false; }
+
     @Override
     public String getSceneAnimationPath(SexModAnimation animation) {
         String prefix = getAnimationPrefix();
@@ -27,7 +33,7 @@ public class CatEntity extends BaseGirlEntity {
             case MISSIONARY_START, MISSIONARY_SLOW   -> "animation." + prefix + ".sitting_slow";
             case MISSIONARY_FAST                      -> "animation." + prefix + ".sitting_fast";
             case MISSIONARY_CUM                       -> "animation." + prefix + ".sitting_cum";
-            case BLOWJOBINTRO                        -> "animation." + prefix + ".sitting_intro";
+            case BLOWJOBINTRO                        -> "animation." + prefix + ".touch_boobs_intro";
             case BLOWJOBSUCK                         -> "animation." + prefix + ".touch_boobs_slow";
             case BLOWJOBTHRUST                       -> "animation." + prefix + ".touch_boobs_fast";
             case BLOWJOBCUM                          -> "animation." + prefix + ".touch_boobs_cum";

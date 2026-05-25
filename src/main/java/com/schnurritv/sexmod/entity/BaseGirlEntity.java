@@ -379,6 +379,13 @@ public abstract class BaseGirlEntity extends SexEntity {
     }
 
     public abstract String getGirlName();
+    /** Override to limit which scene types appear in interaction UI.
+     *  Bee/Cat override to a single unified scene. */
+    public boolean supportsScene(String sceneName) { return true; }
+
+    public boolean hasSingleUnifiedScene() { return false; }
+    /** For single-scene chars: the unified scene starts with this animation */
+    public String getUnifiedSceneStartLabel() { return ""; }
 
     @Override
     public String getModelName() {
