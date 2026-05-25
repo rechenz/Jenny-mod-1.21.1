@@ -156,18 +156,31 @@ public abstract class SexEntity extends PathfinderMob implements GeoEntity {
 
     private static SexModAnimation getNextPhase(SexModAnimation current) {
         return switch (current) {
-            case BLOWJOBSUCK  -> SexModAnimation.BLOWJOBTHRUST;
+            case BLOWJOBINTRO  -> SexModAnimation.BLOWJOBSUCK;
+            case BLOWJOBSUCK   -> SexModAnimation.BLOWJOBTHRUST;
             case BLOWJOBTHRUST -> SexModAnimation.BLOWJOBCUM;
-            case MISSIONARY_SLOW -> SexModAnimation.MISSIONARY_FAST;
-            case MISSIONARY_FAST -> SexModAnimation.MISSIONARY_CUM;
+            case MISSIONARY_START -> SexModAnimation.MISSIONARY_SLOW;
+            case MISSIONARY_SLOW  -> SexModAnimation.MISSIONARY_FAST;
+            case MISSIONARY_FAST  -> SexModAnimation.MISSIONARY_CUM;
+            case PAIZURI_START -> SexModAnimation.PAIZURI_SLOW;
             case PAIZURI_SLOW  -> SexModAnimation.PAIZURI_FAST;
             case PAIZURI_FAST  -> SexModAnimation.PAIZURI_CUM;
+            case DOGGYGOONBED  -> SexModAnimation.DOGGYSTART;
             case DOGGYSTART    -> SexModAnimation.DOGGYSLOW;
             case DOGGYSLOW     -> SexModAnimation.DOGGYFAST;
             case DOGGYFAST     -> SexModAnimation.DOGGYCUM;
             case DOGGYWAIT     -> SexModAnimation.DOGGYSTART;
             default -> null;
         };
+    }
+
+    /**
+     * Get the intended tick length for a given animation state.
+     * Subclasses (like BeeEntity) can override to provide custom lengths
+     * that match their specific animation JSON durations.
+     */
+    public int getAnimationTickLength(SexModAnimation anim) {
+        return anim.getLength();
     }
 
     protected void handleAnimationSequencing() {
@@ -180,7 +193,7 @@ public abstract class SexEntity extends PathfinderMob implements GeoEntity {
 
         if ("null".equals(followUpName) || followUpName.isEmpty()) return;
 
-        int length = current.getLength();
+        int length = getAnimationTickLength(current);
         if (length <= 0) return;
 
         int ticks = this.entityData.get(ANIMATION_TICKS) + 1;

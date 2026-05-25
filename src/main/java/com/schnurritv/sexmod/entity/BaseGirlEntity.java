@@ -437,6 +437,8 @@ public abstract class BaseGirlEntity extends SexEntity {
      * Whether this character gets a house on first spawn.
      * Human characters return true; monsters/creatures return false.
      */
+    @Nullable public BlockPos getHousePos() { return housePos; }
+    public boolean hasHouse() { return hasHouse; }
     public boolean needsHouse() {
         return true; // default for humans
     }

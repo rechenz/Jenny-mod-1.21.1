@@ -182,8 +182,16 @@ public class GirlRenderer<T extends SexEntity> extends GeoEntityRenderer<T> {
                               name.equals("armorshoesr");
 
         if (isArmorBone) {
-            boolean showArmor = animatable.getEntityData().get(SexEntity.CLOTHING_STATE) == 0;
-            bone.setHidden(!showArmor);
+            // Characters with identical dressed+nude geo (e.g. Bee) don't have
+            // separate armor layers — the armor bones are baked into the static
+            // model and should never be rendered as separate armor visuals.
+            boolean sameGeo = animatable.getGeoFileName().equals(animatable.getNudeGeoFileName());
+            if (sameGeo) {
+                bone.setHidden(true);
+            } else {
+                boolean showArmor = animatable.getEntityData().get(SexEntity.CLOTHING_STATE) == 0;
+                bone.setHidden(!showArmor);
+            }
             // Don't return early — let children process normally
         }
 

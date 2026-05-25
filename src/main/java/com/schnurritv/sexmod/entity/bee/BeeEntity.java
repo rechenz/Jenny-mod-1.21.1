@@ -36,6 +36,19 @@ public class BeeEntity extends BaseGirlEntity {
         };
     }
 
+    // Bee's animation JSON uses shorter durations than the default hardcoded tick lengths.
+    // sex_start: 8.24s, sex_slow: 3.00s, sex_fast: 1.68s, sex_cum: 2.52s
+    @Override
+    public int getAnimationTickLength(SexModAnimation anim) {
+        return switch (anim) {
+            case BLOWJOBINTRO, MISSIONARY_START, PAIZURI_START, DOGGYSTART, DOGGYGOONBED, DOGGYWAIT -> 165;
+            case BLOWJOBSUCK, MISSIONARY_SLOW, PAIZURI_SLOW, DOGGYSLOW -> 60;
+            case BLOWJOBTHRUST, MISSIONARY_FAST, PAIZURI_FAST, DOGGYFAST -> 34;
+            case BLOWJOBCUM, MISSIONARY_CUM, PAIZURI_CUM, DOGGYCUM -> 50;
+            default -> super.getAnimationTickLength(anim);
+        };
+    }
+
     private int buffCooldown = 0;
     @Override public void tick() {
         super.tick();
