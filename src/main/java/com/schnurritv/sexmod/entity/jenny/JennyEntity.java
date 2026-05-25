@@ -18,9 +18,9 @@ public class JennyEntity extends BaseGirlEntity {
     public String getSceneAnimationPath(SexModAnimation animation) {
         String p = getAnimationPrefix();
         return switch (animation) {
-            case MISSIONARY_START, MISSIONARY_SLOW  -> "animation." + p + ".missionary_slow";
-            case MISSIONARY_FAST                    -> "animation." + p + ".idle";
-            case MISSIONARY_CUM                     -> "animation." + p + ".idle";
+            case MISSIONARY_START, MISSIONARY_SLOW  -> "animation.ellie.missionary_slow";
+            case MISSIONARY_FAST                    -> "animation." + p + ".fastwalk";
+            case MISSIONARY_CUM                     -> "animation." + p + ".doggycum";
             // blowjob* names match exactly (lowercase)
             case BLOWJOBINTRO   -> "animation." + p + ".blowjobintro";
             case BLOWJOBSUCK    -> "animation." + p + ".blowjobsuck";

@@ -149,6 +149,8 @@ public class EntityRegistry {
                         output.accept(ModItems.MEMORY_CRYSTAL.get());
                         // Boss Drops
                         output.accept(ModItems.GALATH_COIN.get());
+                        // Guide
+                        output.accept(ModItems.GUIDE_BOOK.get());
                     })
                     .build());
 
