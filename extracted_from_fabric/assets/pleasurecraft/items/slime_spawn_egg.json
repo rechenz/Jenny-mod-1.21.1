@@ -1,0 +1,16 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "pleasurecraft:item/template_spawn_egg",
+    "tints": [
+      {
+        "type": "minecraft:constant",
+        "value": 8116062
+      },
+      {
+        "type": "minecraft:constant",
+        "value": 126191110
+      }
+    ]
+  }
+}

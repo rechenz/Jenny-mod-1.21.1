@@ -48,6 +48,21 @@ public class EntityRegistry {
     public static final RegistryObject<EntityType<com.schnurritv.sexmod.entity.cat.CatEntity>> CAT = ENTITIES.register("cat", 
             () -> EntityType.Builder.of(com.schnurritv.sexmod.entity.cat.CatEntity::new, MobCategory.CREATURE).sized(0.6f, 1.8f).build("cat"));
 
+    public static final RegistryObject<EntityType<com.schnurritv.sexmod.entity.galath.GalathEntity>> GALATH = ENTITIES.register("galath", 
+            () -> EntityType.Builder.of(com.schnurritv.sexmod.entity.galath.GalathEntity::new, MobCategory.CREATURE).sized(0.6f, 1.8f).build("galath"));
+
+    public static final RegistryObject<EntityType<com.schnurritv.sexmod.entity.manglelie.ManglelieEntity>> MANGLELIE = ENTITIES.register("manglelie", 
+            () -> EntityType.Builder.of(com.schnurritv.sexmod.entity.manglelie.ManglelieEntity::new, MobCategory.CREATURE).sized(0.6f, 1.8f).build("manglelie"));
+
+    public static final RegistryObject<EntityType<com.schnurritv.sexmod.entity.lucy.LucyEntity>> LUCY = ENTITIES.register("lucy", 
+            () -> EntityType.Builder.of(com.schnurritv.sexmod.entity.lucy.LucyEntity::new, MobCategory.CREATURE).sized(0.6f, 1.8f).build("lucy"));
+
+    public static final RegistryObject<EntityType<com.schnurritv.sexmod.entity.mika.MikaEntity>> MIKA = ENTITIES.register("mika", 
+            () -> EntityType.Builder.of(com.schnurritv.sexmod.entity.mika.MikaEntity::new, MobCategory.CREATURE).sized(0.6f, 1.8f).build("mika"));
+
+    public static final RegistryObject<EntityType<com.schnurritv.sexmod.entity.momo.MomoEntity>> MOMO = ENTITIES.register("momo", 
+            () -> EntityType.Builder.of(com.schnurritv.sexmod.entity.momo.MomoEntity::new, MobCategory.CREATURE).sized(0.6f, 1.8f).build("momo"));
+
     // Items (Spawn Eggs)
     public static final RegistryObject<Item> JENNY_SPAWN_EGG = ITEMS.register("jenny_spawn_egg", 
             () -> new ForgeSpawnEggItem(JENNY, 0xFFA500, 0xFFFFFF, new Item.Properties()));
@@ -76,6 +91,21 @@ public class EntityRegistry {
     public static final RegistryObject<Item> CAT_SPAWN_EGG = ITEMS.register("cat_spawn_egg", 
             () -> new ForgeSpawnEggItem(CAT, 0xD2B48C, 0xFFFFFF, new Item.Properties()));
 
+    public static final RegistryObject<Item> GALATH_SPAWN_EGG = ITEMS.register("galath_spawn_egg", 
+            () -> new ForgeSpawnEggItem(GALATH, 0x4B0082, 0x00FFFF, new Item.Properties()));
+
+    public static final RegistryObject<Item> MANGLELIE_SPAWN_EGG = ITEMS.register("manglelie_spawn_egg", 
+            () -> new ForgeSpawnEggItem(MANGLELIE, 0x8B0000, 0x000000, new Item.Properties()));
+
+    public static final RegistryObject<Item> LUCY_SPAWN_EGG = ITEMS.register("lucy_spawn_egg", 
+            () -> new ForgeSpawnEggItem(LUCY, 0xFF1493, 0xFFFACD, new Item.Properties()));
+
+    public static final RegistryObject<Item> MIKA_SPAWN_EGG = ITEMS.register("mika_spawn_egg", 
+            () -> new ForgeSpawnEggItem(MIKA, 0x4169E1, 0xFFD700, new Item.Properties()));
+
+    public static final RegistryObject<Item> MOMO_SPAWN_EGG = ITEMS.register("momo_spawn_egg", 
+            () -> new ForgeSpawnEggItem(MOMO, 0x2E8B57, 0xFFFFFF, new Item.Properties()));
+
     // Creative Tab
     public static final RegistryObject<CreativeModeTab> SEXMOD_TAB = CREATIVE_MODE_TABS.register("sexmod_tab",
             () -> CreativeModeTab.builder()
@@ -92,6 +122,11 @@ public class EntityRegistry {
                         output.accept(GOBLIN_SPAWN_EGG.get());
                         output.accept(KOBOLD_SPAWN_EGG.get());
                         output.accept(CAT_SPAWN_EGG.get());
+                        output.accept(GALATH_SPAWN_EGG.get());
+                        output.accept(MANGLELIE_SPAWN_EGG.get());
+                        output.accept(LUCY_SPAWN_EGG.get());
+                        output.accept(MIKA_SPAWN_EGG.get());
+                        output.accept(MOMO_SPAWN_EGG.get());
                         // Gifts
                         output.accept(ModItems.RED_ROSE.get());
                         output.accept(ModItems.CHOCOLATE_BOX.get());

@@ -1,0 +1,157 @@
+{
+  "girl_id": "mika",
+  "events": [
+    {
+      "key": "stripMSG1",
+      "random_sounds": [
+        "pleasurecraft:mika.giggle"
+      ]
+    },
+    {
+      "key": "carry_introMSG1",
+      "sounds": [
+        "pleasurecraft:mika.hmph"
+      ],
+      "messages": [
+        "I'm hungry.."
+      ]
+    },
+    {
+      "key": "carry_introMSG2",
+      "sounds": [
+        "pleasurecraft:mika.giggle"
+      ],
+      "messages": [
+        "heh~"
+      ]
+    },
+    {
+      "key": "lipsound",
+      "sounds": [
+        "pleasurecraft:mika.lipsound"
+      ]
+    },
+    {
+      "key": "suckFast",
+      "sounds": [
+        "pleasurecraft:misc.pounding"
+      ]
+    },
+    {
+      "key": "cum",
+      "sounds": [
+        "pleasurecraft:misc.inserts",
+        "pleasurecraft:mika.lipsound"
+      ]
+    },
+    {
+      "key": "sitdownMSG1",
+      "sounds": [
+        "pleasurecraft:mika.cometomommy"
+      ],
+      "messages": [
+        "Come to mommy~"
+      ]
+    },
+    {
+      "key": "missionary_slowMSG1",
+      "sounds": [
+        "pleasurecraft:misc.pounding",
+        "pleasurecraft:mika.ahh"
+      ]
+    },
+    {
+      "key": "missionary_fastMSG1",
+      "sounds": [
+        "pleasurecraft:misc.pounding"
+      ],
+      "random_sounds": [
+        "pleasurecraft:mika.ahh",
+        "pleasurecraft:mika.moan"
+      ]
+    },
+    {
+      "key": "bedRustle",
+      "sounds": [
+        "pleasurecraft:misc.pounding",
+        "pleasurecraft:misc.bedrustle"
+      ]
+    },
+    {
+      "key": "missionary_cumMSG1",
+      "sounds": [
+        "pleasurecraft:mika.ahh"
+      ]
+    },
+    {
+      "key": "missionary_cumMSG2",
+      "sounds": [
+        "pleasurecraft:mika.goodboy"
+      ],
+      "messages": [
+        "goooood.. ehh.. boy.. hehe~"
+      ]
+    },
+    {
+      "key": "cowgirlStartMSG0",
+      "sounds": [
+        "pleasurecraft:mika.giggle"
+      ]
+    },
+    {
+      "key": "cowgirlStartMSG1",
+      "messages": [
+        "Do you like what you see honey?~"
+      ]
+    },
+    {
+      "key": "cowgirlStartMSG2",
+      "sounds": [
+        "pleasurecraft:misc.pounding"
+      ],
+      "random_sounds": [
+        "pleasurecraft:mika.ahh",
+        "pleasurecraft:mika.moan"
+      ]
+    },
+    {
+      "key": "cowgirlfastMSG1",
+      "sounds": [
+        "pleasurecraft:misc.pounding"
+      ],
+      "random_sounds": [
+        "pleasurecraft:mika.ahh",
+        "pleasurecraft:mika.moan"
+      ]
+    },
+    {
+      "key": "cowgirlcumMSG1",
+      "sounds": [
+        "pleasurecraft:misc.pounding",
+        "pleasurecraft:mika.ahh"
+      ]
+    },
+    {
+      "key": "cowgirlcumMSG2",
+      "sounds": [
+        "pleasurecraft:misc.pounding",
+        "pleasurecraft:mika.moan"
+      ]
+    },
+    {
+      "key": "cowgirlcumMSG3",
+      "sounds": [
+        "pleasurecraft:misc.pounding"
+      ]
+    },
+    {
+      "key": "cowgirlcumMSG4",
+      "sounds": [
+        "pleasurecraft:mika.goodboy"
+      ],
+      "messages": [
+        "goooood.. ehh.. boy.. hehe~"
+      ]
+    }
+  ]
+}

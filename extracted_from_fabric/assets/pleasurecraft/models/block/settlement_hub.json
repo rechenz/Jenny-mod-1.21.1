@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "top": "pleasurecraft:block/settlement_hub_top",
+    "bottom": "pleasurecraft:block/settlement_hub_bottom",
+    "side": "pleasurecraft:block/settlement_hub_side"
+  }
+}

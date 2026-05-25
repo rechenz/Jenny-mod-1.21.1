@@ -99,6 +99,46 @@ public class QuestManager {
         register("slime", new Quest("slime_glass", QuestType.FETCH,
             "What's this transparent solid? Bring 10 Glass!",
             "minecraft:glass", 10, 25, "sexmod:crystal_slime", "slime"));
+
+        // GALATH: void-themed quests
+        register("galath", new Quest("galath_void", QuestType.FETCH,
+            "The Void calls... Bring 8 Obsidian to contain it.",
+            "minecraft:obsidian", 8, 35, "sexmod:dragon_scale", "galath"));
+        register("galath", new Quest("galath_energy", QuestType.FETCH,
+            "I require 4 Nether Stars. My energy cores are depleted.",
+            "minecraft:nether_star", 4, 50, "", "galath"));
+
+        // MANGLELIE: corruption quests
+        register("manglelie", new Quest("manglelie_shards", QuestType.FETCH,
+            "Amethyst... 12 Shards. They sing to me.",
+            "minecraft:amethyst_shard", 12, 25, "sexmod:memory_crystal", "manglelie"));
+        register("manglelie", new Quest("manglelie_soul", QuestType.FETCH,
+            "Something burns within... 3 Blaze Rods, now.",
+            "minecraft:blaze_rod", 3, 30, "", "manglelie"));
+
+        // LUCY: caretaker quests
+        register("lucy", new Quest("lucy_bake", QuestType.FETCH,
+            "I want to bake! Bring me 8 Wheat and 3 Eggs!",
+            "minecraft:wheat", 8, 20, "", "lucy"));
+        register("lucy", new Quest("lucy_garden", QuestType.FETCH,
+            "The garden needs tending. 10 Bone Meal please!",
+            "minecraft:bone_meal", 10, 25, "sexmod:healing_charm", "lucy"));
+
+        // MIKA: fortune quests
+        register("mika", new Quest("mika_treasure", QuestType.FETCH,
+            "Luck is on our side! Find me 5 Emeralds!",
+            "minecraft:emerald", 5, 35, "sexmod:diamond_ring", "mika"));
+        register("mika", new Quest("mika_stars", QuestType.FETCH,
+            "Shooting stars... 5 Firework Rockets, make them beautiful!",
+            "minecraft:firework_rocket", 5, 20, "", "mika"));
+
+        // MOMO: scholar quests
+        register("momo", new Quest("momo_books", QuestType.FETCH,
+            "Knowledge is power! 10 Books for my library!",
+            "minecraft:book", 10, 25, "sexmod:enchanted_quill", "momo"));
+        register("momo", new Quest("momo_enchant", QuestType.FETCH,
+            "The enchanting table needs fuel. 3 Lapis Lazuli blocks!",
+            "minecraft:lapis_block", 3, 30, "", "momo"));
     }
 
     private static void register(String girl, Quest quest) {

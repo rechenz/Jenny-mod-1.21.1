@@ -1,0 +1,292 @@
+{
+  "girl_id": "lucy",
+  "events": [
+    {
+      "key": "stripMSG1",
+      "random_sounds": [
+        "pleasurecraft:lucy.giggle"
+      ],
+      "messages": [
+        "Hihi~"
+      ]
+    },
+    {
+      "key": "paizuriStartMSG1",
+      "sounds": [
+        "pleasurecraft:misc.pounding"
+      ]
+    },
+    {
+      "key": "paizuriSlowMSG1",
+      "sounds": [
+        "pleasurecraft:misc.pounding"
+      ]
+    },
+    {
+      "key": "paizuriFastMSG1",
+      "sounds": [
+        "pleasurecraft:misc.pounding"
+      ],
+      "random_sounds": [
+        "pleasurecraft:lucy.ahh",
+        "pleasurecraft:lucy.mmm"
+      ]
+    },
+    {
+      "key": "bjiMSG1",
+      "sounds": [
+        "pleasurecraft:lucy.mmm"
+      ],
+      "messages": [
+        "What are you..."
+      ]
+    },
+    {
+      "key": "bjiMSG2",
+      "sounds": [
+        "pleasurecraft:lucy.lightbreathing"
+      ],
+      "messages": [
+        "eh... boys..."
+      ]
+    },
+    {
+      "key": "bjiMSG3",
+      "sounds": [
+        "pleasurecraft:lucy.aftersessionmoan"
+      ],
+      "messages": [
+        "OHOhh...!"
+      ]
+    },
+    {
+      "key": "bjiMSG4",
+      "sounds": [
+        "pleasurecraft:misc.belljingle"
+      ]
+    },
+    {
+      "key": "bjiMSG5",
+      "sounds": [
+        "pleasurecraft:lucy.hmph"
+      ],
+      "messages": [
+        "Was this really necessary?!"
+      ]
+    },
+    {
+      "key": "bjiMSG6",
+      "sounds": [
+        "pleasurecraft:lucy.lightbreathing"
+      ],
+      "messages": [
+        "Oh~"
+      ]
+    },
+    {
+      "key": "bjiMSG7",
+      "sounds": [
+        "pleasurecraft:lucy.giggle"
+      ],
+      "messages": [
+        "You like it?~"
+      ]
+    },
+    {
+      "key": "bjiMSG8",
+      "sounds": [
+        "pleasurecraft:misc.plob"
+      ],
+      "player_messages": [
+        "Yee"
+      ]
+    },
+    {
+      "key": "bjiMSG9",
+      "sounds": [
+        "pleasurecraft:lucy.giggle"
+      ],
+      "messages": [
+        "Hihihi~"
+      ]
+    },
+    {
+      "key": "bjiMSG11",
+      "random_sounds": [
+        "pleasurecraft:lucy.lipsound",
+        "pleasurecraft:lucy.bjmoan"
+      ]
+    },
+    {
+      "key": "bjiMSG12",
+      "sounds": [
+        "pleasurecraft:lucy.lipsound"
+      ]
+    },
+    {
+      "key": "bjtMSG1",
+      "sounds": [
+        "pleasurecraft:lucy.mmm",
+        "pleasurecraft:lucy.lipsound"
+      ]
+    },
+    {
+      "key": "bjcMSG1",
+      "sounds": [
+        "pleasurecraft:lucy.bjmoan"
+      ]
+    },
+    {
+      "key": "bjcMSG2",
+      "sounds": [
+        "pleasurecraft:lucy.bjmoan"
+      ]
+    },
+    {
+      "key": "bjcMSG3",
+      "sounds": [
+        "pleasurecraft:lucy.aftersessionmoan"
+      ]
+    },
+    {
+      "key": "bjcMSG4",
+      "sounds": [
+        "pleasurecraft:lucy.lightbreathing"
+      ]
+    },
+    {
+      "key": "bjcMSG5",
+      "sounds": [
+        "pleasurecraft:lucy.lightbreathing"
+      ]
+    },
+    {
+      "key": "bjcMSG6",
+      "sounds": [
+        "pleasurecraft:lucy.lightbreathing"
+      ]
+    },
+    {
+      "key": "doggyLayOnBedMSG1",
+      "sounds": [
+        "pleasurecraft:misc.bedrustle"
+      ]
+    },
+    {
+      "key": "doggyLayOnBedMSG2",
+      "sounds": [
+        "pleasurecraft:lucy.lightbreathing"
+      ],
+      "messages": [
+        "what are you waiting for?~"
+      ]
+    },
+    {
+      "key": "doggyLayOnBedMSG3",
+      "sounds": [
+        "pleasurecraft:lucy.giggle"
+      ],
+      "messages": [
+        "this ass ain't gonna fuck itself..."
+      ]
+    },
+    {
+      "key": "doggyLayOnBedMSG4",
+      "sounds": [
+        "pleasurecraft:misc.slap"
+      ]
+    },
+    {
+      "key": "doggyIntroMSG1",
+      "sounds": [
+        "pleasurecraft:misc.touch"
+      ]
+    },
+    {
+      "key": "doggyIntroMSG2",
+      "sounds": [
+        "pleasurecraft:misc.touch"
+      ]
+    },
+    {
+      "key": "doggyIntroMSG3",
+      "sounds": [
+        "pleasurecraft:misc.bedrustle"
+      ]
+    },
+    {
+      "key": "doggyIntroMSG4",
+      "sounds": [
+        "pleasurecraft:misc.smallinserts",
+        "pleasurecraft:lucy.mmm"
+      ]
+    },
+    {
+      "key": "doggyIntroMSG5",
+      "sounds": [
+        "pleasurecraft:misc.pounding",
+        "pleasurecraft:lucy.moan"
+      ]
+    },
+    {
+      "key": "doggySlowMSG1",
+      "sounds": [
+        "pleasurecraft:misc.pounding"
+      ],
+      "random_sounds": [
+        "pleasurecraft:lucy.moan",
+        "pleasurecraft:lucy.heavybreathing",
+        "pleasurecraft:lucy.mmm"
+      ]
+    },
+    {
+      "key": "doggySlowMSG2",
+      "sounds": [
+        "pleasurecraft:lucy.lightbreathing"
+      ]
+    },
+    {
+      "key": "doggyFastMSG1",
+      "sounds": [
+        "pleasurecraft:misc.pounding"
+      ],
+      "random_sounds": [
+        "pleasurecraft:lucy.moan",
+        "pleasurecraft:lucy.heavybreathing",
+        "pleasurecraft:lucy.ahh"
+      ]
+    },
+    {
+      "key": "doggyCumMSG1",
+      "sounds": [
+        "pleasurecraft:misc.pounding",
+        "pleasurecraft:misc.cuminflation",
+        "pleasurecraft:lucy.moan"
+      ]
+    },
+    {
+      "key": "doggyCumMSG2",
+      "sounds": [
+        "pleasurecraft:lucy.heavybreathing"
+      ]
+    },
+    {
+      "key": "doggyCumMSG3",
+      "sounds": [
+        "pleasurecraft:lucy.heavybreathing"
+      ]
+    },
+    {
+      "key": "doggyCumMSG4",
+      "sounds": [
+        "pleasurecraft:lucy.heavybreathing"
+      ]
+    },
+    {
+      "key": "doggyCumMSG5",
+      "sounds": [
+        "pleasurecraft:lucy.heavybreathing"
+      ]
+    }
+  ]
+}

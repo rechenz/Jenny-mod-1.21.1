@@ -252,6 +252,136 @@ public class DialogueDB {
     }
 
     // ================================================================
+    //  GALATH — Ethereal, ancient, speaks in fragments
+    // ================================================================
+    static {
+        put("galath_stranger_greeting",
+            "A mortal... touches the void.",
+            "You walk where few dare. Interesting.",
+            "The darkness here knows your name.");
+        put("galath_acquainted_greeting",
+            "You return. The void remembers.",
+            "Your energy signature is... familiar now.",
+            "The cosmos whispered you'd come today.");
+        put("galath_friendly_greeting",
+            "I watched a star die today. It was beautiful. Like you.",
+            "You resonate at a frequency I enjoy.",
+            "The void is less empty when you're near.");
+        put("galath_close_greeting",
+            "The stars align when you arrive. Literally.",
+            "I carved your name into an asteroid. Is that... weird?",
+            "Energy cannot be destroyed. Neither can what I feel for you.");
+        put("galath_intimate_greeting",
+            "In all the infinite cosmos... you are the only constant.",
+            "Let's watch the void together. It's less cold with you.",
+            "I would collapse a star for you. Perhaps two.");
+    }
+
+    // ================================================================
+    //  MANGLELIE — Corrupted, tragic, strangely hopeful
+    // ================================================================
+    static {
+        put("manglelie_stranger_greeting",
+            "You... can see me? Truly?",
+            "Most run away. You're still here.",
+            "This form... it's not what I chose.");
+        put("manglelie_acquainted_greeting",
+            "You came back. Even after seeing what I am.",
+            "The whispers say you're safe. They're usually wrong.",
+            "Nobody visits twice. You're... different.");
+        put("manglelie_friendly_greeting",
+            "The corruption sings when you're near. It sounds almost... peaceful.",
+            "I caught a memory today. A good one. It faded fast.",
+            "You make me remember what I used to be.");
+        put("manglelie_close_greeting",
+            "Some days I barely recognize myself. Then you show up.",
+            "I'd break every crystal in this realm for one more moment with you.",
+            "The others see corruption. You see... me.");
+        put("manglelie_intimate_greeting",
+            "If I shatter tomorrow... promise you'll remember who I was.",
+            "You're the first thing that's felt real in centuries.",
+            "Don't let me fade. Please.");
+    }
+
+    // ================================================================
+    //  LUCY — Caring, domestic, warm motherly energy
+    // ================================================================
+    static {
+        put("lucy_stranger_greeting",
+            "Oh! A visitor! Would you like some tea?",
+            "Welcome, welcome! Make yourself at home!",
+            "You look hungry. When was the last time you ate?");
+        put("lucy_acquainted_greeting",
+            "I was just baking cookies. Perfect timing!",
+            "You're back! Sit down, I'll get you something warm.",
+            "The garden's blooming today. Want to see?");
+        put("lucy_friendly_greeting",
+            "I made your favorite! How did I know? A mother always knows!",
+            "You look tired, dear. Rest a while.",
+            "Come help me in the kitchen. I'll teach you my secret recipe!");
+        put("lucy_close_greeting",
+            "I worry about you, you know. Out there all alone.",
+            "I packed you lunch! And dinner. And breakfast for tomorrow.",
+            "You're practically family now. So you better visit more!");
+        put("lucy_intimate_greeting",
+            "Home is wherever you are. The garden can wait.",
+            "I never thought I'd feel this way again. Thank you.",
+            "Let me take care of you. For once, let someone else do the work.");
+    }
+
+    // ================================================================
+    //  MIKA — Cheerful, lucky, sees fortune in everything
+    // ================================================================
+    static {
+        put("mika_stranger_greeting",
+            "The stars said I'd meet someone special today! ...Is it you?",
+            "Your fortune looks bright! Or maybe that's just your smile!",
+            "A four-leaf clover appeared where you're standing. That's a SIGN!");
+        put("mika_acquainted_greeting",
+            "The cards predicted your return! I didn't even look this time!",
+            "You're back! I saved you a lucky charm!",
+            "See? Told you we'd meet again. Fortune favors us!");
+        put("mika_friendly_greeting",
+            "Every day with you is like winning a jackpot!",
+            "I read your fortune: 'Someone adorable is about to arrive.' It came TRUE!",
+            "Let's flip a coin. Heads we adventure, tails we adventure anyway!");
+        put("mika_close_greeting",
+            "I don't need luck anymore. I have you.",
+            "You're the best thing that's ever happened to me. And I've found 72 four-leaf clovers!",
+            "I'd pick you over a winning lottery ticket. And I LOVE lottery tickets!");
+        put("mika_intimate_greeting",
+            "My lucky star isn't a star. It's you. Always has been.",
+            "You make probability irrelevant. With you, everything is 100%.",
+            "I don't read fortunes for us anymore. I want to make them myself.");
+    }
+
+    // ================================================================
+    //  MOMO — Scholarly, curious, bookworm energy
+    // ================================================================
+    static {
+        put("momo_stranger_greeting",
+            "Oh! A specimen! ...I mean, a visitor! Hello!",
+            "You look like someone who's read at least three books. I approve.",
+            "Welcome to my study! Don't touch the manuscripts. Some of them bite.");
+        put("momo_acquainted_greeting",
+            "Back for more knowledge? Or just my company? Either is acceptable.",
+            "I catalogued our last meeting! Chapter 2, page 47.",
+            "You're punctual! I like that in a research partner.");
+        put("momo_friendly_greeting",
+            "I found a book I think you'd love! I already highlighted the good parts.",
+            "Want to help me with an experiment? I promise nothing will explode. Probably.",
+            "You're more interesting than any textbook. And I've read a LOT of textbooks.");
+        put("momo_close_greeting",
+            "I've been researching the subject of 'missing you.' Findings: significant.",
+            "You're the only person who makes me close my books.",
+            "I wrote a paper about why you're wonderful. It's peer-reviewed. By me.");
+        put("momo_intimate_greeting",
+            "Some things can't be explained by science. You're one of them.",
+            "I'd burn my entire library for one more chapter with you.",
+            "You're not just in my research notes anymore. You're in everything.");
+    }
+
+    // ================================================================
     //  Gift reactions (by item)
     // ================================================================
     static {
@@ -269,6 +399,31 @@ public class DialogueDB {
         put("ellie_gift_like",    "Hmph. You DO have taste. I'll add this to my collection.");
         put("ellie_gift_neutral", "A present? For me? ... Well, I suppose I can't refuse.");
         put("ellie_gift_dislike", "Is this a joke? This is the opposite of thoughtful.");
+
+        put("galath_gift_love",    "A Dragon Scale... you dove into the deepest void for this. Magnificent.");
+        put("galath_gift_like",    "This offering resonates with my frequency. Acceptable.");
+        put("galath_gift_neutral", "A mortal trinket. I shall... catalogue it.");
+        put("galath_gift_dislike", "The void rejects this. As do I.");
+
+        put("manglelie_gift_love",   "A Memory Crystal... you want me to remember? Thank you... so much.");
+        put("manglelie_gift_like",   "This... this actually feels warm. How?");
+        put("manglelie_gift_neutral","Another trinket. I'll add it to the collection.");
+        put("manglelie_gift_dislike","The corruption makes this burn. Please... no more.");
+
+        put("lucy_gift_love",     "Oh my goodness! A Healing Charm! Now I can take even better care of you!");
+        put("lucy_gift_like",     "How thoughtful! I'll treasure this forever!");
+        put("lucy_gift_neutral",  "A gift for me? You really shouldn't have...");
+        put("lucy_gift_dislike",  "Oh dear, this isn't really my style. But thank you for thinking of me.");
+
+        put("mika_gift_love",     "A DIAMOND RING?! The fortune cookie was RIGHT! BEST DAY EVER!");
+        put("mika_gift_like",     "Lucky lucky lucky! This is going in my treasure chest!");
+        put("mika_gift_neutral",  "Every gift is a fortune come true!");
+        put("mika_gift_dislike",  "Even bad luck is still luck! I'll find a use for it!");
+
+        put("momo_gift_love",     "An Enchanted Quill?! The knowledge I can record with this... I could kiss you!");
+        put("momo_gift_like",     "Fascinating! I'll need to document this thoroughly.");
+        put("momo_gift_neutral",  "Hmm. Not particularly remarkable, but I shall study it nonetheless.");
+        put("momo_gift_dislike",  "This has zero research value. Zero!");
     }
 
     // ================================================================

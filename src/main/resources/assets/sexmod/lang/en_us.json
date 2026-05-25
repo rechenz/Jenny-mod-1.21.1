@@ -11,6 +11,11 @@
   "item.sexmod.goblin_spawn_egg": "Goblin Spawn Egg",
   "item.sexmod.kobold_spawn_egg": "Kobold Spawn Egg",
   "item.sexmod.cat_spawn_egg": "Cat Spawn Egg",
+  "item.sexmod.galath_spawn_egg": "Galath Spawn Egg",
+  "item.sexmod.manglelie_spawn_egg": "Manglelie Spawn Egg",
+  "item.sexmod.lucy_spawn_egg": "Lucy Spawn Egg",
+  "item.sexmod.mika_spawn_egg": "Mika Spawn Egg",
+  "item.sexmod.momo_spawn_egg": "Momo Spawn Egg",
   "item.sexmod.red_rose": "Red Rose",
   "item.sexmod.chocolate_box": "Chocolate Box",
   "item.sexmod.teddy_bear": "Teddy Bear",
@@ -38,6 +43,11 @@
   "entity.sexmod.goblin": "Goblin",
   "entity.sexmod.kobold": "Kobold",
   "entity.sexmod.cat": "Cat",
+  "entity.sexmod.galath": "Galath",
+  "entity.sexmod.manglelie": "Manglelie",
+  "entity.sexmod.lucy": "Lucy",
+  "entity.sexmod.mika": "Mika",
+  "entity.sexmod.momo": "Momo",
   "advancements.sexmod.root.title": "Sexmod",
   "advancements.sexmod.root.description": "A world full of companions",
   "advancements.sexmod.meet_first_girl.title": "First Encounter",
@@ -47,5 +57,5 @@
   "advancements.sexmod.affection_max.title": "Destined",
   "advancements.sexmod.affection_max.description": "Reach 100 affection with a girl",
   "advancements.sexmod.collect_all.title": "Harem King",
-  "advancements.sexmod.collect_all.description": "Collect all 9 girls"
+  "advancements.sexmod.collect_all.description": "Collect all 14 girls"
 }

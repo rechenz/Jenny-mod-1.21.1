@@ -1,0 +1,6 @@
+{
+  "parent": "pleasurecraft:block/building_tag",
+  "textures": {
+    "all" : "pleasurecraft:block/building_tag_house"
+  }
+}

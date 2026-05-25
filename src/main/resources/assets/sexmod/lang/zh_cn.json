@@ -9,6 +9,11 @@
   "item.sexmod.goblin_spawn_egg": "Goblin 刷怪蛋",
   "item.sexmod.kobold_spawn_egg": "Kobold 刷怪蛋",
   "item.sexmod.cat_spawn_egg": "Cat 刷怪蛋",
+  "item.sexmod.galath_spawn_egg": "Galath 刷怪蛋",
+  "item.sexmod.manglelie_spawn_egg": "Manglelie 刷怪蛋",
+  "item.sexmod.lucy_spawn_egg": "Lucy 刷怪蛋",
+  "item.sexmod.mika_spawn_egg": "Mika 刷怪蛋",
+  "item.sexmod.momo_spawn_egg": "Momo 刷怪蛋",
   "item.sexmod.red_rose": "红玫瑰",
   "item.sexmod.chocolate_box": "巧克力礼盒",
   "item.sexmod.teddy_bear": "泰迪熊",
@@ -37,6 +42,11 @@
   "entity.sexmod.goblin": "Goblin",
   "entity.sexmod.kobold": "Kobold",
   "entity.sexmod.cat": "Cat",
+  "entity.sexmod.galath": "Galath",
+  "entity.sexmod.manglelie": "Manglelie",
+  "entity.sexmod.lucy": "Lucy",
+  "entity.sexmod.mika": "Mika",
+  "entity.sexmod.momo": "Momo",
   "advancements.sexmod.root.title": "Sexmod",
   "advancements.sexmod.root.description": "一个充满伙伴的世界",
   "advancements.sexmod.meet_first_girl.title": "初次相遇",
@@ -46,5 +56,5 @@
   "advancements.sexmod.affection_max.title": "命中注定",
   "advancements.sexmod.affection_max.description": "与一个女孩的好感度达到 100",
   "advancements.sexmod.collect_all.title": "后宫之王",
-  "advancements.sexmod.collect_all.description": "集齐全部 9 个女孩"
+  "advancements.sexmod.collect_all.description": "集齐全部 14 个女孩"
 }
