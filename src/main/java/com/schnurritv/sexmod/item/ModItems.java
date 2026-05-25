@@ -53,13 +53,19 @@ public class ModItems {
     public static int getAffectionValue(String itemName) {
         return switch (itemName) {
             case "red_rose"         -> 5;
-            case "chocolate_box"    -> 8;
-            case "teddy_bear"       -> 10;
-            case "love_letter"      -> 15;
-            case "diamond_ring"     -> 25;
-            case "copper_gear", "enchanted_quill", "moonlight_lily",
-                 "ancient_coin", "golden_honeycomb", "silver_bell",
-                 "mystic_herb", "dragon_scale", "crystal_slime" -> 20;
+            case "chocolate_box"    -> 6;
+            case "teddy_bear"       -> 8;
+            case "love_letter"      -> 10;
+            case "diamond_ring"     -> 18;
+            case "copper_gear"      -> 5;
+            case "enchanted_quill"  -> 6;
+            case "moonlight_lily"   -> 5;
+            case "ancient_coin"     -> 8;
+            case "golden_honeycomb" -> 5;
+            case "silver_bell"      -> 6;
+            case "mystic_herb"      -> 5;
+            case "dragon_scale"     -> 10;
+            case "crystal_slime"    -> 5;
             case "summoning_whistle" -> 0;
             case "healing_charm"     -> 0;
             case "bond_bracelet"     -> 0;
