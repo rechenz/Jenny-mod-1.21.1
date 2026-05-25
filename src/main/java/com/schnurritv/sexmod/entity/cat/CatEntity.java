@@ -13,16 +13,12 @@ import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
-/**
- * Cat aka Luna — Ship-dwelling feline.
- * Loves fish, spawns near oceans, has unique sitting/touch animation set.
- */
 public class CatEntity extends BaseGirlEntity {
-    private final ShipSeekGoal shipSeekGoal;
+    // Initialized in registerGoals() because super()→Mob calls registerGoals() before our constructor body
+    private ShipSeekGoal shipSeekGoal;
 
     public CatEntity(EntityType<? extends PathfinderMob> type, Level level) {
         super(type, level);
-        this.shipSeekGoal = new ShipSeekGoal(this);
     }
 
     @Override public boolean needsHouse() { return false; }
@@ -34,11 +30,10 @@ public class CatEntity extends BaseGirlEntity {
 
     public ShipSeekGoal getShipSeekGoal() { return shipSeekGoal; }
 
-    // Cat uses "animation.cat.*" prefix (same as modelName) — OK
-
     @Override
     protected void registerGoals() {
-        // Cat: ship-seeking priority 1 (between float and follow)
+        // Must create shipSeekGoal HERE (not in constructor), because super() calls registerGoals() before our fields are set
+        this.shipSeekGoal = new ShipSeekGoal(this);
         this.goalSelector.addGoal(0, new FloatGoal(this));
         this.goalSelector.addGoal(1, shipSeekGoal);
         this.goalSelector.addGoal(2, new com.schnurritv.sexmod.entity.ai.SexModMoveToTargetGoal(this, 1.25D));
@@ -59,8 +54,8 @@ public class CatEntity extends BaseGirlEntity {
         String prefix = getAnimationPrefix();
         return switch (animation) {
             case MISSIONARY_START, MISSIONARY_SLOW   -> "animation." + prefix + ".sitting_slow";
-            case MISSIONARY_FAST                      -> "animation." + prefix + ".sitting_fast";
-            case MISSIONARY_CUM                       -> "animation." + prefix + ".sitting_cum";
+            case MISSIONARY_FAST                     -> "animation." + prefix + ".sitting_fast";
+            case MISSIONARY_CUM                      -> "animation." + prefix + ".sitting_cum";
             case BLOWJOBINTRO                        -> "animation." + prefix + ".touch_boobs_intro";
             case BLOWJOBSUCK                         -> "animation." + prefix + ".touch_boobs_slow";
             case BLOWJOBTHRUST                       -> "animation." + prefix + ".touch_boobs_fast";
@@ -79,13 +74,15 @@ public class CatEntity extends BaseGirlEntity {
     @Override
     public void addAdditionalSaveData(CompoundTag compound) {
         super.addAdditionalSaveData(compound);
-        compound.put("ShipSeekData", shipSeekGoal.saveToNBT());
+        if (shipSeekGoal != null) {
+            compound.put("ShipSeekData", shipSeekGoal.saveToNBT());
+        }
     }
 
     @Override
     public void readAdditionalSaveData(CompoundTag compound) {
         super.readAdditionalSaveData(compound);
-        if (compound.contains("ShipSeekData")) {
+        if (shipSeekGoal != null && compound.contains("ShipSeekData")) {
             shipSeekGoal.loadFromNBT(compound.getCompound("ShipSeekData"));
         }
     }

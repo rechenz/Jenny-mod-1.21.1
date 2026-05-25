@@ -15,6 +15,10 @@ public class SlimeEntity extends BaseGirlEntity {
     @Override public String getGeoFileName() { return "dressed"; }
     @Override public String getNudeGeoFileName() { return "nude"; }
 
+    @Override public boolean supportsScene(String name) { return false; }
+    @Override public boolean hasSingleUnifiedScene() { return true; }
+    @Override public String getUnifiedSceneStartLabel() { return "♥ Play"; }
+
     // Slime: blowjob* + doggy* (no missionary/paizuri)
     @Override
     public String getSceneAnimationPath(SexModAnimation animation) {
@@ -35,6 +39,34 @@ public class SlimeEntity extends BaseGirlEntity {
             case DOGGYCUM                        -> "animation." + p + ".doggycum";
             default -> "animation." + p + ".idle";
         };
+    }
+
+    @Override
+    public int getAnimationTickLength(SexModAnimation anim) {
+        return switch (anim) {
+            case BLOWJOBINTRO, MISSIONARY_START -> 196;
+            case BLOWJOBSUCK, MISSIONARY_SLOW  -> 46;
+            case BLOWJOBTHRUST, MISSIONARY_FAST -> 22;
+            case BLOWJOBCUM, MISSIONARY_CUM     -> 112;
+            case DOGGYSTART -> 196;
+            case DOGGYSLOW -> 46;
+            case DOGGYFAST -> 22;
+            case DOGGYCUM  -> 112;
+            default -> super.getAnimationTickLength(anim);
+        };
+    }
+
+    @Override
+    protected void handleAnimationSequencing() {
+        super.handleAnimationSequencing();
+        // After BLOWJOBCUM, auto-start missionary chain (cross-type chaining)
+        SexModAnimation current = getSexModAnimation();
+        if (current == SexModAnimation.BLOWJOBCUM) {
+            String followUp = this.entityData.get(ANIMATION_FOLLOW_UP);
+            if ("null".equals(followUp) || followUp.isEmpty()) {
+                this.entityData.set(ANIMATION_FOLLOW_UP, SexModAnimation.MISSIONARY_START.name());
+            }
+        }
     }
 
     private int buffCooldown = 0;

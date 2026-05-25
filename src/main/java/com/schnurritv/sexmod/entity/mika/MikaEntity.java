@@ -44,6 +44,28 @@ public class MikaEntity extends BaseGirlEntity {
         };
     }
 
+    @Override
+    public int getAnimationTickLength(SexModAnimation anim) {
+        return switch (anim) {
+            case MISSIONARY_START -> 65;
+            case MISSIONARY_SLOW  -> 58;
+            case MISSIONARY_FAST  -> 38;
+            case MISSIONARY_CUM   -> 289;
+            case BLOWJOBINTRO     -> 200;
+            case BLOWJOBSUCK      -> 60;
+            case BLOWJOBTHRUST    -> 40;
+            case BLOWJOBCUM       -> 240;
+            case PAIZURI_START    -> 200;
+            case PAIZURI_SLOW     -> 70;
+            case PAIZURI_FAST     -> 40;
+            case PAIZURI_CUM      -> 240;
+            case DOGGYSTART, DOGGYSLOW -> 50;
+            case DOGGYFAST        -> 30;
+            case DOGGYCUM         -> 140;
+            default -> super.getAnimationTickLength(anim);
+        };
+    }
+
     private int luckCooldown = 0;
     @Override public void tick() {
         super.tick();

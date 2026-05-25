@@ -6,6 +6,7 @@ import com.schnurritv.sexmod.entity.SexEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.BedBlock;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.Level;
@@ -38,11 +39,21 @@ public class SceneManager {
             rot = state.getValue(BedBlock.FACING).toYRot();
         }
         
+        // Girl on bed
         girl.teleportTo(x, y, z);
         girl.setYRot(rot);
-        player.teleportTo(x, y - 0.1, z);
-        player.setYRot(rot);
-        player.setXRot(15.0f);
+        girl.setYBodyRot(rot);
+        
+        // Player camera: offset backward from bed foot so camera isn't inside geometry
+        // Bed facing = the direction the FOOT faces toward. We want player "behind" the foot.
+        Direction bedFacing = Direction.fromYRot(rot);
+        // Offset player ~1 block behind foot + raise to eye height
+        double px = x - bedFacing.getStepX() * 1.2;
+        double py = y + 1.0; // eye height above bed
+        double pz = z - bedFacing.getStepZ() * 1.2;
+        player.teleportTo(px, py, pz);
+        player.setYRot(rot + 180); // face toward bed
+        player.setXRot(0f);
         
         girl.getEntityData().set(SexEntity.IS_LOCKED, true);
         girl.getEntityData().set(SexEntity.PARTNER_UUID, player.getUUID().toString());
