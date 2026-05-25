@@ -89,6 +89,11 @@ public class SceneActionPacket {
                                     "<" + girl.getGirlName() + "> There's no active quest. Ask me for one!"), false);
                             }
                         }
+                        case "ReturnItems" -> {
+                            if (girl instanceof com.schnurritv.sexmod.entity.goblin.GoblinEntity goblin) {
+                                goblin.returnStolenItems(player);
+                            }
+                        }
                     }
                 }
             }

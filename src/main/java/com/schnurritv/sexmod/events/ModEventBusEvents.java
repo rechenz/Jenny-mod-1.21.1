@@ -24,7 +24,7 @@ public class ModEventBusEvents {
         event.put(EntityRegistry.GOBLIN.get(), SexEntity.createAttributes().build());
         event.put(EntityRegistry.KOBOLD.get(), SexEntity.createAttributes().build());
         event.put(EntityRegistry.CAT.get(), SexEntity.createAttributes().build());
-        event.put(EntityRegistry.GALATH.get(), SexEntity.createAttributes().build());
+        event.put(EntityRegistry.GALATH.get(), com.schnurritv.sexmod.entity.galath.GalathEntity.createBossAttributes().build());
         event.put(EntityRegistry.MANGLELIE.get(), SexEntity.createAttributes().build());
         event.put(EntityRegistry.LUCY.get(), SexEntity.createAttributes().build());
         event.put(EntityRegistry.MIKA.get(), SexEntity.createAttributes().build());

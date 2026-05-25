@@ -1,9 +1,9 @@
-{
+﻿{
   "type": "forge:add_spawns",
-  "biomes": "#minecraft:is_ocean",
+  "biomes": "#minecraft:is_jungle",
   "spawners": {
-    "type": "sexmod:cat",
-    "weight": 15,
+    "type": "sexmod:momo",
+    "weight": 10,
     "minCount": 1,
     "maxCount": 1
   }

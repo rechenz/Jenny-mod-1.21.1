@@ -31,6 +31,12 @@ public class NetworkHandler {
                 .decoder(SceneActionPacket::decode)
                 .consumerMainThread(SceneActionPacket::handle)
                 .add();
+
+        INSTANCE.messageBuilder(GoblinActionPacket.class, NetworkDirection.PLAY_TO_SERVER)
+                .encoder(GoblinActionPacket::encode)
+                .decoder(GoblinActionPacket::decode)
+                .consumerMainThread(GoblinActionPacket::handle)
+                .add();
     }
 
     public static void broadcastAnimationSync(SexEntity entity, SexModAnimation animation) {
@@ -43,5 +49,9 @@ public class NetworkHandler {
 
     public static void sendSceneAction(int entityId, String action) {
         INSTANCE.send(new SceneActionPacket(entityId, action), net.minecraftforge.network.PacketDistributor.SERVER.noArg());
+    }
+
+    public static void sendGoblinAction(int entityId, String action) {
+        INSTANCE.send(new GoblinActionPacket(entityId, action), net.minecraftforge.network.PacketDistributor.SERVER.noArg());
     }
 }

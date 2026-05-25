@@ -1,36 +1,44 @@
 package com.schnurritv.sexmod.entity.cat;
+
 import com.schnurritv.sexmod.entity.BaseGirlEntity;
+import com.schnurritv.sexmod.entity.SexModAnimation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.PathfinderMob;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
 
+/**
+ * Cat aka Luna — Ship-dwelling feline.
+ * Loves fish, spawns near oceans, has unique sitting/touch animation set.
+ */
 public class CatEntity extends BaseGirlEntity {
     public CatEntity(EntityType<? extends PathfinderMob> type, Level level) { super(type, level); }
     @Override public String getGirlName() { return "cat"; }
 
-    // Cat: Grants invisibility when owner sneaks nearby
-    private int buffCooldown = 0;
+    @Override
+    public String getGeoFileName() { return "cat"; }
+    @Override public String getNudeGeoFileName() { return "cat"; }
+
+    // Cat uses "animation.cat.*" prefix (same as modelName) — OK
 
     @Override
-    public void tick() {
-        super.tick();
-        if (this.level().isClientSide) return;
-        if (this.getEntityData().get(IS_LOCKED)) return;
+    public String getSceneAnimationPath(SexModAnimation animation) {
+        String prefix = getAnimationPrefix();
+        return switch (animation) {
+            case MISSIONARY_START, MISSIONARY_SLOW   -> "animation." + prefix + ".sitting_slow";
+            case MISSIONARY_FAST                      -> "animation." + prefix + ".sitting_fast";
+            case MISSIONARY_CUM                       -> "animation." + prefix + ".sitting_cum";
+            case BLOWJOBINTRO                        -> "animation." + prefix + ".sitting_intro";
+            case BLOWJOBSUCK                         -> "animation." + prefix + ".touch_boobs_slow";
+            case BLOWJOBTHRUST                       -> "animation." + prefix + ".touch_boobs_fast";
+            case BLOWJOBCUM                          -> "animation." + prefix + ".touch_boobs_cum";
+            case PAIZURI_START, DOGGYSTART, DOGGYGOONBED, DOGGYWAIT ->
+                "animation." + prefix + ".idle";
+            default -> "animation." + prefix + ".idle";
+        };
+    }
 
-        if (buffCooldown > 0) { buffCooldown--; return; }
-        buffCooldown = 40;
-
-        String uuid = this.entityData.get(MASTER_UUID);
-        if (uuid.isEmpty()) return;
-        try {
-            Player owner = this.level().getPlayerByUUID(java.util.UUID.fromString(uuid));
-            if (owner != null && owner.isCrouching() && owner.distanceToSqr(this) < 64) {
-                owner.addEffect(new MobEffectInstance(MobEffects.INVISIBILITY, 60, 0, false, false));
-                this.addEffect(new MobEffectInstance(MobEffects.INVISIBILITY, 60, 0, false, false));
-            }
-        } catch (Exception e) {}
+    @Override
+    public String getIdleAnimationPath() {
+        return "animation.cat.idle2";
     }
 }

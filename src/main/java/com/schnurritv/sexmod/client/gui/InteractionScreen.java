@@ -99,6 +99,11 @@ public class InteractionScreen extends Screen {
             actions.add(new Action("📋 Ask for a quest", ActionType.QUEST_START, false));
         }
 
+        // Goblin: stolen items retrieval
+        if (girl instanceof com.schnurritv.sexmod.entity.goblin.GoblinEntity goblin && goblin.getStealCount() > 0) {
+            actions.add(new Action("💰 Return Stolen Items (" + goblin.getStealCount() + ")", ActionType.RETURN_ITEMS, false));
+        }
+
         // ---- Scenes ----
         int lowThreshold = com.schnurritv.sexmod.SexModConfig.AFFECTION_SCENE_THRESHOLD_LOW.get();
         int highThreshold = com.schnurritv.sexmod.SexModConfig.AFFECTION_SCENE_THRESHOLD_HIGH.get();
@@ -130,7 +135,7 @@ public class InteractionScreen extends Screen {
     private record Action(String label, ActionType type, boolean locked) {}
     private enum ActionType {
         FOLLOW, STAY, GIFT, SCENE_MISSIONARY, SCENE_DOGGY, SCENE_BLOWJOB, SCENE_BOOBJOB,
-        SCENE_STOP, SCENE_LOCKED, QUEST_START, QUEST_TURNIN, NONE
+        SCENE_STOP, SCENE_LOCKED, QUEST_START, QUEST_TURNIN, RETURN_ITEMS, NONE
     }
 
     @Override
@@ -307,6 +312,10 @@ public class InteractionScreen extends Screen {
             case QUEST_TURNIN -> {
                 // Try to turn in quest items
                 NetworkHandler.sendSceneAction(girl.getId(), "QuestTurnin");
+            }
+            case RETURN_ITEMS -> {
+                // Send to server to handle
+                NetworkHandler.sendSceneAction(girl.getId(), "ReturnItems");
             }
         }
     }

@@ -40,6 +40,10 @@ public class ModItems {
     public static final RegistryObject<Item> GUIDE_BOOK        = ITEMS.register("guide_book",
         () -> new GuideBookItem(new Item.Properties()));
 
+    // ── Boss Drops ──
+    public static final RegistryObject<Item> GALATH_COIN = ITEMS.register("galath_coin",
+        () -> new GalathCoinItem(new Item.Properties()));
+
     // ── Helper ──
     private static RegistryObject<Item> register(String name, String tooltip) {
         return ITEMS.register(name, () -> new GiftItem(new Item.Properties(), tooltip, getAffectionValue(name)));

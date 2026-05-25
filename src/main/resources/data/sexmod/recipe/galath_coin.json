@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [" G ","GNG"," G "],
+  "key": {
+    "N": { "item": "minecraft:nether_star" },
+    "G": { "item": "minecraft:gold_ingot" }
+  },
+  "result": { "id": "sexmod:galath_coin", "count": 1 }
+}

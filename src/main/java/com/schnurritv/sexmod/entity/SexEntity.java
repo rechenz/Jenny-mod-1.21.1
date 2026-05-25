@@ -214,26 +214,56 @@ public abstract class SexEntity extends PathfinderMob implements GeoEntity {
         return getGeoFileName();
     }
 
+    // ═══════════════════════════════════════════════════════════════
+    //  Animation path methods — override for character-specific naming
+    // ═══════════════════════════════════════════════════════════════
+
+    /** Animation file prefix. Default: modelName. Override for Lucy/Mika/Momo (→ "default"). */
+    public String getAnimationPrefix() {
+        return getModelName().toLowerCase();
+    }
+
+    /** Map SexModAnimation enum → character-specific animation name in JSON. */
+    public String getSceneAnimationPath(SexModAnimation animation) {
+        return "animation." + getAnimationPrefix() + "." + animation.name().toLowerCase();
+    }
+
+    /** Movement animation path. Handles FOLLOW→"walk" so follow mode plays walk anim. */
+    public String getMovementAnimationPath() {
+        String state = this.entityData.get(MOVEMENT_STATE);
+        String prefix = getAnimationPrefix();
+        // FOLLOW state means we're walking to follow — play walk animation
+        if ("FOLLOW".equals(state) || "STAY".equals(state)) {
+            return "animation." + prefix + ".walk";
+        }
+        return "animation." + prefix + "." + state.toLowerCase();
+    }
+
+    public String getIdleAnimationPath() {
+        return "animation." + getAnimationPrefix() + ".idle";
+    }
+
+    public String getBlinkAnimationPath() {
+        return "animation." + getAnimationPrefix() + ".blink";
+    }
+
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
         AnimationController<SexEntity> baseController = new AnimationController<>(this, "base", 5, state -> {
             SexModAnimation current = getSexModAnimation();
-            String model = getModelName().toLowerCase();
 
             // --- Scene Animation priority ---
             if (current != SexModAnimation.NULL) {
-                String animName = current.name().toLowerCase();
-                return state.setAndContinue(RawAnimation.begin().thenLoop("animation." + model + "." + animName));
+                return state.setAndContinue(RawAnimation.begin().thenLoop(getSceneAnimationPath(current)));
             }
 
             // --- Movement Animation ---
             if (state.isMoving()) {
-                String moveState = this.entityData.get(MOVEMENT_STATE);
-                return state.setAndContinue(RawAnimation.begin().thenLoop("animation." + model + "." + moveState.toLowerCase()));
+                return state.setAndContinue(RawAnimation.begin().thenLoop(getMovementAnimationPath()));
             }
 
             // --- Idle ---
-            return state.setAndContinue(RawAnimation.begin().thenLoop("animation." + model + ".idle"));
+            return state.setAndContinue(RawAnimation.begin().thenLoop(getIdleAnimationPath()));
         });
 
         // Sound keyframe handler: play sounds defined in animation JSON sound_effects
@@ -244,7 +274,7 @@ public abstract class SexEntity extends PathfinderMob implements GeoEntity {
             String instruction = data.getSound();
             if (instruction == null || instruction.isEmpty()) return;
 
-            onCustomInstruction(getModelName().toLowerCase(), instruction);
+            onCustomInstruction(getAnimationPrefix(), instruction);
         });
 
         controllers.add(baseController);
@@ -252,7 +282,7 @@ public abstract class SexEntity extends PathfinderMob implements GeoEntity {
         controllers.add(new AnimationController<>(this, "eyes", 0, state -> {
             SexModAnimation current = getSexModAnimation();
             if (current != null && current.autoBlink) {
-                return state.setAndContinue(RawAnimation.begin().thenLoop("animation." + getModelName().toLowerCase() + ".blink"));
+                return state.setAndContinue(RawAnimation.begin().thenLoop(getBlinkAnimationPath()));
             }
             return state.setAndContinue(RawAnimation.begin());
         }));

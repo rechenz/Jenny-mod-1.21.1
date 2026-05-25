@@ -1,5 +1,6 @@
 package com.schnurritv.sexmod.entity.bia;
 import com.schnurritv.sexmod.entity.BaseGirlEntity;
+import com.schnurritv.sexmod.entity.SexModAnimation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.player.Player;
@@ -13,10 +14,33 @@ public class BiaEntity extends BaseGirlEntity {
     @Override public String getGeoFileName() { return "biadressed"; }
     @Override public String getNudeGeoFileName() { return "bianude"; }
 
-    private int buffCooldown = 0;
-
+    // Bia: prone_doggy_* + anal_*
     @Override
-    public void tick() {
+    public String getSceneAnimationPath(SexModAnimation animation) {
+        String p = getAnimationPrefix();
+        return switch (animation) {
+            case MISSIONARY_START  -> "animation." + p + ".prone_doggy_intro";
+            case MISSIONARY_SLOW   -> "animation." + p + ".prone_doggy_soft";
+            case MISSIONARY_FAST   -> "animation." + p + ".prone_doggy_hard1";
+            case MISSIONARY_CUM    -> "animation." + p + ".prone_doggy_cum";
+            case BLOWJOBINTRO      -> "animation." + p + ".anal_start";
+            case BLOWJOBSUCK       -> "animation." + p + ".anal_slow";
+            case BLOWJOBTHRUST     -> "animation." + p + ".anal_fast";
+            case BLOWJOBCUM        -> "animation." + p + ".anal_cum";
+            case PAIZURI_START     -> "animation." + p + ".anal_prepare";
+            case PAIZURI_SLOW      -> "animation." + p + ".anal_slow";
+            case PAIZURI_FAST      -> "animation." + p + ".anal_fast";
+            case PAIZURI_CUM       -> "animation." + p + ".anal_cum";
+            case DOGGYSTART, DOGGYGOONBED, DOGGYWAIT -> "animation." + p + ".prone_doggy_insert";
+            case DOGGYSLOW         -> "animation." + p + ".prone_doggy_soft";
+            case DOGGYFAST         -> "animation." + p + ".prone_doggy_hard2";
+            case DOGGYCUM          -> "animation." + p + ".prone_doggy_cum";
+            default -> "animation." + p + ".idle";
+        };
+    }
+
+    private int buffCooldown = 0;
+    @Override public void tick() {
         super.tick();
         if (this.level().isClientSide) return;
         if (this.getEntityData().get(IS_LOCKED)) return;

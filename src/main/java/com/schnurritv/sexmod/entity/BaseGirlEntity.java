@@ -225,7 +225,11 @@ public abstract class BaseGirlEntity extends SexEntity {
             || stack.getItem() == Items.GOLD_INGOT || stack.getItem() == Items.EMERALD
             || stack.getItem() == Items.CAKE || stack.getItem() == Items.COOKIE
             || stack.getItem() == Items.POPPY || stack.getItem() == Items.DANDELION
-            || stack.getItem() == Items.ROSE_BUSH || stack.getItem() == Items.SUNFLOWER;
+            || stack.getItem() == Items.ROSE_BUSH || stack.getItem() == Items.SUNFLOWER
+            || stack.getItem() == Items.NETHER_STAR || stack.getItem() == Items.ECHO_SHARD
+            || stack.getItem() == Items.BOOK || stack.getItem() == Items.SLIME_BALL
+            || stack.getItem() == Items.COD || stack.getItem() == Items.SALMON
+            || stack.getItem() == Items.TROPICAL_FISH || stack.getItem() == Items.PUFFERFISH;
     }
 
     private InteractionResult handleGift(Player player, ItemStack held, InteractionHand hand) {
@@ -240,20 +244,30 @@ public abstract class BaseGirlEntity extends SexEntity {
         // Calculate affection gain
         int gain;
         if (held.getItem() instanceof GiftItem gift) {
-            // Check if it's her favorite
-            if (isFavoriteGift(held)) gain = gift.getAffectionValue() + 5;
+            // Check if it's her favorite: +10 bonus
+            if (isFavoriteGift(held)) gain = gift.getAffectionValue() + 10;
             else gain = gift.getAffectionValue();
         } else {
             // Vanilla gift fallback
-            gain = switch (held.getItem().toString()) {
-                case "diamond"  -> 20;
-                case "emerald"  -> 12;
-                case "gold_ingot" -> 8;
-                case "cake"     -> 6;
-                case "cookie"   -> 3;
-                case "poppy", "dandelion", "rose_bush", "sunflower" -> 4;
+            gain = switch (net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(held.getItem()).toString()) {
+                case "minecraft:diamond"  -> 20;
+                case "minecraft:emerald"  -> 12;
+                case "minecraft:gold_ingot" -> 8;
+                case "minecraft:nether_star" -> 30;
+                case "minecraft:echo_shard" -> 15;
+                case "minecraft:book" -> 10;
+                case "minecraft:slime_ball" -> 10;
+                case "minecraft:cod", "minecraft:salmon", "minecraft:tropical_fish", "minecraft:pufferfish" -> 8;
+                case "minecraft:cake"     -> 6;
+                case "minecraft:cookie"   -> 3;
+                case "minecraft:poppy", "minecraft:dandelion", "minecraft:rose_bush", "minecraft:sunflower" -> 4;
                 default         -> 2;
             };
+        }
+
+        // CAT: fish items give +50% extra affection
+        if ("cat".equals(getGirlName().toLowerCase()) && fishItem(held)) {
+            gain = (int)(gain * 1.5f);
         }
 
         // First gift bonus
@@ -289,19 +303,34 @@ public abstract class BaseGirlEntity extends SexEntity {
 
     private boolean isFavoriteGift(ItemStack stack) {
         String name = getGirlName().toLowerCase();
-        String itemName = stack.getItem().toString(); // "sexmod:copper_gear"
+        String itemName = net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(stack.getItem()).toString();
         return switch (name) {
-            case "jenny"  -> itemName.contains("copper_gear");
-            case "ellie"  -> itemName.contains("enchanted_quill");
-            case "allie"  -> itemName.contains("moonlight_lily");
-            case "bia"    -> itemName.contains("ancient_coin");
-            case "bee"    -> itemName.contains("golden_honeycomb");
-            case "cat"    -> itemName.contains("silver_bell");
-            case "goblin" -> itemName.contains("mystic_herb");
-            case "kobold" -> itemName.contains("dragon_scale");
-            case "slime"  -> itemName.contains("crystal_slime");
-            default       -> false;
+            case "jenny"     -> itemName.contains("copper_gear");
+            case "ellie"     -> itemName.contains("enchanted_quill");
+            case "allie"     -> itemName.contains("moonlight_lily");
+            case "bia"       -> itemName.contains("ancient_coin");
+            case "bee"       -> itemName.contains("golden_honeycomb");
+            case "cat"       -> fishItem(stack);
+            case "goblin"    -> itemName.contains("gold_ingot");
+            case "kobold"    -> itemName.contains("diamond");
+            case "slime"     -> itemName.contains("slime_ball");
+            case "galath"    -> itemName.contains("nether_star");
+            case "manglelie" -> itemName.contains("echo_shard");
+            case "lucy"      -> itemName.contains("cake");
+            case "mika"      -> itemName.contains("emerald");
+            case "momo"      -> itemName.contains("book");
+            default          -> false;
         };
+    }
+
+    private static boolean fishItem(ItemStack stack) {
+        net.minecraft.world.item.Item it = stack.getItem();
+        return it == net.minecraft.world.item.Items.COD
+            || it == net.minecraft.world.item.Items.SALMON
+            || it == net.minecraft.world.item.Items.TROPICAL_FISH
+            || it == net.minecraft.world.item.Items.PUFFERFISH
+            || it == net.minecraft.world.item.Items.COOKED_COD
+            || it == net.minecraft.world.item.Items.COOKED_SALMON;
     }
 
     // ── Scene unlocking ──

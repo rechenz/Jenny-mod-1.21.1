@@ -1,5 +1,6 @@
 package com.schnurritv.sexmod.entity.bee;
 import com.schnurritv.sexmod.entity.BaseGirlEntity;
+import com.schnurritv.sexmod.entity.SexModAnimation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.player.Player;
@@ -12,10 +13,25 @@ public class BeeEntity extends BaseGirlEntity {
     @Override public String getGirlName() { return "bee"; }
     @Override public String getNudeGeoFileName() { return "armored"; }
 
-    private int buffCooldown = 0;
-
+    // Bee: sex_* (single scene, all phases map to the same 4 states)
     @Override
-    public void tick() {
+    public String getSceneAnimationPath(SexModAnimation animation) {
+        String p = getAnimationPrefix();
+        return switch (animation) {
+            case MISSIONARY_START, BLOWJOBINTRO, PAIZURI_START, DOGGYSTART, DOGGYGOONBED, DOGGYWAIT
+                -> "animation." + p + ".sex_start";
+            case MISSIONARY_SLOW, BLOWJOBSUCK, PAIZURI_SLOW, DOGGYSLOW
+                -> "animation." + p + ".sex_slow";
+            case MISSIONARY_FAST, BLOWJOBTHRUST, PAIZURI_FAST, DOGGYFAST
+                -> "animation." + p + ".sex_fast";
+            case MISSIONARY_CUM, BLOWJOBCUM, PAIZURI_CUM, DOGGYCUM
+                -> "animation." + p + ".sex_cum";
+            default -> "animation." + p + ".idle";
+        };
+    }
+
+    private int buffCooldown = 0;
+    @Override public void tick() {
         super.tick();
         if (this.level().isClientSide) return;
         if (this.getEntityData().get(IS_LOCKED)) return;
