@@ -11,6 +11,8 @@ import net.minecraft.world.level.Level;
 public class JennyEntity extends BaseGirlEntity {
     public JennyEntity(EntityType<? extends PathfinderMob> type, Level level) { super(type, level); }
     @Override public String getGirlName() { return "jenny"; }
+    @Override public String getGeoFileName() { return "jennydressed"; }
+    @Override public String getNudeGeoFileName() { return "jennynude"; }
 
     @Override
     public String getSceneAnimationPath(SexModAnimation animation) {
