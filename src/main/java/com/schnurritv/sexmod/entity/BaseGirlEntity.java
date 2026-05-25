@@ -387,6 +387,17 @@ public abstract class BaseGirlEntity extends SexEntity {
     /** For single-scene chars: the unified scene starts with this animation */
     public String getUnifiedSceneStartLabel() { return ""; }
 
+    /** Whether this character needs a bed for missionary scene. Override in subclasses. */
+    public boolean requiresBedForMissionary() { return true; }
+    /** Whether this character needs a bed for doggy scene. Override in subclasses. */
+    public boolean requiresBedForDoggy() { return true; }
+
+    /** Which standard scene types to show in the interaction UI. Override per-character. */
+    public boolean showStandardMissionary() { return true; }
+    public boolean showStandardBlowjob() { return true; }
+    public boolean showStandardDoggy() { return true; }
+    public boolean showStandardBoobjob() { return true; }
+
     @Override
     public String getModelName() {
         return getGirlName();

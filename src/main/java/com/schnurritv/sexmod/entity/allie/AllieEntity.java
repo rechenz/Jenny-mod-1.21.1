@@ -11,6 +11,7 @@ import net.minecraft.world.effect.MobEffects;
 public class AllieEntity extends BaseGirlEntity {
     public AllieEntity(EntityType<? extends PathfinderMob> type, Level level) { super(type, level); }
     @Override public String getGirlName() { return "allie"; }
+    @Override public String getGeoFileName() { return "armored"; }
     @Override public String getNudeGeoFileName() { return "armored"; }
 
     // Allie: deepthroat_* + reverse_cowgirl_*

@@ -121,10 +121,10 @@ public class InteractionScreen extends Screen {
             }
         } else {
             // Standard multi-scene character
-            boolean hasMissionary = girl.supportsScene("Missionary");
-            boolean hasBlowjob = girl.supportsScene("Blowjob");
-            boolean hasDoggy = girl.supportsScene("Doggy");
-            boolean hasBoobjob = girl.supportsScene("Boobjob");
+            boolean hasMissionary = girl.showStandardMissionary();
+            boolean hasBlowjob = girl.showStandardBlowjob();
+            boolean hasDoggy = girl.showStandardDoggy();
+            boolean hasBoobjob = girl.showStandardBoobjob();
 
             if (hasMissionary || hasBlowjob) {
                 if (lowUnlocked) {

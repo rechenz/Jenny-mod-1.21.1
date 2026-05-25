@@ -54,10 +54,15 @@ public class SceneManager {
     public static void startMissionary(BaseGirlEntity girl, Player player) {
         if (girl.level().isClientSide) return;
 
-        BlockPos bedPos = getBedFoot(girl);
-        if (bedPos == null) {
-            player.displayClientMessage(Component.literal("This action requires a bed nearby!"), true);
-            return;
+        BlockPos bedPos;
+        if (girl.requiresBedForMissionary()) {
+            bedPos = getBedFoot(girl);
+            if (bedPos == null) {
+                player.displayClientMessage(Component.literal("This action requires a bed nearby!"), true);
+                return;
+            }
+        } else {
+            bedPos = girl.blockPosition();
         }
 
         preparePlayerForScene(girl, player, bedPos);
@@ -85,10 +90,15 @@ public class SceneManager {
     public static void startDoggy(BaseGirlEntity girl, Player player) {
         if (girl.level().isClientSide) return;
         
-        BlockPos bedPos = getBedFoot(girl);
-        if (bedPos == null) {
-            player.displayClientMessage(Component.literal("This action requires a bed nearby!"), true);
-            return;
+        BlockPos bedPos;
+        if (girl.requiresBedForDoggy()) {
+            bedPos = getBedFoot(girl);
+            if (bedPos == null) {
+                player.displayClientMessage(Component.literal("This action requires a bed nearby!"), true);
+                return;
+            }
+        } else {
+            bedPos = girl.blockPosition();
         }
 
         preparePlayerForScene(girl, player, bedPos);

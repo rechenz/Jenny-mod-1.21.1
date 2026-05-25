@@ -11,6 +11,7 @@ import net.minecraft.world.effect.MobEffects;
 public class KoboldEntity extends BaseGirlEntity {
     public KoboldEntity(EntityType<? extends PathfinderMob> type, Level level) { super(type, level); }
     @Override public String getGirlName() { return "kobold"; }
+    @Override public String getGeoFileName() { return "armored"; }
     @Override public String getNudeGeoFileName() { return "armored"; }
 
     // Kobold: blowjob* + mating_press* (capitalized suffixes)

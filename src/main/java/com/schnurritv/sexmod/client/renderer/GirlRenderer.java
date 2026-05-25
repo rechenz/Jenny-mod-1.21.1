@@ -182,7 +182,7 @@ public class GirlRenderer<T extends SexEntity> extends GeoEntityRenderer<T> {
                               name.equals("armorshoesr");
 
         if (isArmorBone) {
-            boolean showArmor = animatable.getEntityData().get(SexEntity.CLOTHING_STATE) > 0;
+            boolean showArmor = animatable.getEntityData().get(SexEntity.CLOTHING_STATE) == 0;
             bone.setHidden(!showArmor);
             // Don't return early — let children process normally
         }

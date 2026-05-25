@@ -18,13 +18,21 @@ import net.minecraft.network.chat.Component;
 public class GoblinEntity extends BaseGirlEntity {
     public GoblinEntity(EntityType<? extends PathfinderMob> type, Level level) { super(type, level); }
     @Override public String getGirlName() { return "goblin"; }
-    @Override public String getGeoFileName() { return "goblin"; }
+    @Override public String getGeoFileName() { return "armored"; }
     @Override public String getNudeGeoFileName() { return "armored"; }
 
     private int stealCooldown = 0;
     // Track how many times this goblin has been "caught" for loot retrieval
     private int stealCount = 0;
     public int getStealCount() { return stealCount; }
+
+    @Override public boolean requiresBedForMissionary() { return false; }
+    @Override public boolean requiresBedForDoggy() { return false; }
+
+    @Override public boolean showStandardMissionary() { return false; }
+    @Override public boolean showStandardDoggy() { return false; }
+    @Override public boolean showStandardBlowjob() { return true; }
+    @Override public boolean showStandardBoobjob() { return true; }
 
     // Goblin: breeding_*, nelson_*, paizuri_*, catch_*
     @Override

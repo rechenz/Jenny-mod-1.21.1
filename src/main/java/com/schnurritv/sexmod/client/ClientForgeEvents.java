@@ -149,7 +149,7 @@ public class ClientForgeEvents {
                 CameraOffset offset = getCameraOffset(girl.getSexModAnimation());
                 Vec3 forward = Vec3.directionFromRotation(0, girl.getYRot());
                 double camX = girlX - (forward.x * offset.z);
-                double camY = girlY + offset.y;
+                double camY = girlY + offset.y + player.getEyeHeight();
                 double camZ = girlZ - (forward.z * offset.z);
 
                 try {
