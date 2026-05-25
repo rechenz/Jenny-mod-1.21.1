@@ -271,20 +271,20 @@ public abstract class SexEntity extends PathfinderMob implements GeoEntity {
             case "bjiMSG1":  playSound(modelName, "giggle", 3); break;
             case "bjiMSG2":  playSound(modelName, "lightbreathing", 8); break;
             case "bjiMSG3":  playSound(modelName, "aftersessionmoan", 0); break;
-            case "bjiMSG4":  playSound(modelName, "giggle", rand.nextInt(5)); break; // belljingle not in jenny, fallback giggle
+            case "bjiMSG4":  playMiscSound("belljingle", 0); break;
             case "bjiMSG5":  playSound(modelName, "hmph", 1); break;
             case "bjiMSG6":
             case "bjiMSG7":
             case "bjiMSG8":
             case "bjiMSG9":  playSound(modelName, "giggle", rand.nextInt(5)); break;
-            case "bjiMSG10": break; // camera cue, no sound
+            case "bjiMSG10": break; // camera cue
             case "bjiMSG11":
             case "bjiMSG12": playSound(modelName, "lipsound", rand.nextInt(getVariantCount(modelName, "lipsound"))); break;
-            case "bjiDone":   break; // no sound
+            case "bjiDone":   break;
 
             // === BLOWJOB THRUST (bjt) ===
             case "bjtMSG1":   playSound(modelName, "mmm", rand.nextInt(Math.max(1, getVariantCount(modelName, "mmm"))));
-                               playSoundDelayed(modelName, "lipsound", rand.nextInt(Math.max(1, getVariantCount(modelName, "lipsound")))); break;
+                               playCoSound(modelName, "lipsound", rand.nextInt(Math.max(1, getVariantCount(modelName, "lipsound")))); break;
             case "bjtReady":
             case "bjtDone":   break;
 
@@ -296,7 +296,7 @@ public abstract class SexEntity extends PathfinderMob implements GeoEntity {
             case "bjcMSG5":
             case "bjcMSG6":
             case "bjcMSG7":   playSound(modelName, "lightbreathing", rand.nextInt(12)); break;
-            case "bjcBlackScreen": break; // visual cue
+            case "bjcBlackScreen": break;
             case "bjcDone":    break;
 
             // === DOGGY START ===
@@ -308,7 +308,8 @@ public abstract class SexEntity extends PathfinderMob implements GeoEntity {
             case "doggystartDone": break;
 
             // === DOGGY GO ON BED ===
-            case "doggyGoOnBedMSG1": playSound(modelName, "bjmoan", rand.nextInt(Math.max(1, getVariantCount(modelName, "bjmoan")))); break; // plob not in jenny, fallback
+            case "doggyGoOnBedMSG1": playMiscSound("plob", 0);
+                                       playCoSound(modelName, "bjmoan", rand.nextInt(Math.max(1, getVariantCount(modelName, "bjmoan")))); break;
             case "doggyGoOnBedMSG2":
             case "doggyGoOnBedMSG3":
             case "doggyGoOnBedMSG4": break;
@@ -318,15 +319,16 @@ public abstract class SexEntity extends PathfinderMob implements GeoEntity {
             case "doggyMSG1":  playSound(modelName, "giggle", rand.nextInt(5)); break;
             case "doggyslowMSG1":
             case "doggyslowMSG2": playSound(modelName, "moan", rand.nextInt(8));
-                                  playSoundDelayed(modelName, "heavybreathing", rand.nextInt(8)); break;
+                                  playCoSound(modelName, "heavybreathing", rand.nextInt(8)); break;
             case "doggyfastMSG1": playSound(modelName, "moan", rand.nextInt(8));
-                                  playSoundDelayed(modelName, "heavybreathing", rand.nextInt(8)); break;
+                                  playCoSound(modelName, "heavybreathing", rand.nextInt(8)); break;
             case "doggyfastReady":
             case "doggyfastDone":  break;
 
             // === DOGGY CUM ===
-            case "doggycumMSG1": playSound(modelName, "moan", rand.nextInt(8));          // pounding not in jenny
-                                 playSoundDelayed(modelName, "heavybreathing", rand.nextInt(8)); break;
+            case "doggycumMSG1": playMiscSound("pounding", rand.nextInt(36));
+                                 playSound(modelName, "moan", rand.nextInt(8));
+                                 playCoSound(modelName, "heavybreathing", rand.nextInt(8)); break;
             case "doggycumMSG2":
             case "doggycumMSG3":
             case "doggycumMSG4":
@@ -345,7 +347,7 @@ public abstract class SexEntity extends PathfinderMob implements GeoEntity {
             case "paizuri_fastDone": break;
 
             // === PAIZURI CUM ===
-            case "paizuri_cumStart": break; // visual/transition cue
+            case "paizuri_cumStart": break;
             case "paizuri_cumDone":  break;
 
             // === STRIP ===
@@ -376,15 +378,15 @@ public abstract class SexEntity extends PathfinderMob implements GeoEntity {
             // === IDLE / AMBIENT ===
             case "idle":         playSound(modelName, "giggle", rand.nextInt(5)); break;
 
-            // === MISC / UI ===
+            // === MISC / UI / SFX ===
+            case "bedRustle":    playMiscSound("bedrustle", rand.nextInt(2)); break;
+            case "attackSound":  playMiscSound("slap", rand.nextInt(2)); break;
+            case "attackDone":
             case "openSexUi":
             case "sexUiOn":
-            case "bedRustle":
             case "cowgirlcumMSG6":
             case "boobjob_camera":
-            case "pearl":
-            case "attackSound":
-            case "attackDone":    break; // UI/visual/meta cues, no vocal sound
+            case "pearl":    break; // UI/visual/meta cues, no vocal sound
 
             default:
                 // Unknown instruction — try as a generic category name
@@ -408,8 +410,8 @@ public abstract class SexEntity extends PathfinderMob implements GeoEntity {
                 ev, net.minecraft.sounds.SoundSource.VOICE, 1.0f, 1.0f, false);
     }
 
-    /** Schedule a sound after a short delay (for multi-sound instructions like bjtMSG1) */
-    private void playSoundDelayed(String modelName, String category, int variant) {
+    /** Play a co-sound (layered, slightly lower volume) for multi-sound instructions */
+    private void playCoSound(String modelName, String category, int variant) {
         if (!this.level().isClientSide) return;
         int count = getVariantCount(modelName, category);
         if (count <= 0) return;
@@ -417,9 +419,18 @@ public abstract class SexEntity extends PathfinderMob implements GeoEntity {
         String soundPath = "girls." + modelName + "." + category + "." + category + safeVariant;
         net.minecraft.resources.ResourceLocation loc = net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("sexmod", soundPath);
         net.minecraft.sounds.SoundEvent ev = net.minecraft.sounds.SoundEvent.createVariableRangeEvent(loc);
-        // Play immediately since we can't easily schedule on client — the sounds overlay naturally
         this.level().playLocalSound(this.getX(), this.getY(), this.getZ(),
                 ev, net.minecraft.sounds.SoundSource.VOICE, 0.8f, 1.0f, false);
+    }
+
+    /** Play a misc sound (global SFX: plob, belljingle, pounding, bedrustle, slap, etc.) */
+    private void playMiscSound(String category, int variant) {
+        if (!this.level().isClientSide) return;
+        String soundPath = "misc." + category + "." + category + variant;
+        net.minecraft.resources.ResourceLocation loc = net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("sexmod", soundPath);
+        net.minecraft.sounds.SoundEvent ev = net.minecraft.sounds.SoundEvent.createVariableRangeEvent(loc);
+        this.level().playLocalSound(this.getX(), this.getY(), this.getZ(),
+                ev, net.minecraft.sounds.SoundSource.VOICE, 1.0f, 1.0f, false);
     }
 
     /** Get number of sound variants for a model+category combination */
