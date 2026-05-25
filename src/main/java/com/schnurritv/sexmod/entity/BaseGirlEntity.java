@@ -33,6 +33,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import com.schnurritv.sexmod.client.gui.InteractionScreen;
 import com.schnurritv.sexmod.entity.ai.SexModFollowGoal;
+import com.schnurritv.sexmod.worldgen.GirlHouseGenerator;
+import net.minecraft.core.BlockPos;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -96,6 +98,12 @@ public abstract class BaseGirlEntity extends SexEntity {
         compound.put("Inventory", inventory.serializeNBT(this.registryAccess()));
         compound.put("AffectionData", affectionData.toNBT());
         compound.put("QuestData", questManager.toNBT());
+        compound.putBoolean("HasHouse", hasHouse);
+        if (housePos != null) {
+            compound.putInt("HouseX", housePos.getX());
+            compound.putInt("HouseY", housePos.getY());
+            compound.putInt("HouseZ", housePos.getZ());
+        }
     }
 
     @Override
@@ -110,6 +118,10 @@ public abstract class BaseGirlEntity extends SexEntity {
         }
         if (compound.contains("QuestData")) {
             questManager.fromNBT(compound.getCompound("QuestData"));
+        }
+        hasHouse = compound.getBoolean("HasHouse");
+        if (compound.contains("HouseX")) {
+            housePos = new BlockPos(compound.getInt("HouseX"), compound.getInt("HouseY"), compound.getInt("HouseZ"));
         }
     }
 
@@ -403,11 +415,29 @@ public abstract class BaseGirlEntity extends SexEntity {
         return getGirlName();
     }
 
-    // ── Tick: apply affection decay + jealousy ──
+    private boolean hasHouse = false;
+    @Nullable private BlockPos housePos = null;
+
+    /**
+     * Whether this character gets a house on first spawn.
+     * Human characters return true; monsters/creatures return false.
+     */
+    public boolean needsHouse() {
+        return true; // default for humans
+    }
+
+    // ── Tick: apply affection decay + jealousy + first-spawn house ──
     @Override
     public void tick() {
         super.tick();
         if (!this.level().isClientSide) {
+            // First-spawn house generation
+            if (needsHouse() && !hasHouse) {
+                hasHouse = true;
+                housePos = this.blockPosition();
+                GirlHouseGenerator.generateCottage(this.level(), housePos);
+            }
+
             long currentDay = this.level().getDayTime() / 24000;
             affectionData.applyDecay(currentDay, SexModConfig.AFFECTION_DECAY_PER_DAY.get());
 

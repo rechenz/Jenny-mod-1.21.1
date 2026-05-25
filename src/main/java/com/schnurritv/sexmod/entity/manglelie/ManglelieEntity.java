@@ -18,6 +18,7 @@ public class ManglelieEntity extends BaseGirlEntity {
     private int bondParticleCooldown = 0;
 
     public ManglelieEntity(EntityType<? extends PathfinderMob> type, Level level) { super(type, level); }
+    @Override public boolean needsHouse() { return false; }
     @Override public String getGirlName() { return "manglelie"; }
     @Override public String getGeoFileName() { return "manglelie"; }
     @Override public String getNudeGeoFileName() { return "manglelie"; }

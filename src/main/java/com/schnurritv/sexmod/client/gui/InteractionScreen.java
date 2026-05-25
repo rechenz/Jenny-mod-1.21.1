@@ -92,9 +92,23 @@ public class InteractionScreen extends Screen {
         boolean hasQuest = girl.getQuestManager().hasActiveQuest();
         QuestManager.Quest q = girl.getQuestManager().getActiveQuest();
         if (hasQuest && q != null) {
-            actions.add(new Action("📋 Quest: " + q.description() + " (" + 
-                         girl.getQuestManager().getProgress() + "/" + q.targetCount() + ")",
-                         ActionType.QUEST_TURNIN, false));
+            String questLabel;
+            QuestManager gm = girl.getQuestManager();
+            switch (q.type()) {
+                case KILL:
+                    questLabel = "📋 Quest: @KILL@ " + q.description() + " (" + gm.getProgress() + "/" + q.targetCount() + ")";
+                    break;
+                case ESCORT:
+                    questLabel = "📋 Quest: @ESCORT@ " + q.description();
+                    break;
+                case DEFEND:
+                    questLabel = "📋 Quest: @DEFEND@ " + q.description();
+                    break;
+                default:
+                    questLabel = "📋 Quest: " + q.description() + " (" + gm.getProgress() + "/" + q.targetCount() + ")";
+                    break;
+            }
+            actions.add(new Action(questLabel, ActionType.QUEST_TURNIN, false));
         } else {
             actions.add(new Action("📋 Ask for a quest", ActionType.QUEST_START, false));
         }

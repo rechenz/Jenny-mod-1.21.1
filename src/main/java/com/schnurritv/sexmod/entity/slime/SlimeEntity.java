@@ -10,6 +10,7 @@ import net.minecraft.world.effect.MobEffects;
 
 public class SlimeEntity extends BaseGirlEntity {
     public SlimeEntity(EntityType<? extends PathfinderMob> type, Level level) { super(type, level); }
+    @Override public boolean needsHouse() { return false; }
     @Override public String getGirlName() { return "slime"; }
     @Override public String getGeoFileName() { return "dressed"; }
     @Override public String getNudeGeoFileName() { return "nude"; }

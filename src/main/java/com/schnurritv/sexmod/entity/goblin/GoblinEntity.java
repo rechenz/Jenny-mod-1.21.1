@@ -17,6 +17,7 @@ import net.minecraft.network.chat.Component;
  */
 public class GoblinEntity extends BaseGirlEntity {
     public GoblinEntity(EntityType<? extends PathfinderMob> type, Level level) { super(type, level); }
+    @Override public boolean needsHouse() { return false; }
     @Override public String getGirlName() { return "goblin"; }
     @Override public String getGeoFileName() { return "armored"; }
     @Override public String getNudeGeoFileName() { return "armored"; }

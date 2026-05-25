@@ -25,6 +25,7 @@ public class CatEntity extends BaseGirlEntity {
         this.shipSeekGoal = new ShipSeekGoal(this);
     }
 
+    @Override public boolean needsHouse() { return false; }
     @Override public String getGirlName() { return "cat"; }
 
     @Override

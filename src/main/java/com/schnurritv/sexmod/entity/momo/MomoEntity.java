@@ -9,6 +9,7 @@ import net.minecraft.world.level.Level;
 
 public class MomoEntity extends BaseGirlEntity {
     public MomoEntity(EntityType<? extends PathfinderMob> type, Level level) { super(type, level); }
+    @Override public boolean needsHouse() { return false; }
     @Override public String getGirlName() { return "momo"; }
     @Override public String getGeoFileName() { return "dressed"; }
     @Override public String getNudeGeoFileName() { return "nude"; }

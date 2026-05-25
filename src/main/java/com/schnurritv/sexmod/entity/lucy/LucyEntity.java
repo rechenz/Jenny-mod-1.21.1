@@ -10,6 +10,7 @@ import net.minecraft.world.effect.MobEffects;
 
 public class LucyEntity extends BaseGirlEntity {
     public LucyEntity(EntityType<? extends PathfinderMob> type, Level level) { super(type, level); }
+    @Override public boolean needsHouse() { return false; }
     @Override public String getGirlName() { return "lucy"; }
     @Override public String getGeoFileName() { return "dressed"; }
     @Override public String getNudeGeoFileName() { return "nude"; }

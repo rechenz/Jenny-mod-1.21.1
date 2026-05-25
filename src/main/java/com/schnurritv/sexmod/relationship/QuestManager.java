@@ -7,13 +7,21 @@ import java.util.*;
 
 /**
  * Per-character quest system with differentiated quest types for each character.
+ * Supports FETCH, KILL, ESCORT, and DEFEND quest types.
  */
 public class QuestManager {
 
-    public enum QuestType { FETCH, GIFT_COUNT, VISIT_LOCATION }
+    public enum QuestType { FETCH, KILL, ESCORT, DEFEND }
 
     public record Quest(String id, QuestType type, String description, String targetItem,
-                        int targetCount, int rewardAffection, String rewardItem, String girlName) {}
+                        int targetCount, int rewardAffection, String rewardItem, String girlName,
+                        String targetMob, String escortDestination, int defendWaveCount) {
+        // Canonical constructor for FETCH quests (backward compat)
+        public Quest(String id, QuestType type, String description, String targetItem,
+                     int targetCount, int rewardAffection, String rewardItem, String girlName) {
+            this(id, type, description, targetItem, targetCount, rewardAffection, rewardItem, girlName, "", "", 0);
+        }
+    }
 
     private static final Map<String, List<Quest>> QUESTS_BY_GIRL = new HashMap<>();
     private static final Random RAND = new Random();
@@ -22,8 +30,15 @@ public class QuestManager {
     private String activeQuestId = "";
     private int questProgress = 0;
     private final Set<String> completedQuests = new HashSet<>();
+    private int defendWave = 0;
+    private int defendWaveMobs = 0;
+    private int mobKillCount = 0;
 
     static {
+        // ================================================================
+        // FETCH QUESTS
+        // ================================================================
+
         // ================================================================
         // JENNY: "Gamer Challenge" — fetch rare tech items
         // ================================================================
@@ -214,6 +229,78 @@ public class QuestManager {
         register("momo", new Quest("momo_feather", QuestType.FETCH,
             "Research Materials: I need 2 Feathers. For the quill, obviously.",
             "minecraft:feather", 2, 20, "", "momo"));
+
+        // ================================================================
+        // KILL QUESTS — "Eliminate mobs for the character"
+        // ================================================================
+
+        // Jenny: kill 5 zombies
+        register("jenny", new Quest("jenny_kill_zombie", QuestType.KILL,
+            "Gamer Challenge: Take out 5 Zombies! They're lagging my neighborhood!",
+            "minecraft:zombie", 5, 35, "", "jenny", "ZOMBIE", "", 0));
+
+        // Ellie: kill 8 skeletons
+        register("ellie", new Quest("ellie_kill_skeleton", QuestType.KILL,
+            "Enchantment Hunt: Destroy 8 Skeletons! Their bones have no soul and they lack grace!",
+            "minecraft:skeleton", 8, 40, "sexmod:enchanted_quill", "ellie", "SKELETON", "", 0));
+
+        // Allie: kill 6 spiders
+        register("allie", new Quest("allie_kill_spider", QuestType.KILL,
+            "Herb Gathering: Eliminate 6 Spiders! Their webs are contaminating my herb garden!",
+            "minecraft:spider", 6, 35, "sexmod:moonlight_lily", "allie", "SPIDER", "", 0));
+
+        // Bia: kill 3 endermen
+        register("bia", new Quest("bia_kill_enderman", QuestType.KILL,
+            "Relic Hunt: Vanquish 3 Endermen! Their presence disrupts the ancient energy.",
+            "minecraft:enderman", 3, 50, "sexmod:ancient_coin", "bia", "ENDERMAN", "", 0));
+
+        // Goblin: kill 10 zombies (cave territory)
+        register("goblin", new Quest("goblin_kill_zombie", QuestType.KILL,
+            "Treasure Snatch: Smash 10 Zombies! This cave is MY territory!",
+            "minecraft:zombie", 10, 35, "", "goblin", "ZOMBIE", "", 0));
+
+        // Galath: kill 5 wither skeletons (nether quest)
+        register("galath", new Quest("galath_kill_wither", QuestType.KILL,
+            "Void Offering: Destroy 5 Wither Skeletons! Their dark essence fuels my power.",
+            "minecraft:wither_skeleton", 5, 50, "sexmod:galath_coin", "galath", "WITHER_SKELETON", "", 0));
+
+        // ================================================================
+        // ESCORT QUESTS — "Take me to a special location"
+        // ================================================================
+
+        // Cat: escort to ocean
+        register("cat", new Quest("cat_escort_ocean", QuestType.ESCORT,
+            "Fish Feast: Take me to the ocean shore! I want to feel the sea breeze!",
+            "", 1, 40, "sexmod:silver_bell", "cat", "", "BEACH", 0));
+
+        // Kobold: escort to deep cave
+        register("kobold", new Quest("kobold_escort_cave", QuestType.ESCORT,
+            "Shiny Collection: Guide me to a deeper cave (Y<30)! There's better treasure down there!",
+            "", 1, 40, "sexmod:diamond_ring", "kobold", "", "DEEP_CAVE", 0));
+
+        // Bee: escort to flower forest
+        register("bee", new Quest("bee_escort_flowers", QuestType.ESCORT,
+            "Pollen Run: I heard there's a Flower Forest nearby! Take me there — imagine the pollen!",
+            "", 1, 35, "sexmod:golden_honeycomb", "bee", "", "FLOWER_FOREST", 0));
+
+        // ================================================================
+        // DEFEND QUESTS — "Protect me from waves of mobs"
+        // ================================================================
+
+        // Ellie: defend 3 waves
+        register("ellie", new Quest("ellie_defend", QuestType.DEFEND,
+            "Mommy's Emergency: Monsters attack in 3 waves! Protect me, darling!",
+            "", 3, 60, "sexmod:dragon_scale", "ellie", "", "", 3));
+
+        // Bia: defend 3 waves
+        register("bia", new Quest("bia_defend", QuestType.DEFEND,
+            "Ancient Ritual: They sense my power and will come in 3 waves! Defend the ritual site!",
+            "", 3, 60, "sexmod:memory_crystal", "bia", "", "", 3));
+
+        // Galath: defend 5 waves
+        register("galath", new Quest("galath_defend", QuestType.DEFEND,
+            "Void Siege: The void sends its minions in 5 waves! Prove yourself, mortal!",
+            "", 5, 80, "sexmod:galath_coin", "galath", "", "", 5));
     }
 
     private static void register(String girl, Quest quest) {
@@ -233,6 +320,9 @@ public class QuestManager {
     public void startQuest(Quest quest) {
         this.activeQuestId = quest.id();
         this.questProgress = 0;
+        this.defendWave = 0;
+        this.defendWaveMobs = 0;
+        this.mobKillCount = 0;
     }
 
     public Quest getActiveQuest() {
@@ -253,18 +343,92 @@ public class QuestManager {
         return q != null ? q.targetCount() : 0;
     }
 
-    /** Add progress, returns true if quest completed */
-    public boolean addProgress(String itemName, int amount) {
+    /** Add progress, returns true if quest completed.
+     *  For FETCH: itemName is the item registry name.
+     *  For KILL: itemName is the mob type name (ENTITY_TYPE registry name). */
+    public boolean addProgress(String itemOrMobName, int amount) {
         Quest q = getActiveQuest();
-        if (q == null || q.type() != QuestType.FETCH) return false;
-        if (itemName.equals(q.targetItem())) {
-            questProgress += amount;
-            if (questProgress >= q.targetCount()) {
-                completeQuest();
-                return true;
+        if (q == null) return false;
+
+        switch (q.type()) {
+            case FETCH -> {
+                if (itemOrMobName.equals(q.targetItem())) {
+                    questProgress += amount;
+                    if (questProgress >= q.targetCount()) {
+                        completeQuest();
+                        return true;
+                    }
+                }
+            }
+            case KILL -> {
+                // itemOrMobName is the entity type registry string like "minecraft:zombie"
+                // q.targetMob() is the simple name like "ZOMBIE"
+                if (itemOrMobName.endsWith(q.targetMob())) {
+                    questProgress += amount;
+                    if (questProgress >= q.targetCount()) {
+                        completeQuest();
+                        return true;
+                    }
+                }
             }
         }
         return false;
+    }
+
+    /** Check if the player has reached the escort destination. Returns true if quest completed. */
+    public boolean checkEscortDestination(String playerBiome, int playerY) {
+        Quest q = getActiveQuest();
+        if (q == null || q.type() != QuestType.ESCORT) return false;
+
+        String dest = q.escortDestination();
+        boolean arrived = switch (dest) {
+            case "BEACH" -> playerBiome != null && (playerBiome.toLowerCase().contains("beach") || playerBiome.toLowerCase().contains("ocean"));
+            case "DEEP_CAVE" -> playerY < 30;
+            case "FLOWER_FOREST" -> playerBiome != null && playerBiome.toLowerCase().contains("flower_forest");
+            default -> false;
+        };
+
+        if (arrived) {
+            completeQuest();
+            return true;
+        }
+        return false;
+    }
+
+    /** Start a defense wave. Returns the mob type to spawn, or null if all waves done. */
+    public String startDefendWave() {
+        Quest q = getActiveQuest();
+        if (q == null || q.type() != QuestType.DEFEND) return null;
+        defendWave++;
+        if (defendWave > q.defendWaveCount()) {
+            completeQuest();
+            return null;
+        }
+        defendWaveMobs = 3 + defendWave; // wave 1: 4 mobs, wave 2: 5, wave 3: 6...
+        mobKillCount = 0;
+        String[] mobs = {"ZOMBIE", "SKELETON", "SPIDER"};
+        return mobs[defendWave % 3];
+    }
+
+    /** Record a mob kill during defense. Returns true if wave complete. */
+    public boolean onDefendKill() {
+        Quest q = getActiveQuest();
+        if (q == null || q.type() != QuestType.DEFEND) return false;
+        mobKillCount++;
+        return mobKillCount >= defendWaveMobs;
+    }
+
+    /** Get current defense wave number (0 if not in defense). */
+    public int getDefendWave() { return defendWave; }
+    /** Get total defense wave count for current quest. */
+    public int getDefendWaveCount() {
+        Quest q = getActiveQuest();
+        return q != null ? q.defendWaveCount() : 0;
+    }
+
+    /** Get mobs remaining in current defense wave. */
+    public int getDefendMobsRemaining() {
+        return Math.max(0, defendWaveMobs - mobKillCount);
     }
 
     private void completeQuest() {
@@ -274,6 +438,9 @@ public class QuestManager {
         }
         activeQuestId = "";
         questProgress = 0;
+        defendWave = 0;
+        defendWaveMobs = 0;
+        mobKillCount = 0;
     }
 
     /** Get affection reward for completing current quest */
@@ -293,6 +460,9 @@ public class QuestManager {
         CompoundTag tag = new CompoundTag();
         tag.putString("ActiveQuestId", activeQuestId);
         tag.putInt("QuestProgress", questProgress);
+        tag.putInt("DefendWave", defendWave);
+        tag.putInt("DefendWaveMobs", defendWaveMobs);
+        tag.putInt("MobKillCount", mobKillCount);
         ListTag completed = new ListTag();
         for (String id : completedQuests) completed.add(StringTag.valueOf(id));
         tag.put("CompletedQuests", completed);
@@ -302,6 +472,9 @@ public class QuestManager {
     public void fromNBT(CompoundTag tag) {
         activeQuestId = tag.getString("ActiveQuestId");
         questProgress = tag.getInt("QuestProgress");
+        if (tag.contains("DefendWave")) defendWave = tag.getInt("DefendWave");
+        if (tag.contains("DefendWaveMobs")) defendWaveMobs = tag.getInt("DefendWaveMobs");
+        if (tag.contains("MobKillCount")) mobKillCount = tag.getInt("MobKillCount");
         completedQuests.clear();
         ListTag list = tag.getList("CompletedQuests", 8);
         for (int i = 0; i < list.size(); i++) {

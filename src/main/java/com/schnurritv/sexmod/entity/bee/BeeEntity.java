@@ -10,6 +10,7 @@ import net.minecraft.world.effect.MobEffects;
 
 public class BeeEntity extends BaseGirlEntity {
     public BeeEntity(EntityType<? extends PathfinderMob> type, Level level) { super(type, level); }
+    @Override public boolean needsHouse() { return false; }
     @Override public String getGirlName() { return "bee"; }
     @Override public String getGeoFileName() { return "armored"; }
     @Override public String getNudeGeoFileName() { return "armored"; }

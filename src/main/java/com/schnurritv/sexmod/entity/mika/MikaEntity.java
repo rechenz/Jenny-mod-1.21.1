@@ -10,6 +10,7 @@ import net.minecraft.world.effect.MobEffects;
 
 public class MikaEntity extends BaseGirlEntity {
     public MikaEntity(EntityType<? extends PathfinderMob> type, Level level) { super(type, level); }
+    @Override public boolean needsHouse() { return false; }
     @Override public String getGirlName() { return "mika"; }
     @Override public String getGeoFileName() { return "dressed"; }
     @Override public String getNudeGeoFileName() { return "nude"; }

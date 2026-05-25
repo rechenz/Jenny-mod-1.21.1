@@ -40,6 +40,7 @@ public class GalathEntity extends BaseGirlEntity implements PlayerRideableJumpin
     private static final int GRAB_CUM_DAMAGE = 8;
 
     public GalathEntity(EntityType<? extends PathfinderMob> type, Level level) { super(type, level); }
+    @Override public boolean needsHouse() { return false; }
     @Override public String getGirlName() { return "galath"; }
     @Override public String getGeoFileName() { return "galath"; }
     @Override public String getNudeGeoFileName() { return "galath_con_mang"; }
