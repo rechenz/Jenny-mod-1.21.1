@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Specification-Title: sexmod
+Specification-Vendor: schnurritv
+Specification-Version: 1
+Implementation-Title: Jenny-mod-1.21.1
+Implementation-Version: 1.8.0-1.21.1
+Implementation-Vendor: schnurritv
+Implementation-Timestamp: 2026-05-25T15:09:16+0800
+

@@ -13,8 +13,10 @@ import software.bernie.geckolib.animation.AnimatableManager;
 import software.bernie.geckolib.animation.AnimationController;
 import software.bernie.geckolib.animation.RawAnimation;
 import software.bernie.geckolib.util.GeckoLibUtil;
+import software.bernie.geckolib.animation.keyframe.event.SoundKeyframeEvent;
 
 import java.util.UUID;
+import java.util.Random;
 
 public abstract class SexEntity extends PathfinderMob implements GeoEntity {
 
@@ -214,7 +216,7 @@ public abstract class SexEntity extends PathfinderMob implements GeoEntity {
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<>(this, "base", 5, state -> {
+        AnimationController<SexEntity> baseController = new AnimationController<>(this, "base", 5, state -> {
             SexModAnimation current = getSexModAnimation();
             String model = getModelName().toLowerCase();
 
@@ -232,7 +234,20 @@ public abstract class SexEntity extends PathfinderMob implements GeoEntity {
 
             // --- Idle ---
             return state.setAndContinue(RawAnimation.begin().thenLoop("animation." + model + ".idle"));
-        }));
+        });
+
+        // Sound keyframe handler: play sounds defined in animation JSON sound_effects
+        baseController.setSoundKeyframeHandler(event -> {
+            if (!this.level().isClientSide) return;
+            software.bernie.geckolib.animation.keyframe.event.data.SoundKeyframeData data = event.getKeyframeData();
+            if (data == null) return;
+            String instruction = data.getSound();
+            if (instruction == null || instruction.isEmpty()) return;
+
+            onCustomInstruction(getModelName().toLowerCase(), instruction);
+        });
+
+        controllers.add(baseController);
 
         controllers.add(new AnimationController<>(this, "eyes", 0, state -> {
             SexModAnimation current = getSexModAnimation();
@@ -241,5 +256,261 @@ public abstract class SexEntity extends PathfinderMob implements GeoEntity {
             }
             return state.setAndContinue(RawAnimation.begin());
         }));
+    }
+
+    /**
+     * Handle custom sound instructions from animation.json sound_effects.
+     * Each instruction tag is mapped to specific sound categories and variants.
+     */
+    private void onCustomInstruction(String modelName, String instruction) {
+        if (!this.level().isClientSide) return;
+        Random rand = new Random();
+
+        switch (instruction) {
+            // === BLOWJOB INTRO (bji) ===
+            case "bjiMSG1":  playSound(modelName, "giggle", 3); break;
+            case "bjiMSG2":  playSound(modelName, "lightbreathing", 8); break;
+            case "bjiMSG3":  playSound(modelName, "aftersessionmoan", 0); break;
+            case "bjiMSG4":  playSound(modelName, "giggle", rand.nextInt(5)); break; // belljingle not in jenny, fallback giggle
+            case "bjiMSG5":  playSound(modelName, "hmph", 1); break;
+            case "bjiMSG6":
+            case "bjiMSG7":
+            case "bjiMSG8":
+            case "bjiMSG9":  playSound(modelName, "giggle", rand.nextInt(5)); break;
+            case "bjiMSG10": break; // camera cue, no sound
+            case "bjiMSG11":
+            case "bjiMSG12": playSound(modelName, "lipsound", rand.nextInt(getVariantCount(modelName, "lipsound"))); break;
+            case "bjiDone":   break; // no sound
+
+            // === BLOWJOB THRUST (bjt) ===
+            case "bjtMSG1":   playSound(modelName, "mmm", rand.nextInt(Math.max(1, getVariantCount(modelName, "mmm"))));
+                               playSoundDelayed(modelName, "lipsound", rand.nextInt(Math.max(1, getVariantCount(modelName, "lipsound")))); break;
+            case "bjtReady":
+            case "bjtDone":   break;
+
+            // === BLOWJOB CUM (bjc) ===
+            case "bjcMSG1":   playSound(modelName, "bjmoan", 1); break;
+            case "bjcMSG2":   playSound(modelName, "bjmoan", 7); break;
+            case "bjcMSG3":   playSound(modelName, "aftersessionmoan", 1); break;
+            case "bjcMSG4":
+            case "bjcMSG5":
+            case "bjcMSG6":
+            case "bjcMSG7":   playSound(modelName, "lightbreathing", rand.nextInt(12)); break;
+            case "bjcBlackScreen": break; // visual cue
+            case "bjcDone":    break;
+
+            // === DOGGY START ===
+            case "doggystartMSG1":
+            case "doggystartMSG2":
+            case "doggystartMSG3":
+            case "doggystartMSG4":
+            case "doggystartMSG5": playSound(modelName, "giggle", rand.nextInt(5)); break;
+            case "doggystartDone": break;
+
+            // === DOGGY GO ON BED ===
+            case "doggyGoOnBedMSG1": playSound(modelName, "bjmoan", rand.nextInt(Math.max(1, getVariantCount(modelName, "bjmoan")))); break; // plob not in jenny, fallback
+            case "doggyGoOnBedMSG2":
+            case "doggyGoOnBedMSG3":
+            case "doggyGoOnBedMSG4": break;
+            case "doggyGoOnBedDone": break;
+
+            // === DOGGY (thrusting) ===
+            case "doggyMSG1":  playSound(modelName, "giggle", rand.nextInt(5)); break;
+            case "doggyslowMSG1":
+            case "doggyslowMSG2": playSound(modelName, "moan", rand.nextInt(8));
+                                  playSoundDelayed(modelName, "heavybreathing", rand.nextInt(8)); break;
+            case "doggyfastMSG1": playSound(modelName, "moan", rand.nextInt(8));
+                                  playSoundDelayed(modelName, "heavybreathing", rand.nextInt(8)); break;
+            case "doggyfastReady":
+            case "doggyfastDone":  break;
+
+            // === DOGGY CUM ===
+            case "doggycumMSG1": playSound(modelName, "moan", rand.nextInt(8));          // pounding not in jenny
+                                 playSoundDelayed(modelName, "heavybreathing", rand.nextInt(8)); break;
+            case "doggycumMSG2":
+            case "doggycumMSG3":
+            case "doggycumMSG4":
+            case "doggycumMSG5": playSound(modelName, "heavybreathing", rand.nextInt(8)); break;
+            case "doggyCumDone": break;
+
+            // === PAIZURI / BOOBJOB START ===
+            case "paizuriStartMSG1":  playSound(modelName, "giggle", rand.nextInt(5)); break;
+            case "paizuri_startStep": playSound(modelName, "lipsound", rand.nextInt(Math.max(1, getVariantCount(modelName, "lipsound")))); break;
+            case "paizuri_startDone": break;
+
+            // === PAIZURI SLOW/FAST ===
+            case "paizuriSlowMSG1": playSound(modelName, "lipsound", rand.nextInt(Math.max(1, getVariantCount(modelName, "lipsound")))); break;
+            case "paizuriFastMSG1": playSound(modelName, "moan", rand.nextInt(8)); break;
+            case "paizuriReady":
+            case "paizuri_fastDone": break;
+
+            // === PAIZURI CUM ===
+            case "paizuri_cumStart": break; // visual/transition cue
+            case "paizuri_cumDone":  break;
+
+            // === STRIP ===
+            case "stripMSG1":    playSound(modelName, "giggle", rand.nextInt(5)); break;
+            case "startStrip":
+            case "becomeNude":
+            case "stripDone":    break;
+
+            // === PAYMENT ===
+            case "paymentMSG1": playSound(modelName, "giggle", rand.nextInt(5)); break;
+            case "paymentMSG2": playSound(modelName, "huh", rand.nextInt(2)); break;
+            case "paymentMSG3":
+            case "paymentMSG4": playSound(modelName, "giggle", rand.nextInt(5)); break;
+            case "drawItems":
+            case "removeItems":
+            case "paymentDone":  break;
+
+            // === MISSIONARY ===
+            case "missionary_slowMSG1":  playSound(modelName, "moan", rand.nextInt(8)); break;
+            case "missionary_fastMSG1":  playSound(modelName, "moan", rand.nextInt(8)); break;
+            case "missionary_fastReady":
+            case "missionary_fastDone":
+            case "missionary_startDone": break;
+            case "missionary_cumMSG1":
+            case "missionary_cumMSG2":   playSound(modelName, "moan", rand.nextInt(8)); break;
+            case "missionary_cumDone":   break;
+
+            // === IDLE / AMBIENT ===
+            case "idle":         playSound(modelName, "giggle", rand.nextInt(5)); break;
+
+            // === MISC / UI ===
+            case "openSexUi":
+            case "sexUiOn":
+            case "bedRustle":
+            case "cowgirlcumMSG6":
+            case "boobjob_camera":
+            case "pearl":
+            case "attackSound":
+            case "attackDone":    break; // UI/visual/meta cues, no vocal sound
+
+            default:
+                // Unknown instruction — try as a generic category name
+                if (getVariantCount(modelName, instruction) > 0) {
+                    playSound(modelName, instruction, rand.nextInt(getVariantCount(modelName, instruction)));
+                }
+                break;
+        }
+    }
+
+    /** Play a specific sound variant by index */
+    private void playSound(String modelName, String category, int variant) {
+        if (!this.level().isClientSide) return;
+        int count = getVariantCount(modelName, category);
+        if (count <= 0) return;
+        int safeVariant = Math.max(0, Math.min(variant, count - 1));
+        String soundPath = "girls." + modelName + "." + category + "." + category + safeVariant;
+        net.minecraft.resources.ResourceLocation loc = net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("sexmod", soundPath);
+        net.minecraft.sounds.SoundEvent ev = net.minecraft.sounds.SoundEvent.createVariableRangeEvent(loc);
+        this.level().playLocalSound(this.getX(), this.getY(), this.getZ(),
+                ev, net.minecraft.sounds.SoundSource.VOICE, 1.0f, 1.0f, false);
+    }
+
+    /** Schedule a sound after a short delay (for multi-sound instructions like bjtMSG1) */
+    private void playSoundDelayed(String modelName, String category, int variant) {
+        if (!this.level().isClientSide) return;
+        int count = getVariantCount(modelName, category);
+        if (count <= 0) return;
+        int safeVariant = Math.max(0, Math.min(variant, count - 1));
+        String soundPath = "girls." + modelName + "." + category + "." + category + safeVariant;
+        net.minecraft.resources.ResourceLocation loc = net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("sexmod", soundPath);
+        net.minecraft.sounds.SoundEvent ev = net.minecraft.sounds.SoundEvent.createVariableRangeEvent(loc);
+        // Play immediately since we can't easily schedule on client — the sounds overlay naturally
+        this.level().playLocalSound(this.getX(), this.getY(), this.getZ(),
+                ev, net.minecraft.sounds.SoundSource.VOICE, 0.8f, 1.0f, false);
+    }
+
+    /** Get number of sound variants for a model+category combination */
+    private int getVariantCount(String modelName, String category) {
+        switch (modelName) {
+            case "jenny":
+                switch (category) {
+                    case "giggle": return 5;
+                    case "moan": return 8;
+                    case "bjmoan": return 13;
+                    case "lipsound": return 10;
+                    case "ahh": return 10;
+                    case "mmm": return 9;
+                    case "lightbreathing": return 12;
+                    case "heavybreathing": return 8;
+                    case "happyoh": return 3;
+                    case "hmph": return 4;
+                    case "sigh": return 2;
+                    case "huh": return 2;
+                    case "sadoh": return 2;
+                    case "aftersessionmoan": return 5;
+                    default: return 0;
+                }
+            case "allie":
+                switch (category) {
+                    case "giggle": return 5;
+                    case "moan": return 8;
+                    case "bjmoan": return 14;
+                    case "lipsound": return 14;
+                    case "ahh": return 10;
+                    case "mmm": return 10;
+                    case "lightbreathing": return 11;
+                    case "heavybreathing": return 8;
+                    case "happyoh": return 3;
+                    case "hmph": return 5;
+                    case "sigh": return 2;
+                    case "huh": return 2;
+                    case "sadoh": return 2;
+                    case "scawy": return 3;
+                    case "aftersessionmoan": return 4;
+                    default: return 0;
+                }
+            case "ellie":
+                switch (category) {
+                    case "giggle": return 5;
+                    case "moan": return 9;
+                    case "bjmoan": return 13;
+                    case "lipsound": return 10;
+                    case "ahh": return 10;
+                    case "mmm": return 9;
+                    case "lightbreathing": return 8;
+                    case "heavybreathing": return 9;
+                    case "happyoh": return 3;
+                    case "hmph": return 4;
+                    case "sigh": return 2;
+                    case "huh": return 2;
+                    case "sadoh": return 2;
+                    case "cometomommy": return 2;
+                    case "goodboy": return 2;
+                    case "mommyhorny": return 2;
+                    case "aftersessionmoan": return 5;
+                    default: return 0;
+                }
+            case "kobold":
+                switch (category) {
+                    case "giggle": return 4;
+                    case "bjmoan": return 10;
+                    case "moan": return 11;
+                    case "lightbreathing": return 12;
+                    case "haa": return 7;
+                    case "heymaster": return 6;
+                    case "master": return 6;
+                    case "orgasm": return 4;
+                    case "sad": return 3;
+                    case "yep": return 7;
+                    case "interested": return 3;
+                    default: return 0;
+                }
+            case "bia":
+                switch (category) {
+                    case "giggle": return 3;
+                    case "ahh": return 8;
+                    case "bjmoan": return 5;
+                    case "breath": return 4;
+                    case "hey": return 4;
+                    case "huh": return 3;
+                    case "mmm": return 8;
+                    default: return 0;
+                }
+            default:
+                return 0;
+        }
     }
 }

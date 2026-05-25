@@ -165,6 +165,28 @@ public class GirlRenderer<T extends SexEntity> extends GeoEntityRenderer<T> {
             return;
         }
 
+        // --- Armor bones: hidden by default, shown only via CLOTHING_STATE checks or when armor is equipped ---
+        boolean isArmorBone = name.equals("armorhelmet") ||
+                              name.equals("armorchest") ||
+                              name.equals("armorboobs") ||
+                              name.equals("armorshoulderr") ||
+                              name.equals("armorshoulderl") ||
+                              name.equals("armorbootyl") ||
+                              name.equals("armorbootyr") ||
+                              name.equals("armorhip") ||
+                              name.equals("armorpantslowl") ||
+                              name.equals("armorpantslowr") ||
+                              name.equals("armorpantsupl") ||
+                              name.equals("armorpantsupr") ||
+                              name.equals("armorshoesl") ||
+                              name.equals("armorshoesr");
+
+        if (isArmorBone) {
+            boolean showArmor = animatable.getEntityData().get(SexEntity.CLOTHING_STATE) > 0;
+            bone.setHidden(!showArmor);
+            // Don't return early — let children process normally
+        }
+
         for (GeoBone child : bone.getChildBones()) {
             filterBones(child, animatable, false);
         }
