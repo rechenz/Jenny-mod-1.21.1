@@ -44,13 +44,8 @@ public class NetworkHandler {
                 .consumerMainThread(GoblinActionPacket::handle)
                 .add();
 
-        INSTANCE.messageBuilder(GalathGrabPacket.class, NetworkDirection.PLAY_TO_CLIENT)
-                .encoder(GalathGrabPacket::encode)
-                .decoder(GalathGrabPacket::decode)
-                .consumerMainThread(GalathGrabPacket::handle)
-                .add();
-
-        INSTANCE.messageBuilder(GalathGrabPacket.class, NetworkDirection.PLAY_TO_SERVER)
+        // Bidirectional: server→client (grab start/stop) and client→server (escape taps)
+        INSTANCE.messageBuilder(GalathGrabPacket.class)
                 .encoder(GalathGrabPacket::encode)
                 .decoder(GalathGrabPacket::decode)
                 .consumerMainThread(GalathGrabPacket::handle)
