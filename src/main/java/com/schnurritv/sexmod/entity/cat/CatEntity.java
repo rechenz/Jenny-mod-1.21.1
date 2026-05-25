@@ -2,8 +2,15 @@ package com.schnurritv.sexmod.entity.cat;
 
 import com.schnurritv.sexmod.entity.BaseGirlEntity;
 import com.schnurritv.sexmod.entity.SexModAnimation;
+import com.schnurritv.sexmod.entity.ai.ShipSeekGoal;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.ai.goal.FloatGoal;
+import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
+import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
 /**
@@ -11,14 +18,34 @@ import net.minecraft.world.level.Level;
  * Loves fish, spawns near oceans, has unique sitting/touch animation set.
  */
 public class CatEntity extends BaseGirlEntity {
-    public CatEntity(EntityType<? extends PathfinderMob> type, Level level) { super(type, level); }
+    private final ShipSeekGoal shipSeekGoal;
+
+    public CatEntity(EntityType<? extends PathfinderMob> type, Level level) {
+        super(type, level);
+        this.shipSeekGoal = new ShipSeekGoal(this);
+    }
+
     @Override public String getGirlName() { return "cat"; }
 
     @Override
     public String getGeoFileName() { return "cat"; }
     @Override public String getNudeGeoFileName() { return "cat"; }
 
+    public ShipSeekGoal getShipSeekGoal() { return shipSeekGoal; }
+
     // Cat uses "animation.cat.*" prefix (same as modelName) — OK
+
+    @Override
+    protected void registerGoals() {
+        // Cat: ship-seeking priority 1 (between float and follow)
+        this.goalSelector.addGoal(0, new FloatGoal(this));
+        this.goalSelector.addGoal(1, shipSeekGoal);
+        this.goalSelector.addGoal(2, new com.schnurritv.sexmod.entity.ai.SexModMoveToTargetGoal(this, 1.25D));
+        this.goalSelector.addGoal(3, new com.schnurritv.sexmod.entity.ai.SexModFollowGoal(this, 1.25D, 10.0F, 2.0F));
+        this.goalSelector.addGoal(4, new WaterAvoidingRandomStrollGoal(this, 1.0D));
+        this.goalSelector.addGoal(5, new LookAtPlayerGoal(this, Player.class, 8.0F));
+        this.goalSelector.addGoal(6, new RandomLookAroundGoal(this));
+    }
 
     @Override public boolean supportsScene(String name) {
         return name.equals("Missionary") || name.equals("Blowjob");
@@ -46,5 +73,19 @@ public class CatEntity extends BaseGirlEntity {
     @Override
     public String getIdleAnimationPath() {
         return "animation.cat.idle2";
+    }
+
+    @Override
+    public void addAdditionalSaveData(CompoundTag compound) {
+        super.addAdditionalSaveData(compound);
+        compound.put("ShipSeekData", shipSeekGoal.saveToNBT());
+    }
+
+    @Override
+    public void readAdditionalSaveData(CompoundTag compound) {
+        super.readAdditionalSaveData(compound);
+        if (compound.contains("ShipSeekData")) {
+            shipSeekGoal.loadFromNBT(compound.getCompound("ShipSeekData"));
+        }
     }
 }
