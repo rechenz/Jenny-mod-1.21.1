@@ -43,7 +43,27 @@ JAR output: `build/libs/sexmod-1.8.0-1.21.1.jar`
 - **Decompiled source** [@Griefed](https://github.com/Griefed)'s `cfr` decompiler for extracting the original jar
 - Everyone brave enough to touch this mess
 
----
+## A Note from the Port Author
+
+I'm a Unity developer, not a Java modder. I have zero familiarity with Minecraft's API or Java ecosystem. Yet somehow I spent 3 days and burned nearly **400 million tokens** of DeepSeek API trying to make this work through my OpenClaw setup.
+
+You can find the official website at [fapcraftx.com](https://fapcraftx.com/) — it claims to be the official Fapcraft site. It offers a legit 1.12.2 Java download, but the "MCPE" version is a suspicious PE beta that has neither mod content nor functional gameplay. I have serious doubts about this site's legitimacy.
+
+The result of my effort? A buggy half-finished port that barely runs. I can't guarantee I'll learn Java and MC modding systematically — it doesn't align with my road map.
+
+So this is an open call: if you're a modder who knows what they're doing, **please take over**. Horny is the ultimate driving force — this project deserves someone who can actually finish it.
+
+---  
+
+## 来自移植者的一段话
+
+我是一个 Unity 开发者，不懂 Java，不熟悉 MC 的 API 和生态。但是我还是用 OpenClaw + DeepSeek 的 API，花了三天时间，烧了将近 **4 个亿的 token**，搞出了这个项目。
+
+官网上 [fapcraftx.com](https://fapcraftx.com/) 声称是 Fapcraft 模组官网，里面确实有 1.12.2 的 Java 版原版下载。但它的 "MCPE" 版本是一个诡异的 PE beta，不仅没有模组内容，连本体都全是 bug。我严重怀疑这个网站的真实性。
+
+折腾出来的结果？一个全是 bug 的半成品。老实说，我很难保证之后会系统性地学习 Java 和 MC 的 API——这跟我的规划不符。
+
+所以如果有真懂的 MC 模组开发者看到这里，**求接手**。毕竟色色是第一生产力，这个项目值得一个能把它真正做完的人。
 
 ---
 
