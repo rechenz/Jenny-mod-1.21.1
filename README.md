@@ -38,6 +38,8 @@ JAR 输出在 `build/libs/sexmod-1.8.0-1.21.1.jar`
 ## 鸣谢
 
 - **原版作者** Trolmastercard
+- **1.21.1 移植基底** [Angina830](https://github.com/Angina830) — 基于其 1.21.1 移植框架重构
+- **反编译库来源** [@Griefed](https://github.com/Griefed) 的 `cfr` 反编译器，用于提取旧版 jar 的完整 Java 源码
 - 所有愿意碰这堆屎山的勇士
 
 ---
