@@ -1,3 +1,52 @@
+# Jenny Mod — 1.21.1 Port
+
+> ⚠️ **Project Status: On Hold — Looking for Contributors**
+> This is a port of the classic Jenny Mod (Fapcraft) to Minecraft 1.21.1 + Forge.
+> Core features work, but several issues remain. PRs and forks welcome.
+
+## What Works
+
+Rewrite based on the original 1.12.2 decompiled source + GeckoLib 4 animation system.
+All scene animations, interaction system, and affection system are fully ported.
+
+### Ported Characters (14)
+
+Jenny, Ellie, Slime, Bee, Bia, Cat, Allie, Goblin, Kobold, Galath, Manglelie, Lucy, Mika, Momo
+
+### Known Issues
+
+- 🔴 **"Diamond Armor" visual glitch** — Some characters spawn with purple/white armor overlay
+- 🔴 **Goblin interaction incomplete** — Taming and catch scene not fully wired (`doUseHer` is a stub)
+- 🟡 **Combat animations** — SexFighterEntity has combat logic but attack anims depend on model
+- 🟡 **Equipment UI** — EquipmentScreen works but drag-from-inventory is limited
+- 🟡 **Worldgen houses** — NBT house templates incompatible with current StructureTemplate system (disabled)
+
+### Dependencies
+
+- Minecraft 1.21.1
+- Forge 52.1.14
+- GeckoLib 4.8.4 (forge 1.21.1)
+- **Incompatible with OptiFine** (use Iris/Oculus or Sodium/Rubidium)
+
+## Build
+
+```bash
+.\gradlew.bat build
+```
+
+JAR output: `build/libs/sexmod-1.8.0-1.21.1.jar`
+
+## Credits
+
+- **Original creator** Trolmastercard
+- **1.21.1 base port** [Angina830](https://github.com/Angina830) — the 1.21.1 port framework this was rebuilt on
+- **Decompiled source** [@Griefed](https://github.com/Griefed)'s `cfr` decompiler for extracting the original jar
+- Everyone brave enough to touch this mess
+
+---
+
+---
+
 # Jenny Mod — 1.21.1 移植版
 
 > ⚠️ **项目状态：停工待大佬**
