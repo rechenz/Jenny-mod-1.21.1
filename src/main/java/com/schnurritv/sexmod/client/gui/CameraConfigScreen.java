@@ -63,7 +63,7 @@ public class CameraConfigScreen extends Screen {
         private final net.minecraftforge.common.ForgeConfigSpec.DoubleValue configValue;
 
         public OffsetSlider(int x, int y, int width, int height, String label, net.minecraftforge.common.ForgeConfigSpec.DoubleValue configValue) {
-            super(x, y, width, height, Component.empty(), (configValue.get() / 5.0));
+            super(x, y, width, height, Component.empty(), (configValue.get() / 10.0));
             this.label = label;
             this.configValue = configValue;
             updateMessage();
@@ -71,12 +71,12 @@ public class CameraConfigScreen extends Screen {
 
         @Override
         protected void updateMessage() {
-            setMessage(Component.literal(label + ": " + String.format("%.2f", value * 5.0)));
+            setMessage(Component.literal(label + ": " + String.format("%.2f", value * 10.0)));
         }
 
         @Override
         protected void applyValue() {
-            configValue.set(value * 5.0);
+            configValue.set(value * 10.0);
         }
     }
 }

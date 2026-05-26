@@ -14,7 +14,7 @@ public class NetworkHandler {
     public static <MSG> void sendToServer(MSG packet) {
         INSTANCE.send(packet, PacketDistributor.SERVER.noArg());
     }
-    private static final int VERSION = 2;
+    private static final int VERSION = 3;
     public static final SimpleChannel INSTANCE = ChannelBuilder.named(net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(Main.MODID, "main"))
             .networkProtocolVersion(VERSION)
             .simpleChannel();
@@ -56,6 +56,12 @@ public class NetworkHandler {
                 .decoder(ClothingTogglePacket::decode)
                 .consumerMainThread(ClothingTogglePacket::handle)
                 .add();
+
+        INSTANCE.messageBuilder(EquipmentChangePacket.class, NetworkDirection.PLAY_TO_SERVER)
+                .encoder(EquipmentChangePacket::encode)
+                .decoder(EquipmentChangePacket::decode)
+                .consumerMainThread(EquipmentChangePacket::handle)
+                .add();
     }
 
     public static void broadcastAnimationSync(SexEntity entity, SexModAnimation animation) {
@@ -72,6 +78,10 @@ public class NetworkHandler {
 
     public static void sendGoblinAction(int entityId, String action) {
         INSTANCE.send(new GoblinActionPacket(entityId, action), PacketDistributor.SERVER.noArg());
+    }
+
+    public static void sendEquipmentChange(int entityId, int slot, net.minecraft.world.item.ItemStack stack) {
+        INSTANCE.send(new EquipmentChangePacket(entityId, slot, stack), PacketDistributor.SERVER.noArg());
     }
 
     /** Send a packet to a specific player (not tracking). */

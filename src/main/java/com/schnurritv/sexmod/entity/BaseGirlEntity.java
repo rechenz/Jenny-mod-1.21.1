@@ -190,6 +190,46 @@ public abstract class BaseGirlEntity extends SexEntity {
         // Quest turn-in: if has active quest, try to complete it
         if (questManager.hasActiveQuest() && !(held.getItem() instanceof GiftItem)) {
             com.schnurritv.sexmod.relationship.QuestManager.Quest q = questManager.getActiveQuest();
+            if (q != null && q.type() == QuestManager.QuestType.DEFEND && !this.level().isClientSide) {
+                // If DEFEND quest is active and waves haven't started, start wave 1 now
+                if (questManager.getDefendWave() == 0) {
+                    String mobType = questManager.startDefendWave();
+                    if (mobType != null) {
+                        player.displayClientMessage(Component.literal(
+                            "<" + getGirlName() + "> Wave 1/" + q.defendWaveCount() + " is here! Defend me!"), false);
+                        // Spawn initial mobs directly here
+                        net.minecraft.server.level.ServerLevel serverLevel = (net.minecraft.server.level.ServerLevel) this.level();
+                        java.util.Random rand = new java.util.Random();
+                        int mobCount = questManager.getDefendMobsRemaining();
+                        for (int i = 0; i < mobCount; i++) {
+                            net.minecraft.world.entity.EntityType<?> type = switch (mobType) {
+                                case "ZOMBIE" -> net.minecraft.world.entity.EntityType.ZOMBIE;
+                                case "SKELETON" -> net.minecraft.world.entity.EntityType.SKELETON;
+                                case "SPIDER" -> net.minecraft.world.entity.EntityType.SPIDER;
+                                default -> net.minecraft.world.entity.EntityType.ZOMBIE;
+                            };
+                            double angle = rand.nextDouble() * Math.PI * 2;
+                            double dist = 3.0 + rand.nextDouble() * 4.0;
+                            double x = this.getX() + Math.cos(angle) * dist;
+                            double z = this.getZ() + Math.sin(angle) * dist;
+                            double y = this.getY();
+                            net.minecraft.core.BlockPos bp = net.minecraft.core.BlockPos.containing(x, y, z);
+                            while (!serverLevel.getBlockState(bp).isAir() && y < this.getY() + 5) {
+                                y++;
+                                bp = net.minecraft.core.BlockPos.containing(x, y, z);
+                            }
+                            net.minecraft.world.entity.Mob mob = (net.minecraft.world.entity.Mob) type.create(serverLevel);
+                            if (mob != null) {
+                                mob.setPos(x, y, z);
+                                mob.targetSelector.addGoal(1,
+                                    new net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal<>(mob,
+                                        net.minecraft.world.entity.player.Player.class, true));
+                                serverLevel.addFreshEntity(mob);
+                            }
+                        }
+                    }
+                }
+            }
             if (q != null && q.type() == QuestManager.QuestType.FETCH) {
                 String itemId = net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(held.getItem()).toString();
                 if (itemId.equals(q.targetItem())) {
@@ -439,6 +479,7 @@ public abstract class BaseGirlEntity extends SexEntity {
      */
     @Nullable public BlockPos getHousePos() { return housePos; }
     public boolean hasHouse() { return hasHouse; }
+    public void setHasHouse(boolean v) { this.hasHouse = v; }
     public boolean needsHouse() {
         return true; // default for humans
     }
@@ -452,6 +493,7 @@ public abstract class BaseGirlEntity extends SexEntity {
             if (needsHouse() && !hasHouse) {
                 hasHouse = true;
                 housePos = this.blockPosition();
+                GirlHouseGenerator.pendingGirlName = getGirlName();
                 GirlHouseGenerator.generateCottage(this.level(), housePos);
             }
 

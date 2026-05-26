@@ -157,19 +157,19 @@ public abstract class SexEntity extends PathfinderMob implements GeoEntity {
     private static SexModAnimation getNextPhase(SexModAnimation current) {
         return switch (current) {
             case BLOWJOBINTRO  -> SexModAnimation.BLOWJOBSUCK;
-            case BLOWJOBSUCK   -> SexModAnimation.BLOWJOBTHRUST;
+            case BLOWJOBSUCK   -> null; // BLOWJOBSUCK loops until player presses space (→THRUST)
             case BLOWJOBTHRUST -> SexModAnimation.BLOWJOBCUM;
             case MISSIONARY_START -> SexModAnimation.MISSIONARY_SLOW;
-            case MISSIONARY_SLOW  -> SexModAnimation.MISSIONARY_FAST;
+            case MISSIONARY_SLOW  -> null; // SLOW loops until player presses space (→FAST)
             case MISSIONARY_FAST  -> SexModAnimation.MISSIONARY_CUM;
             case PAIZURI_START -> SexModAnimation.PAIZURI_SLOW;
-            case PAIZURI_SLOW  -> SexModAnimation.PAIZURI_FAST;
+            case PAIZURI_SLOW  -> null; // SLOW loops until player presses space (→FAST)
             case PAIZURI_FAST  -> SexModAnimation.PAIZURI_CUM;
             case DOGGYGOONBED  -> SexModAnimation.DOGGYSTART;
-            case DOGGYSTART    -> SexModAnimation.DOGGYSLOW;
-            case DOGGYSLOW     -> SexModAnimation.DOGGYFAST;
+            case DOGGYSTART    -> SexModAnimation.DOGGYWAIT;
+            case DOGGYWAIT     -> null; // WAIT loops until player presses space (→SLOW)
+            case DOGGYSLOW     -> null; // SLOW loops until player presses space (→FAST)
             case DOGGYFAST     -> SexModAnimation.DOGGYCUM;
-            case DOGGYWAIT     -> SexModAnimation.DOGGYSTART;
             default -> null;
         };
     }
@@ -187,11 +187,11 @@ public abstract class SexEntity extends PathfinderMob implements GeoEntity {
         SexModAnimation current = getSexModAnimation();
         String followUpName = this.entityData.get(ANIMATION_FOLLOW_UP);
 
+        // Auto-set DOGGYSTART follow-up to DOGGYWAIT
         if (current == SexModAnimation.DOGGYSTART && ("null".equals(followUpName) || followUpName.isEmpty())) {
             followUpName = SexModAnimation.DOGGYWAIT.name();
+            this.entityData.set(ANIMATION_FOLLOW_UP, followUpName);
         }
-
-        if ("null".equals(followUpName) || followUpName.isEmpty()) return;
 
         int length = getAnimationTickLength(current);
         if (length <= 0) return;
@@ -199,20 +199,35 @@ public abstract class SexEntity extends PathfinderMob implements GeoEntity {
         int ticks = this.entityData.get(ANIMATION_TICKS) + 1;
         this.entityData.set(ANIMATION_TICKS, ticks);
 
-        if (ticks >= length) {
+        if (ticks < length) return;
+
+        // Animation finished playing. Determine what to do next.
+        boolean hasFollowUp = followUpName != null && !followUpName.isEmpty() && !"null".equals(followUpName);
+
+        if (hasFollowUp) {
+            // Advance to follow-up phase
             try {
                 SexModAnimation followUp = SexModAnimation.valueOf(followUpName);
                 setSexModAnimation(followUp);
                 this.entityData.set(ANIMATION_TICKS, 0);
-                this.entityData.set(ANIMATION_FOLLOW_UP, "null");
-                // Auto-advance to next phase
+
+                // Auto-advance chain
                 SexModAnimation next = getNextPhase(followUp);
-                if (next != null) {
-                    this.entityData.set(ANIMATION_FOLLOW_UP, next.name());
-                }
+                this.entityData.set(ANIMATION_FOLLOW_UP, next != null ? next.name() : "");
             } catch (IllegalArgumentException e) {
-                this.entityData.set(ANIMATION_FOLLOW_UP, "null");
+                this.entityData.set(ANIMATION_FOLLOW_UP, "");
             }
+        } else {
+            // No follow-up: loop current animation (for SLOW/WAIT) or stop scene (for CUM)
+            if (current.name().contains("CUM")) {
+                // CUM finished → stop the scene
+                this.entityData.set(IS_LOCKED, false);
+                this.entityData.set(PARTNER_UUID, "null");
+                this.entityData.set(CLOTHING_STATE, 0);
+                setSexModAnimation(SexModAnimation.NULL);
+            }
+            // Reset tick counter for looping (SLOW/WAIT) — this ensures re-trigger
+            this.entityData.set(ANIMATION_TICKS, 0);
         }
     }
 

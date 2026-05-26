@@ -33,10 +33,10 @@ public class AffectionData {
 
     public void setOwner(String uuid) { this.ownerUUID = uuid; }
 
-    /** Add affection, clamped to max, returns true if value actually changed */
+    /** Add affection, clamped to [0, max], returns true if value actually changed */
     public boolean addAffection(int amount, int max) {
         int old = affection;
-        affection = Math.min(max, affection + amount);
+        affection = Math.max(0, Math.min(max, affection + amount));
         return affection != old;
     }
 

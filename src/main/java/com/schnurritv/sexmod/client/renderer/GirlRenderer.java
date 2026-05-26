@@ -7,6 +7,8 @@ import com.schnurritv.sexmod.entity.SexEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ItemStack;
 import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
@@ -39,6 +41,18 @@ public class GirlRenderer<T extends SexEntity> extends GeoEntityRenderer<T> {
         }
         
         super.addRenderLayer(new com.schnurritv.sexmod.client.renderer.layer.PartnerSkinLayer<>(this));
+    }
+
+    @Override
+    public void render(T animatable, float entityYaw, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
+        // Suppress vanilla armor overlay rendering by clearing equipment slots before each render.
+        // SexFighterEntity.applyEquipmentVisuals() calls setItemSlot on the server side,
+        // which can trigger MC's built-in armor layer (purple/white diamond armor texture).
+        // Forcefully clearing all armor slots prevents this overlay from rendering.
+        for (EquipmentSlot slot : EquipmentSlot.values()) {
+            animatable.setItemSlot(slot, ItemStack.EMPTY);
+        }
+        super.render(animatable, entityYaw, partialTick, poseStack, bufferSource, packedLight);
     }
 
     @Override

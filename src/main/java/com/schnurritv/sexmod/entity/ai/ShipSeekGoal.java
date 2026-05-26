@@ -10,6 +10,8 @@ import net.minecraft.nbt.CompoundTag;
 import java.util.EnumSet;
 
 public class ShipSeekGoal extends Goal {
+    private static final int MAX_FAILS = 3;
+    private int scanFailed = 0;
     private final PathfinderMob mob;
     private BlockPos homePos = null;
     private boolean foundHome = false;
@@ -53,6 +55,8 @@ public class ShipSeekGoal extends Goal {
         double dist = homePos.distSqr(mob.blockPosition());
         // Only pathfind home if more than STAY_RADIUS blocks away
         if (dist <= STAY_RADIUS * STAY_RADIUS) return false;
+        // Also skip if already very close to home (< 10 blocks) — reduces path recalculation
+        if (dist < 100.0) return false;
         if (wanderCooldown > 0) { wanderCooldown--; return false; }
         return true;
     }
@@ -61,7 +65,7 @@ public class ShipSeekGoal extends Goal {
     public void start() {
         if (!foundHome) {
             findNearbyShip();
-            searchCooldown = 200; // retry in 10 seconds
+            searchCooldown = scanFailed >= MAX_FAILS ? 600 : 200; // 30s after 3 fails, 10s normally
             return;
         }
         // Move toward home position
@@ -90,10 +94,17 @@ public class ShipSeekGoal extends Goal {
                 }
             }
         }
+        scanFailed++;
         // Fallback: stay near current position near water
         BlockPos waterNearby = findWaterNear(mobPos);
-        homePos = waterNearby != null ? waterNearby : mobPos;
-        foundHome = true;
+        if (waterNearby != null) {
+            homePos = waterNearby;
+            foundHome = true;
+            scanFailed = 0;
+        } else {
+            homePos = mobPos;
+            foundHome = true;
+        }
     }
 
     private BlockPos findGroundNear(BlockPos center, int radius) {

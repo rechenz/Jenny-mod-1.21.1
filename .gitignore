@@ -3,3 +3,4 @@ build/
 *.log
 *.jar
 !gradle-wrapper.jar
+test/

@@ -89,7 +89,7 @@ public class GoblinCaughtScreen extends Screen {
         if (hoveredIndex >= 0) {
             switch (hoveredIndex) {
                 case 0: // Take back my stuff
-                    NetworkHandler.sendGoblinAction(goblin.getId(), "return");
+                    NetworkHandler.sendSceneAction(goblin.getId(), "ReturnItems");
                     break;
                 case 1: // Watch special scene
                     NetworkHandler.sendGoblinAction(goblin.getId(), "scene");

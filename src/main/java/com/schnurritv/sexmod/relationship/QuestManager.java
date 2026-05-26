@@ -363,7 +363,7 @@ public class QuestManager {
             case KILL -> {
                 // itemOrMobName is the entity type registry string like "minecraft:zombie"
                 // q.targetMob() is the simple name like "ZOMBIE"
-                if (itemOrMobName.endsWith(q.targetMob())) {
+                if (itemOrMobName.toLowerCase(java.util.Locale.ROOT).endsWith(q.targetMob().toLowerCase(java.util.Locale.ROOT))) {
                     questProgress += amount;
                     if (questProgress >= q.targetCount()) {
                         completeQuest();

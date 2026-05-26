@@ -22,7 +22,12 @@ public enum SexModAnimation {
     DOGGYWAIT(129, true),
     DOGGYSLOW(46, true),
     DOGGYFAST(22, true),
-    DOGGYCUM(134, true);
+    DOGGYCUM(134, true),
+    // Allie-specific animations
+    SUMMON(360, false),
+    SUMMON_WAIT(0, false),
+    RICH_FIRST_TIME(240, false),
+    RICH_NORMAL(240, false);
 
     private final int length;
     public final boolean autoBlink;

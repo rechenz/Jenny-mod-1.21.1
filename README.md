@@ -1,50 +1,45 @@
-# Jenny-mod-1.21.1
-I ported the mod, but made a few changes. For instance, it now runs via GeckoLib for animations, and I highly recommend avoiding OptiFine. Also, some content had to be cut because it was just too difficult to implement in the current engine. On the bright side - all scenes are now completely free!
+# Jenny Mod — 1.21.1 移植版
 
-🛠 Installation Guide (Jenny Mod Port)
-Follow these steps to ensure the mod runs correctly on your Minecraft client.
+> ⚠️ **项目状态：停工待大佬**
+> 本项目是旧版 Jenny Mod（Fapcraft）到 Minecraft 1.21.1 + Forge 的移植尝试。
+> 基础功能可用，但仍有若干遗留问题。欢迎 PR / fork。
 
-1. Prerequisites
-Before installing the mod, make sure you have the following:
+## 现状
 
-Minecraft Launcher: Official or any stable third-party launcher.
+基于旧版 1.12.2 反编译代码 + GeckoLib 4 动画系统重写。所有场景动画、互动系统、好感度系统已完成移植。
 
-Mod Loader: Forge 1.21.1.
+### 已实现的角色（14个）
 
-GeckoLib: This port requires GeckoLib to handle animations.
+Jenny, Ellie, Slime, Bee, Bia, Cat, Allie, Goblin, Kobold, Galath, Manglelie, Lucy, Mika, Momo
 
-Download GeckoLib here (Make sure to pick the version that matches your game and mod loader).
+### 已知问题
 
-2. Compatibility Warning (IMPORTANT)
-[!CAUTION]
-DO NOT USE OPTIFINE. > This port is incompatible with OptiFine due to how GeckoLib renders animations. Using OptiFine will lead to crashes or invisible models.
+- 🔴 **「钻石甲」显示 bug** — 部分角色出生时身上有紫色/白色盔甲纹理（MC 内置 armor overlay 误触发，pending fix）
+- 🔴 **Goblin 交互不完整** — 驯服和 catch 后的场景触发未完全实现（`doUseHer` 为 stub）
+- 🟡 **战斗动画** — SexFighterEntity 的战斗逻辑已实现，但攻击动画播放依赖角色模型是否存在 `attack` 动画
+- 🟡 **装备 UI** — EquipmentScreen 基本可用，但拖拽来自玩家背包的功能受限
+- 🟡 **世界生成房屋** — NBT 房屋模板格式不兼容当前 StructureTemplate 系统，暂时禁用
 
-Alternative: Use Iris/Oculus for shaders or Sodium/Rubidium for performance.
+### 依赖
 
-3. Step-by-Step Installation
-Install the Mod Loader: Run the installer for Forge/Fabric/NeoForge for version 1.21.1 .
+- Minecraft 1.21.1
+- Forge 52.1.14
+- GeckoLib 4.8.4（for forge 1.21.1）
+- **不兼容 OptiFine**（推荐 Iris/Oculus 或 Sodium/Rubidium）
 
-Download the Mod: Go to the Releases section and download the latest .jar file.
+## 构建
 
-Download GeckoLib: Download the corresponding version of GeckoLib.
+```bash
+.\gradlew.bat build
+```
 
-Locate your .minecraft folder:
+JAR 输出在 `build/libs/sexmod-1.8.0-1.21.1.jar`
 
-Windows: Press Win + R, type %appdata%\.minecraft and hit Enter.
+## 鸣谢
 
-macOS: ~/Library/Application Support/minecraft.
+- **原版作者** Trolmastercard
+- 所有愿意碰这堆屎山的勇士
 
-Linux: ~/.minecraft.
+---
 
-Move the files: Drop both the Jenny Mod jar and the GeckoLib jar into the mods folder.
-
-Launch the game: Select the correct profile in your launcher and enjoy!
-
-❓ Troubleshooting
-Game crashes on startup? Double-check that you have the correct version of GeckoLib installed.
-
-Animations not working? Ensure you aren't using OptiFine.
-
-Missing content? As noted in the description, some legacy content was removed due to technical limitations in newer Minecraft versions.
-
-yes i type this with gemini)))
+*This project is a fan port for preservation and educational purposes.*

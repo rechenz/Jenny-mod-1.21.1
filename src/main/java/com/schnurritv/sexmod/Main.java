@@ -3,6 +3,7 @@ package com.schnurritv.sexmod;
 import com.schnurritv.sexmod.command.ModCommands;
 import com.schnurritv.sexmod.networking.NetworkHandler;
 import com.schnurritv.sexmod.entity.EntityRegistry;
+import com.schnurritv.sexmod.entity.kobold.KoboldEntityRegistry;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -19,6 +20,8 @@ public class Main {
     public Main() {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
         EntityRegistry.register(FMLJavaModLoadingContext.get().getModEventBus());
+        KoboldEntityRegistry.ENTITIES.register(FMLJavaModLoadingContext.get().getModEventBus());
+        KoboldEntityRegistry.ITEMS.register(FMLJavaModLoadingContext.get().getModEventBus());
         net.minecraftforge.fml.ModLoadingContext.get().registerConfig(net.minecraftforge.fml.config.ModConfig.Type.CLIENT, SexModConfig.CLIENT_SPEC);
         net.minecraftforge.fml.ModLoadingContext.get().registerConfig(net.minecraftforge.fml.config.ModConfig.Type.SERVER, SexModConfig.SERVER_SPEC);
         MinecraftForge.EVENT_BUS.register(this);

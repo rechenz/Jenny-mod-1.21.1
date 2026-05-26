@@ -1,0 +1,547 @@
+Summary for E:\game\mods\Fapcraft 1.12.2 v1.1.jar
+Decompiled with CFR 0.152
+
+
+com.trolmastercard.sexmod.Main
+----------------------------
+
+setConfigs()
+  Exception : org.benf.cfr.reader.util.ConfusedCFRException: Tried to end blocks [0[TRYBLOCK]], but top level block is 20[UNCONDITIONALDOLOOP]
+
+
+com.trolmastercard.sexmod.c
+----------------------------
+
+a()
+  Loose catch block
+
+
+com.trolmastercard.sexmod.fe
+----------------------------
+
+a(net.minecraft.item.ItemStack com.trolmastercard.sexmod.fe$b )
+  Exception : org.benf.cfr.reader.util.ConfusedCFRException: Tried to end blocks [2[TRYBLOCK]], but top level block is 11[SWITCH]
+a(int )
+  Exception : org.benf.cfr.reader.util.ConfusedCFRException: Tried to end blocks [0[TRYBLOCK]], but top level block is 1[SWITCH]
+
+
+com.trolmastercard.sexmod.g
+----------------------------
+
+a(com.trolmastercard.sexmod.f$a )
+  Unable to fully structure code
+
+
+com.trolmastercard.sexmod.h
+----------------------------
+
+a(com.trolmastercard.sexmod.f$a )
+  Unable to fully structure code
+
+
+com.trolmastercard.sexmod.br
+----------------------------
+
+f()
+  Unable to fully structure code
+a(java.io.File )
+  Exception : org.benf.cfr.reader.util.ConfusedCFRException: Tried to end blocks [0[TRYBLOCK]], but top level block is 14[UNCONDITIONALDOLOOP]
+<init>(java.io.File java.lang.String )
+  Could not resolve type clashes
+  Unable to fully structure code
+
+
+com.trolmastercard.sexmod.cu
+----------------------------
+
+a(com.trolmastercard.sexmod.cu net.minecraftforge.fml.common.network.simpleimpl.MessageContext )
+  Loose catch block
+
+
+com.trolmastercard.sexmod.l
+----------------------------
+
+a(net.minecraftforge.client.event.RenderPlayerEvent$Pre )
+  Loose catch block
+a(net.minecraftforge.client.event.RenderHandEvent )
+  Loose catch block
+
+
+com.trolmastercard.sexmod.q
+----------------------------
+
+a(net.minecraftforge.fml.common.gameevent.PlayerEvent$PlayerLoggedOutEvent )
+  Unable to fully structure code
+
+
+com.trolmastercard.sexmod.ev
+----------------------------
+
+a(software.bernie.geckolib3.core.event.predicate.AnimationEvent<E> )
+  Exception : org.benf.cfr.reader.util.ConfusedCFRException: Tried to end blocks [1[TRYBLOCK]], but top level block is 6[SWITCH]
+
+
+com.trolmastercard.sexmod.e5
+----------------------------
+
+a(software.bernie.geckolib3.core.event.predicate.AnimationEvent<E> )
+  Exception : org.benf.cfr.reader.util.ConfusedCFRException: Tried to end blocks [1[TRYBLOCK]], but top level block is 6[SWITCH]
+
+
+com.trolmastercard.sexmod.dv
+----------------------------
+
+a(boolean net.minecraft.item.ItemStack )
+  Exception : org.benf.cfr.reader.util.ConfusedCFRException: Tried to end blocks [0[TRYBLOCK]], but top level block is 2[SWITCH]
+
+
+com.trolmastercard.sexmod.ap
+----------------------------
+
+a(net.minecraftforge.event.entity.player.PlayerInteractEvent$RightClickItem )
+  Loose catch block
+
+
+com.trolmastercard.sexmod.fz
+----------------------------
+
+a(software.bernie.geckolib3.core.event.predicate.AnimationEvent<E> )
+  Exception : org.benf.cfr.reader.util.ConfusedCFRException: Tried to end blocks [1[TRYBLOCK]], but top level block is 6[SWITCH]
+
+
+com.trolmastercard.sexmod.e9
+----------------------------
+
+a(software.bernie.geckolib3.core.event.predicate.AnimationEvent<E> )
+  Exception : org.benf.cfr.reader.util.ConfusedCFRException: Tried to end blocks [0[TRYBLOCK]], but top level block is 4[SWITCH]
+
+
+com.trolmastercard.sexmod.e0
+----------------------------
+
+func_70619_bc()
+  Unable to fully structure code
+a(java.lang.String java.util.UUID )
+  Exception : org.benf.cfr.reader.util.ConfusedCFRException: Tried to end blocks [0[TRYBLOCK]], but top level block is 2[SWITCH]
+U()
+  Exception : org.benf.cfr.reader.util.ConfusedCFRException: Tried to end blocks [0[TRYBLOCK]], but top level block is 3[SWITCH]
+a(software.bernie.geckolib3.core.event.predicate.AnimationEvent<E> )
+  Exception : org.benf.cfr.reader.util.ConfusedCFRException: Tried to end blocks [1[TRYBLOCK]], but top level block is 10[SWITCH]
+
+
+com.trolmastercard.sexmod.eg
+----------------------------
+
+a(software.bernie.geckolib3.core.event.predicate.AnimationEvent<E> )
+  Exception : org.benf.cfr.reader.util.ConfusedCFRException: Tried to end blocks [0[TRYBLOCK]], but top level block is 16[SWITCH]
+
+
+com.trolmastercard.sexmod.em
+----------------------------
+
+a(int int int float )
+  Exception : org.benf.cfr.reader.util.ConfusedCFRException: Tried to end blocks [6[DOLOOP]], but top level block is 2[TRYBLOCK]
+
+
+com.trolmastercard.sexmod.d_
+----------------------------
+
+renderRecursively(net.minecraft.client.renderer.BufferBuilder software.bernie.geckolib3.geo.render.built.GeoBone float float float float )
+  Could not resolve type clashes
+  Loose catch block
+a()
+  Exception : org.benf.cfr.reader.util.ConfusedCFRException: Tried to end blocks [0[TRYBLOCK]], but top level block is 2[SWITCH]
+b(net.minecraft.client.renderer.BufferBuilder software.bernie.geckolib3.geo.render.built.GeoBone )
+  Exception : org.benf.cfr.reader.util.ConfusedCFRException: Tried to end blocks [1[TRYBLOCK]], but top level block is 3[SWITCH]
+a(net.minecraft.util.math.Vec3d net.minecraft.util.math.Vec3d net.minecraft.world.World )
+  Exception : org.benf.cfr.reader.util.ConfusedCFRException: Tried to end blocks [54[UNCONDITIONALDOLOOP]], but top level block is 25[TRYBLOCK]
+
+
+com.trolmastercard.sexmod.el
+----------------------------
+
+a(java.lang.String java.util.UUID )
+  Exception : org.benf.cfr.reader.util.ConfusedCFRException: Tried to end blocks [0[TRYBLOCK]], but top level block is 2[SWITCH]
+a(software.bernie.geckolib3.core.event.predicate.AnimationEvent<E> )
+  Exception : org.benf.cfr.reader.util.ConfusedCFRException: Tried to end blocks [1[TRYBLOCK]], but top level block is 11[SWITCH]
+
+
+com.trolmastercard.sexmod.ee
+----------------------------
+
+a(software.bernie.geckolib3.core.event.predicate.AnimationEvent<E> )
+  Exception : org.benf.cfr.reader.util.ConfusedCFRException: Tried to end blocks [0[TRYBLOCK]], but top level block is 20[SWITCH]
+
+
+com.trolmastercard.sexmod.dl
+----------------------------
+
+a(boolean net.minecraft.item.ItemStack )
+  Exception : org.benf.cfr.reader.util.ConfusedCFRException: Tried to end blocks [0[TRYBLOCK]], but top level block is 3[SWITCH]
+
+
+com.trolmastercard.sexmod.f_
+----------------------------
+
+C()
+  Exception : org.benf.cfr.reader.util.ConfusedCFRException: Tried to end blocks [1[TRYBLOCK]], but top level block is 2[SWITCH]
+v()
+  Exception : org.benf.cfr.reader.util.ConfusedCFRException: Tried to end blocks [2[TRYBLOCK]], but top level block is 3[SWITCH]
+z()
+  Exception : org.benf.cfr.reader.util.ConfusedCFRException: Tried to end blocks [14[DOLOOP]], but top level block is 6[TRYBLOCK]
+a(software.bernie.geckolib3.core.event.predicate.AnimationEvent<E> )
+  Exception : org.benf.cfr.reader.util.ConfusedCFRException: Tried to end blocks [9[TRYBLOCK]], but top level block is 17[SWITCH]
+
+
+com.trolmastercard.sexmod.cb
+----------------------------
+
+a(com.trolmastercard.sexmod.em )
+  Exception : org.benf.cfr.reader.util.ConfusedCFRException: Tried to end blocks [1[TRYBLOCK]], but top level block is 2[SWITCH]
+
+
+com.trolmastercard.sexmod.da
+----------------------------
+
+a(software.bernie.geckolib3.geo.render.built.GeoModel net.minecraft.client.renderer.BufferBuilder com.trolmastercard.sexmod.f_ float float float float float )
+  Exception : org.benf.cfr.reader.util.ConfusedCFRException: Tried to end blocks [0[TRYBLOCK]], but top level block is 3[SWITCH]
+a(net.minecraft.client.renderer.BufferBuilder java.lang.String software.bernie.geckolib3.geo.render.built.GeoBone )
+  Exception : org.benf.cfr.reader.util.ConfusedCFRException: Tried to end blocks [0[TRYBLOCK]], but top level block is 13[SWITCH]
+
+
+com.trolmastercard.sexmod.er
+----------------------------
+
+b()
+  Exception : org.benf.cfr.reader.util.ConfusedCFRException: Extractable last case doesn't follow previous, and can't clone.
+a(software.bernie.geckolib3.core.event.predicate.AnimationEvent<E> )
+  Exception : org.benf.cfr.reader.util.ConfusedCFRException: Tried to end blocks [0[TRYBLOCK]], but top level block is 16[SWITCH]
+
+
+com.trolmastercard.sexmod.dx
+----------------------------
+
+a(java.lang.String float float float )
+  Exception : org.benf.cfr.reader.util.ConfusedCFRException: Tried to end blocks [2[TRYBLOCK]], but top level block is 5[SWITCH]
+a(software.bernie.geckolib3.geo.render.built.GeoModel net.minecraft.client.renderer.BufferBuilder com.trolmastercard.sexmod.em float float float float float )
+  Exception : org.benf.cfr.reader.util.ConfusedCFRException: Tried to end blocks [0[TRYBLOCK]], but top level block is 2[SWITCH]
+
+
+com.trolmastercard.sexmod.cc
+----------------------------
+
+b(net.minecraft.entity.player.EntityPlayer long long )
+  Loose catch block
+
+
+com.trolmastercard.sexmod.am
+----------------------------
+
+b(net.minecraftforge.client.event.RenderWorldLastEvent )
+  Loose catch block
+a(net.minecraftforge.client.event.RenderHandEvent )
+  Loose catch block
+a(net.minecraftforge.client.event.RenderPlayerEvent$Pre )
+  Loose catch block
+
+
+com.trolmastercard.sexmod.e3
+----------------------------
+
+g(int )
+  Exception : org.benf.cfr.reader.util.ConfusedCFRException: Tried to end blocks [0[TRYBLOCK]], but top level block is 1[SWITCH]
+c(com.trolmastercard.sexmod.fp )
+  Exception : org.benf.cfr.reader.util.ConfusedCFRException: Tried to end blocks [0[TRYBLOCK]], but top level block is 1[SWITCH]
+a(com.trolmastercard.sexmod.fp )
+  Exception : org.benf.cfr.reader.util.ConfusedCFRException: Tried to end blocks [0[TRYBLOCK]], but top level block is 1[SWITCH]
+a(software.bernie.geckolib3.core.event.predicate.AnimationEvent<E> )
+  Exception : org.benf.cfr.reader.util.ConfusedCFRException: Tried to end blocks [2[TRYBLOCK]], but top level block is 19[SWITCH]
+a(net.minecraftforge.fml.common.gameevent.TickEvent$ClientTickEvent )
+  Exception : org.benf.cfr.reader.util.ConfusedCFRException: Started 2 blocks at once
+
+
+com.trolmastercard.sexmod.ci
+----------------------------
+
+a(com.trolmastercard.sexmod.em software.bernie.geckolib3.core.processor.IBone )
+  Exception : org.benf.cfr.reader.util.ConfusedCFRException: Tried to end blocks [2[TRYBLOCK]], but top level block is 7[SWITCH]
+
+
+com.trolmastercard.sexmod.dy
+----------------------------
+
+a(com.trolmastercard.sexmod.e3 double double double float float )
+  Unable to fully structure code
+a(net.minecraft.client.renderer.BufferBuilder java.lang.String software.bernie.geckolib3.geo.render.built.GeoBone )
+  Exception : org.benf.cfr.reader.util.ConfusedCFRException: Tried to end blocks [2[TRYBLOCK]], but top level block is 5[SWITCH]
+
+
+com.trolmastercard.sexmod.gn
+----------------------------
+
+func_184881_a(net.minecraft.server.MinecraftServer net.minecraft.command.ICommandSender java.lang.String[] )
+  Loose catch block
+
+
+com.trolmastercard.sexmod.eq
+----------------------------
+
+c(com.trolmastercard.sexmod.fp )
+  Exception : org.benf.cfr.reader.util.ConfusedCFRException: Tried to end blocks [0[TRYBLOCK]], but top level block is 1[SWITCH]
+a(com.trolmastercard.sexmod.fp )
+  Exception : org.benf.cfr.reader.util.ConfusedCFRException: Tried to end blocks [0[TRYBLOCK]], but top level block is 1[SWITCH]
+a(software.bernie.geckolib3.core.event.predicate.AnimationEvent<E> )
+  Exception : org.benf.cfr.reader.util.ConfusedCFRException: Tried to end blocks [1[TRYBLOCK]], but top level block is 23[SWITCH]
+
+
+com.trolmastercard.sexmod.dg
+----------------------------
+
+a(java.lang.String software.bernie.geckolib3.geo.render.built.GeoBone )
+  Exception : org.benf.cfr.reader.util.ConfusedCFRException: Tried to end blocks [1[TRYBLOCK]], but top level block is 4[SWITCH]
+a(com.trolmastercard.sexmod.em double double double float float )
+  Unable to fully structure code
+e(com.trolmastercard.sexmod.em )
+  Exception : org.benf.cfr.reader.util.ConfusedCFRException: Tried to end blocks [8[TRYBLOCK]], but top level block is 9[SWITCH]
+
+
+com.trolmastercard.sexmod.ex
+----------------------------
+
+c(com.trolmastercard.sexmod.fp )
+  Exception : org.benf.cfr.reader.util.ConfusedCFRException: Tried to end blocks [0[TRYBLOCK]], but top level block is 2[SWITCH]
+U()
+  Exception : org.benf.cfr.reader.util.ConfusedCFRException: Tried to end blocks [0[TRYBLOCK]], but top level block is 6[SWITCH]
+a(software.bernie.geckolib3.core.event.predicate.AnimationEvent<E> )
+  Exception : org.benf.cfr.reader.util.ConfusedCFRException: Tried to end blocks [1[TRYBLOCK]], but top level block is 12[SWITCH]
+
+
+com.trolmastercard.sexmod.es
+----------------------------
+
+c(com.trolmastercard.sexmod.fp )
+  Exception : org.benf.cfr.reader.util.ConfusedCFRException: Tried to end blocks [0[TRYBLOCK]], but top level block is 2[SWITCH]
+a(software.bernie.geckolib3.core.event.predicate.AnimationEvent<E> )
+  Exception : org.benf.cfr.reader.util.ConfusedCFRException: Tried to end blocks [0[TRYBLOCK]], but top level block is 17[SWITCH]
+
+
+com.trolmastercard.sexmod.ff
+----------------------------
+
+a(java.util.List<java.lang.Integer> )
+  Exception : org.benf.cfr.reader.util.ConfusedCFRException: Tried to end blocks [0[TRYBLOCK]], but top level block is 2[SWITCH]
+m()
+  Exception : org.benf.cfr.reader.util.ConfusedCFRException: Tried to end blocks [1[TRYBLOCK]], but top level block is 2[SWITCH]
+g(int )
+  Exception : org.benf.cfr.reader.util.ConfusedCFRException: Tried to end blocks [0[TRYBLOCK]], but top level block is 1[SWITCH]
+b(java.util.UUID )
+  Exception : org.benf.cfr.reader.util.ConfusedCFRException: Tried to end blocks [3[TRYBLOCK]], but top level block is 6[SWITCH]
+r(java.util.UUID )
+  Exception : org.benf.cfr.reader.util.ConfusedCFRException: Tried to end blocks [6[DOLOOP]], but top level block is 1[TRYBLOCK]
+a(com.trolmastercard.sexmod.bs java.util.UUID )
+  Exception : org.benf.cfr.reader.util.ConfusedCFRException: Tried to end blocks [2[TRYBLOCK]], but top level block is 23[SWITCH]
+a(java.util.UUID com.trolmastercard.sexmod.bs net.minecraft.util.math.BlockPos )
+  Exception : org.benf.cfr.reader.util.ConfusedCFRException: Tried to end blocks [2[TRYBLOCK]], but top level block is 5[SWITCH]
+a(java.util.UUID net.minecraft.util.math.BlockPos com.trolmastercard.sexmod.bs )
+  Could not resolve type clashes
+  Loose catch block
+a(software.bernie.geckolib3.core.event.predicate.AnimationEvent<E> )
+  Exception : org.benf.cfr.reader.util.ConfusedCFRException: Tried to end blocks [2[TRYBLOCK]], but top level block is 18[SWITCH]
+
+
+com.trolmastercard.sexmod.c9
+----------------------------
+
+a(com.trolmastercard.sexmod.em java.lang.Integer software.bernie.geckolib3.core.event.predicate.AnimationEvent )
+  Exception : org.benf.cfr.reader.util.ConfusedCFRException: Tried to end blocks [5[TRYBLOCK]], but top level block is 6[SWITCH]
+a(com.trolmastercard.sexmod.em software.bernie.geckolib3.core.processor.AnimationProcessor java.lang.String )
+  Exception : org.benf.cfr.reader.util.ConfusedCFRException: Tried to end blocks [0[TRYBLOCK]], but top level block is 2[SWITCH]
+a(com.trolmastercard.sexmod.em software.bernie.geckolib3.core.processor.AnimationProcessor software.bernie.geckolib3.core.event.predicate.AnimationEvent )
+  Exception : org.benf.cfr.reader.util.ConfusedCFRException: Tried to end blocks [2[TRYBLOCK]], but top level block is 7[SWITCH]
+
+
+com.trolmastercard.sexmod.dj
+----------------------------
+
+a(net.minecraft.item.ItemStack )
+  Exception : org.benf.cfr.reader.util.ConfusedCFRException: Tried to end blocks [1[TRYBLOCK]], but top level block is 3[SWITCH]
+
+
+com.trolmastercard.sexmod.e7
+----------------------------
+
+a(java.util.List<java.lang.Integer> )
+  Exception : org.benf.cfr.reader.util.ConfusedCFRException: Tried to end blocks [0[TRYBLOCK]], but top level block is 2[SWITCH]
+a(software.bernie.geckolib3.core.event.predicate.AnimationEvent<E> )
+  Exception : org.benf.cfr.reader.util.ConfusedCFRException: Tried to end blocks [1[TRYBLOCK]], but top level block is 19[SWITCH]
+
+
+com.trolmastercard.sexmod.eb
+----------------------------
+
+U()
+  Exception : org.benf.cfr.reader.util.ConfusedCFRException: Tried to end blocks [0[TRYBLOCK]], but top level block is 5[SWITCH]
+a(software.bernie.geckolib3.core.event.predicate.AnimationEvent<E> )
+  Exception : org.benf.cfr.reader.util.ConfusedCFRException: Tried to end blocks [1[TRYBLOCK]], but top level block is 13[SWITCH]
+
+
+com.trolmastercard.sexmod.dp
+----------------------------
+
+a(net.minecraft.client.renderer.BufferBuilder java.lang.String software.bernie.geckolib3.geo.render.built.GeoBone )
+  Exception : org.benf.cfr.reader.util.ConfusedCFRException: Tried to end blocks [1[TRYBLOCK]], but top level block is 8[SWITCH]
+
+
+com.trolmastercard.sexmod.ed
+----------------------------
+
+a(software.bernie.geckolib3.core.event.predicate.AnimationEvent<E> )
+  Exception : org.benf.cfr.reader.util.ConfusedCFRException: Tried to end blocks [0[TRYBLOCK]], but top level block is 17[SWITCH]
+
+
+com.trolmastercard.sexmod.di
+----------------------------
+
+a(java.lang.String software.bernie.geckolib3.geo.render.built.GeoBone )
+  Exception : org.benf.cfr.reader.util.ConfusedCFRException: Tried to end blocks [1[TRYBLOCK]], but top level block is 5[SWITCH]
+a(boolean net.minecraft.item.ItemStack )
+  Exception : org.benf.cfr.reader.util.ConfusedCFRException: Tried to end blocks [0[TRYBLOCK]], but top level block is 2[SWITCH]
+
+
+com.trolmastercard.sexmod.f8
+----------------------------
+
+a(software.bernie.geckolib3.core.event.predicate.AnimationEvent<E> )
+  Exception : org.benf.cfr.reader.util.ConfusedCFRException: Tried to end blocks [7[TRYBLOCK]], but top level block is 10[SWITCH]
+
+
+com.trolmastercard.sexmod.ce
+----------------------------
+
+a(com.trolmastercard.sexmod.f8 com.trolmastercard.sexmod.f_ software.bernie.geckolib3.core.processor.IBone software.bernie.geckolib3.core.processor.IBone software.bernie.geckolib3.core.processor.AnimationProcessor )
+  Unable to fully structure code
+
+
+com.trolmastercard.sexmod.dh
+----------------------------
+
+a(software.bernie.geckolib3.geo.render.built.GeoModel net.minecraft.client.renderer.BufferBuilder com.trolmastercard.sexmod.f8 float float float float float )
+  Exception : org.benf.cfr.reader.util.ConfusedCFRException: Tried to end blocks [1[TRYBLOCK]], but top level block is 3[SWITCH]
+
+
+com.trolmastercard.sexmod.ec
+----------------------------
+
+a(software.bernie.geckolib3.core.event.predicate.AnimationEvent<E> )
+  Exception : org.benf.cfr.reader.util.ConfusedCFRException: Tried to end blocks [0[TRYBLOCK]], but top level block is 17[SWITCH]
+
+
+com.trolmastercard.sexmod.d5
+----------------------------
+
+a(boolean net.minecraft.item.ItemStack )
+  Exception : org.benf.cfr.reader.util.ConfusedCFRException: Tried to end blocks [0[TRYBLOCK]], but top level block is 2[SWITCH]
+
+
+com.trolmastercard.sexmod.fn
+----------------------------
+
+a(software.bernie.geckolib3.core.event.predicate.AnimationEvent<E> )
+  Exception : org.benf.cfr.reader.util.ConfusedCFRException: Tried to end blocks [1[TRYBLOCK]], but top level block is 7[SWITCH]
+
+
+com.trolmastercard.sexmod.ay
+----------------------------
+
+a(net.minecraft.util.math.Vec3d double )
+  Loose catch block
+func_70071_h_()
+  Unable to fully structure code
+
+
+com.trolmastercard.sexmod.dc
+----------------------------
+
+a(java.util.UUID java.util.UUID boolean boolean )
+  Exception : org.benf.cfr.reader.util.ConfusedCFRException: Tried to end blocks [0[TRYBLOCK]], but top level block is 17[WHILELOOP]
+
+
+com.trolmastercard.sexmod.gz
+----------------------------
+
+a(com.trolmastercard.sexmod.gz net.minecraftforge.fml.common.network.simpleimpl.MessageContext )
+  Unable to fully structure code
+
+
+com.trolmastercard.sexmod.ei
+----------------------------
+
+C()
+  Exception : org.benf.cfr.reader.util.ConfusedCFRException: Started 2 blocks at once
+
+
+com.trolmastercard.sexmod.dm
+----------------------------
+
+renderRecursively(net.minecraft.client.renderer.BufferBuilder software.bernie.geckolib3.geo.render.built.GeoBone float float float float )
+  Could not resolve type clashes
+  Unable to fully structure code
+a(net.minecraft.client.renderer.BufferBuilder software.bernie.geckolib3.geo.render.built.GeoBone boolean )
+  Exception : org.benf.cfr.reader.util.ConfusedCFRException: Tried to end blocks [1[TRYBLOCK]], but top level block is 5[SWITCH]
+
+
+com.trolmastercard.sexmod.d9
+----------------------------
+
+renderRecursively(net.minecraft.client.renderer.BufferBuilder software.bernie.geckolib3.geo.render.built.GeoBone float float float float )
+  Could not resolve type clashes
+  Unable to fully structure code
+
+
+com.trolmastercard.sexmod.et
+----------------------------
+
+a()
+  Loose catch block
+getServerGuiElement(int net.minecraft.entity.player.EntityPlayer net.minecraft.world.World int int int )
+  Loose catch block
+getClientGuiElement(int net.minecraft.entity.player.EntityPlayer net.minecraft.world.World int int int )
+  Loose catch block
+
+
+software.bernie.shadowed.fasterxml.jackson.core.io.UTF8Writer
+----------------------------
+
+write(char[] int int )
+  Unable to fully structure code
+write(java.lang.String int int )
+  Unable to fully structure code
+
+
+software.bernie.shadowed.fasterxml.jackson.databind.deser.std.BaseNodeDeserializer
+----------------------------
+
+updateObject(software.bernie.shadowed.fasterxml.jackson.core.JsonParser software.bernie.shadowed.fasterxml.jackson.databind.DeserializationContext software.bernie.shadowed.fasterxml.jackson.databind.node.ObjectNode )
+  Unable to fully structure code
+  Could not resolve type clashes
+
+
+software.bernie.shadowed.fasterxml.jackson.databind.type.TypeFactory
+----------------------------
+
+constructSpecializedType(software.bernie.shadowed.fasterxml.jackson.databind.JavaType java.lang.Class<?> )
+  Unable to fully structure code
+
+
+org.apache.commons.lang3.CharSequenceUtils
+----------------------------
+
+lastIndexOf(java.lang.CharSequence java.lang.CharSequence int )
+  Unable to fully structure code
+
+
+org.apache.commons.lang3.text.ExtendedMessageFormat
+----------------------------
+
+readArgumentIndex(java.lang.String java.text.ParsePosition )
+  Unable to fully structure code

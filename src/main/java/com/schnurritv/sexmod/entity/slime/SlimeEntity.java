@@ -28,7 +28,7 @@ public class SlimeEntity extends BaseGirlEntity {
             case MISSIONARY_SLOW, BLOWJOBSUCK    -> "animation." + p + ".doggyslow";
             case MISSIONARY_FAST, BLOWJOBTHRUST  -> "animation." + p + ".doggyfast";
             case MISSIONARY_CUM, BLOWJOBCUM      -> "animation." + p + ".doggycum";
-            case PAIZURI_START                   -> "animation." + p + ".blowjobstart";
+            case PAIZURI_START                   -> "animation." + p + ".blowjobsuck";
             case PAIZURI_SLOW                    -> "animation." + p + ".blowjobsuck";
             case PAIZURI_FAST                    -> "animation." + p + ".blowjobthrust";
             case PAIZURI_CUM                     -> "animation." + p + ".blowjobcum";

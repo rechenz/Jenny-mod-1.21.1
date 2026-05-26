@@ -29,6 +29,8 @@ public class ModEventBusEvents {
         event.put(EntityRegistry.LUCY.get(), SexEntity.createAttributes().build());
         event.put(EntityRegistry.MIKA.get(), SexEntity.createAttributes().build());
         event.put(EntityRegistry.MOMO.get(), SexEntity.createAttributes().build());
+        // Kobold Egg
+        event.put(com.schnurritv.sexmod.entity.kobold.KoboldEntityRegistry.KOBOLD_EGG.get(), SexEntity.createAttributes().build());
     }
 
     @Mod.EventBusSubscriber(modid = Main.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
@@ -49,6 +51,9 @@ public class ModEventBusEvents {
             event.registerEntityRenderer(EntityRegistry.LUCY.get(), ctx -> new GirlRenderer<>(ctx, "lucy"));
             event.registerEntityRenderer(EntityRegistry.MIKA.get(), ctx -> new GirlRenderer<>(ctx, "mika"));
             event.registerEntityRenderer(EntityRegistry.MOMO.get(), ctx -> new GirlRenderer<>(ctx, "momo"));
+            // Kobold Egg renderer
+            event.registerEntityRenderer(com.schnurritv.sexmod.entity.kobold.KoboldEntityRegistry.KOBOLD_EGG.get(),
+                    com.schnurritv.sexmod.client.renderer.KoboldEggRenderer::new);
         }
     }
 }

@@ -4,6 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.schnurritv.sexmod.SexModConfig;
 import com.schnurritv.sexmod.entity.BaseGirlEntity;
 import com.schnurritv.sexmod.entity.SexEntity;
+import com.schnurritv.sexmod.entity.SexFighterEntity;
 import com.schnurritv.sexmod.networking.NetworkHandler;
 import com.schnurritv.sexmod.relationship.AffectionData;
 import com.schnurritv.sexmod.relationship.DialogueDB;
@@ -28,6 +29,7 @@ import java.util.Random;
  * │  │ 🎁 Give Gift                     │ │  ← Action list (vertical, scrollable)
  * │  │ 👣 Follow / Stay                 │ │
  * │  │ 📋 Quest: Bring 5 Iron Ingots    │ │
+ * │  │ ⚔ Equipment                      │ │  ← NEW: for SexFighterEntity
  * │  │ 🔞 Missionary     [❤ 30]         │ │
  * │  │ 🔞 Doggy           [❤ 60] 🔒    │ │
  * │  └──────────────────────────────────┘ │
@@ -52,6 +54,7 @@ public class InteractionScreen extends Screen {
     private static final int COLOR_SCENE      = 0xFF883355;
     private static final int COLOR_SCENE_LOCK = 0xFF553344;
     private static final int COLOR_QUEST      = 0xFF446688;
+    private static final int COLOR_EQUIP       = 0xFF558855;
 
     private String dialogueText;
 
@@ -100,6 +103,11 @@ public class InteractionScreen extends Screen {
             actions.add(new Action(label + lockText, ActionType.CLOTHING, !clothingUnlocked));
         }
 
+        // ── Equipment (SexFighterEntity only) ──
+        if (girl instanceof SexFighterEntity) {
+            actions.add(new Action("⚔ Equipment", ActionType.EQUIPMENT, false));
+        }
+
         // Quest
         boolean hasQuest = girl.getQuestManager().hasActiveQuest();
         QuestManager.Quest q = girl.getQuestManager().getActiveQuest();
@@ -107,20 +115,30 @@ public class InteractionScreen extends Screen {
             String questLabel;
             QuestManager gm = girl.getQuestManager();
             switch (q.type()) {
-                case KILL:
-                    questLabel = "📋 Quest: @KILL@ " + q.description() + " (" + gm.getProgress() + "/" + q.targetCount() + ")";
+                case KILL: {
+                    int remaining = q.targetCount() - gm.getProgress();
+                    questLabel = "📋 ⚔ Kill " + remaining + " more " + friendlyMobName(q.targetMob());
                     break;
+                }
                 case ESCORT:
-                    questLabel = "📋 Quest: @ESCORT@ " + q.description();
+                    questLabel = "📋 👣 Escort to " + friendlyDestName(q.escortDestination());
                     break;
-                case DEFEND:
-                    questLabel = "📋 Quest: @DEFEND@ " + q.description();
+                case DEFEND: {
+                    int wave = gm.getDefendWave();
+                    int total = q.defendWaveCount();
+                    if (wave == 0) {
+                        questLabel = "📋 🛡 Defend: Wave 1/" + total + " (talk to start!)";
+                    } else {
+                        questLabel = "📋 🛡 Defend: Wave " + wave + "/" + total + " (" + gm.getDefendMobsRemaining() + " mobs)";
+                    }
                     break;
+                }
                 default:
-                    questLabel = "📋 Quest: " + q.description() + " (" + gm.getProgress() + "/" + q.targetCount() + ")";
+                    questLabel = "📋 " + q.description() + " (" + gm.getProgress() + "/" + q.targetCount() + ")";
                     break;
             }
             actions.add(new Action(questLabel, ActionType.QUEST_TURNIN, false));
+            actions.add(new Action("🗑 Abandon Quest", ActionType.QUEST_ABANDON, false));
         } else {
             actions.add(new Action("📋 Ask for a quest", ActionType.QUEST_START, false));
         }
@@ -128,6 +146,17 @@ public class InteractionScreen extends Screen {
         // Goblin: stolen items retrieval
         if (girl instanceof com.schnurritv.sexmod.entity.goblin.GoblinEntity goblin && goblin.getStealCount() > 0) {
             actions.add(new Action("💰 Return Stolen Items (" + goblin.getStealCount() + ")", ActionType.RETURN_ITEMS, false));
+        }
+
+        // Cat: Head pat
+        if (girl instanceof com.schnurritv.sexmod.entity.cat.CatEntity) {
+            boolean headPatUnlocked = aff >= 10;
+            String headPatLabel = "😺 Head Pat";
+            if (headPatUnlocked) {
+                actions.add(new Action(headPatLabel, ActionType.HEAD_PAT, false));
+            } else {
+                actions.add(new Action(headPatLabel + "  [❤ 10]", ActionType.HEAD_PAT, true));
+            }
         }
 
                 // ---- Scenes (character-specific) ----
@@ -179,8 +208,9 @@ public class InteractionScreen extends Screen {
 
     private record Action(String label, ActionType type, boolean locked) {}
     private enum ActionType {
-        FOLLOW, STAY, GIFT, CLOTHING, SCENE_MISSIONARY, SCENE_DOGGY, SCENE_BLOWJOB, SCENE_BOOBJOB,
-        SCENE_STOP, SCENE_LOCKED, QUEST_START, QUEST_TURNIN, RETURN_ITEMS, NONE
+        FOLLOW, STAY, GIFT, CLOTHING, EQUIPMENT,
+        SCENE_MISSIONARY, SCENE_DOGGY, SCENE_BLOWJOB, SCENE_BOOBJOB,
+        SCENE_STOP, SCENE_LOCKED, QUEST_START, QUEST_TURNIN, QUEST_ABANDON, RETURN_ITEMS, HEAD_PAT, NONE
     }
 
     @Override
@@ -268,6 +298,8 @@ public class InteractionScreen extends Screen {
                 bgColor = switch (action.type()) {
                     case SCENE_MISSIONARY, SCENE_DOGGY, SCENE_BLOWJOB, SCENE_BOOBJOB -> COLOR_SCENE;
                     case QUEST_START, QUEST_TURNIN -> COLOR_QUEST;
+                    case EQUIPMENT -> COLOR_EQUIP;
+                    case HEAD_PAT -> 0xFF553322;
                     default -> COLOR_PANEL;
                 };
             }
@@ -316,7 +348,13 @@ public class InteractionScreen extends Screen {
         if (hoveredIndex >= 0) {
             List<Action> actions = getActions();
             if (hoveredIndex < actions.size()) {
-                executeAction(actions.get(hoveredIndex));
+                Action a = actions.get(hoveredIndex);
+                // EQUIPMENT opens a sub-screen, don't close the main screen yet
+                if (a.type() == ActionType.EQUIPMENT) {
+                    executeAction(a);
+                    return true;
+                }
+                executeAction(a);
             }
         }
         this.onClose();
@@ -341,6 +379,12 @@ public class InteractionScreen extends Screen {
                 player.displayClientMessage(Component.literal(
                     "§dShe likes: Diamond, Emerald, flowers, or special mod gifts."), false);
             }
+            case EQUIPMENT -> {
+                // Open equipment screen if the girl is a fighter
+                if (girl instanceof SexFighterEntity fighter && !girl.getEntityData().get(SexEntity.IS_LOCKED)) {
+                    net.minecraft.client.Minecraft.getInstance().setScreen(new EquipmentScreen(fighter));
+                }
+            }
             case SCENE_MISSIONARY -> {
                 if (girl.hasSingleUnifiedScene()) {
                     NetworkHandler.sendSceneAction(girl.getId(), "Blowjob");
@@ -364,6 +408,14 @@ public class InteractionScreen extends Screen {
                 // Try to turn in quest items
                 NetworkHandler.sendSceneAction(girl.getId(), "QuestTurnin");
             }
+            case QUEST_ABANDON -> {
+                // Abandon current quest
+                NetworkHandler.sendSceneAction(girl.getId(), "QuestAbandon");
+            }
+            case HEAD_PAT -> {
+                NetworkHandler.sendSceneAction(girl.getId(), "HeadPat");
+                this.onClose();
+            }
             case RETURN_ITEMS -> {
                 // Send to server to handle
                 NetworkHandler.sendSceneAction(girl.getId(), "ReturnItems");
@@ -381,5 +433,28 @@ public class InteractionScreen extends Screen {
     @Override
     public boolean isPauseScreen() {
         return false;
+    }
+
+    // Utility for friendly names
+    private static String friendlyMobName(String mobKey) {
+        if (mobKey == null || mobKey.isEmpty()) return "Mobs";
+        return switch (mobKey.toUpperCase()) {
+            case "ZOMBIE" -> "Zombies";
+            case "SKELETON" -> "Skeletons";
+            case "SPIDER" -> "Spiders";
+            case "ENDERMAN" -> "Endermen";
+            case "WITHER_SKELETON" -> "Wither Skeletons";
+            case "CREEPER" -> "Creepers";
+            default -> mobKey;
+        };
+    }
+
+    private static String friendlyDestName(String dest) {
+        return switch (dest) {
+            case "BEACH" -> "a Beach/Ocean";
+            case "DEEP_CAVE" -> "Deep Cave (Y<30)";
+            case "FLOWER_FOREST" -> "Flower Forest";
+            default -> dest;
+        };
     }
 }

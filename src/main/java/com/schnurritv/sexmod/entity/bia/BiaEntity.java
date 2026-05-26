@@ -1,5 +1,5 @@
 package com.schnurritv.sexmod.entity.bia;
-import com.schnurritv.sexmod.entity.BaseGirlEntity;
+import com.schnurritv.sexmod.entity.SexFighterEntity;
 import com.schnurritv.sexmod.entity.SexModAnimation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.PathfinderMob;
@@ -8,7 +8,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 
-public class BiaEntity extends BaseGirlEntity {
+public class BiaEntity extends SexFighterEntity {
     public BiaEntity(EntityType<? extends PathfinderMob> type, Level level) { super(type, level); }
     @Override public String getGirlName() { return "bia"; }
     @Override public String getGeoFileName() { return "biadressed"; }

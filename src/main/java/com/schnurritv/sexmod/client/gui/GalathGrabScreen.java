@@ -37,6 +37,8 @@ public class GalathGrabScreen extends Screen {
     // Feedback
     private String feedbackText = "";
     private int feedbackTimer = 0;
+    // Track last sent escape progress to avoid duplicate taps
+    private int lastSentProgress = 0;
 
     private static final int COLOR_BG       = 0xE8221122;
     private static final int COLOR_PANEL    = 0xD0442244;
@@ -160,11 +162,13 @@ public class GalathGrabScreen extends Screen {
             if (escapeProgress > MAX_ESCAPE) escapeProgress = MAX_ESCAPE;
 
             // Send tap to server in batches (every 5 taps to reduce packet spam)
-            if (escapeProgress % 5 == 0 || escapeProgress >= MAX_ESCAPE) {
+            int newTaps = escapeProgress - lastSentProgress;
+            if (newTaps >= 5 || escapeProgress >= MAX_ESCAPE) {
                 NetworkHandler.INSTANCE.send(
                     new com.schnurritv.sexmod.networking.GalathGrabPacket(
-                        galath.getId(), 5),
+                        galath.getId(), newTaps),
                     net.minecraftforge.network.PacketDistributor.SERVER.noArg());
+                lastSentProgress = escapeProgress;
             }
         } else if (!anyDown) {
             isKeyDown = false;
@@ -174,11 +178,14 @@ public class GalathGrabScreen extends Screen {
 
         // Auto-close if fully escaped
         if (escapeProgress >= MAX_ESCAPE) {
-            // Send final taps
-            NetworkHandler.INSTANCE.send(
-                new com.schnurritv.sexmod.networking.GalathGrabPacket(
-                    galath.getId(), escapeProgress % 5 > 0 ? escapeProgress % 5 : 5),
-                net.minecraftforge.network.PacketDistributor.SERVER.noArg());
+            // Send any remaining taps
+            int finalTaps = escapeProgress - lastSentProgress;
+            if (finalTaps > 0) {
+                NetworkHandler.INSTANCE.send(
+                    new com.schnurritv.sexmod.networking.GalathGrabPacket(
+                        galath.getId(), finalTaps),
+                    net.minecraftforge.network.PacketDistributor.SERVER.noArg());
+            }
             this.onClose();
         }
 

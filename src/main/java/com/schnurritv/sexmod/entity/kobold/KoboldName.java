@@ -1,0 +1,17 @@
+package com.schnurritv.sexmod.entity.kobold;
+
+/**
+ * Kobold language names (50 unique names).
+ */
+public enum KoboldName {
+    Vags, Snis, Suk, Snok, Orpu,
+    Dovni, Ahza, Zarbu, Rupli, Kagri,
+    Nud, Gox, Vum, Snek, Aglo,
+    Givlu, Gukle, Vutu, Evni, Kakla,
+    Tuks, Nev, Kugs, Sneks, Vihli,
+    Snuppu, Sogi, Guldo, Durbi, Hikbu,
+    Guv, San, Ken, Nern, Zogni,
+    Ahze, Snoblo, Snoggi, Nutro, Vekda,
+    Morn, Snogs, Teg, Tigs, Rokko,
+    Oblu, Tihzi, Mohru, Sahsu, Mahlu;
+}

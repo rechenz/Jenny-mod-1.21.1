@@ -26,9 +26,14 @@ public class SexModMoveToTargetGoal extends Goal {
 
         String[] parts = targetPosStr.split("\\|");
         if (parts.length < 3) return false;
-        this.x = Double.parseDouble(parts[0]);
-        this.y = Double.parseDouble(parts[1]);
-        this.z = Double.parseDouble(parts[2]);
+        try {
+            this.x = Double.parseDouble(parts[0]);
+            this.y = Double.parseDouble(parts[1]);
+            this.z = Double.parseDouble(parts[2]);
+        } catch (NumberFormatException e) {
+            this.girl.getEntityData().set(com.schnurritv.sexmod.entity.SexEntity.TARGET_POS, "0|0|0");
+            return false;
+        }
 
         return this.girl.distanceToSqr(this.x, this.y, this.z) > 1.0D;
     }

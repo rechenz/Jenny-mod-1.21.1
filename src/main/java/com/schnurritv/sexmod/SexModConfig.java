@@ -164,16 +164,16 @@ public class SexModConfig {
         // ===========================================
         CLIENT_BUILDER.push("Camera Offsets");
         CLIENT_BUILDER.comment("Vertical (Y) and Distance (Z) camera offsets per scene.");
-        CAM_DOGGY_Y      = CLIENT_BUILDER.defineInRange("doggyY", 1.5, 0.0, 5.0);
-        CAM_DOGGY_Z      = CLIENT_BUILDER.defineInRange("doggyZ", 0.6, 0.0, 5.0);
-        CAM_MISSIONARY_Y = CLIENT_BUILDER.defineInRange("missionaryY", 1.7, 0.0, 5.0);
-        CAM_MISSIONARY_Z = CLIENT_BUILDER.defineInRange("missionaryZ", 0.7, 0.0, 5.0);
-        CAM_BLOWJOB_Y    = CLIENT_BUILDER.defineInRange("blowjobY", 1.2, 0.0, 5.0);
-        CAM_BLOWJOB_Z    = CLIENT_BUILDER.defineInRange("blowjobZ", 0.5, 0.0, 5.0);
-        CAM_PAIZURI_Y    = CLIENT_BUILDER.defineInRange("paizuriY", 1.4, 0.0, 5.0);
-        CAM_PAIZURI_Z    = CLIENT_BUILDER.defineInRange("paizuriZ", 0.6, 0.0, 5.0);
-        CAM_DEFAULT_Y    = CLIENT_BUILDER.defineInRange("defaultY", 1.5, 0.0, 5.0);
-        CAM_DEFAULT_Z    = CLIENT_BUILDER.defineInRange("defaultZ", 0.6, 0.0, 5.0);
+        CAM_DOGGY_Y      = CLIENT_BUILDER.defineInRange("doggyY", 1.5, 0.0, 10.0);
+        CAM_DOGGY_Z      = CLIENT_BUILDER.defineInRange("doggyZ", 0.6, 0.0, 10.0);
+        CAM_MISSIONARY_Y = CLIENT_BUILDER.defineInRange("missionaryY", 1.7, 0.0, 10.0);
+        CAM_MISSIONARY_Z = CLIENT_BUILDER.defineInRange("missionaryZ", 0.7, 0.0, 10.0);
+        CAM_BLOWJOB_Y    = CLIENT_BUILDER.defineInRange("blowjobY", 1.2, 0.0, 10.0);
+        CAM_BLOWJOB_Z    = CLIENT_BUILDER.defineInRange("blowjobZ", 0.5, 0.0, 10.0);
+        CAM_PAIZURI_Y    = CLIENT_BUILDER.defineInRange("paizuriY", 1.4, 0.0, 10.0);
+        CAM_PAIZURI_Z    = CLIENT_BUILDER.defineInRange("paizuriZ", 0.6, 0.0, 10.0);
+        CAM_DEFAULT_Y    = CLIENT_BUILDER.defineInRange("defaultY", 1.5, 0.0, 10.0);
+        CAM_DEFAULT_Z    = CLIENT_BUILDER.defineInRange("defaultZ", 0.6, 0.0, 10.0);
         CLIENT_BUILDER.pop();
 
         CLIENT_BUILDER.push("GUI");

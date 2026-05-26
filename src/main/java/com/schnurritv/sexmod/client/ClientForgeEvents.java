@@ -17,6 +17,8 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.lwjgl.glfw.GLFW;
 
+import java.lang.reflect.Method;
+
 @Mod.EventBusSubscriber(modid = Main.MODID, value = Dist.CLIENT)
 public class ClientForgeEvents {
 
@@ -57,6 +59,11 @@ public class ClientForgeEvents {
             if (partneredGirl != null) {
                 // Exit scene on Sneak
                 if (mc.options.keyShift.isDown()) {
+                    // Start camera transition before sending Stop
+                    Vec3 currentCam = mc.getEntityRenderDispatcher().camera != null
+                        ? mc.getEntityRenderDispatcher().camera.getPosition()
+                        : player.getEyePosition(1.0f);
+                    CameraTransitionHelper.startTransition(currentCam);
                     NetworkHandler.sendSceneAction(partneredGirl.getId(), "Stop");
                     return;
                 }
@@ -69,6 +76,9 @@ public class ClientForgeEvents {
             } else {
                 wasJumpDown = false;
             }
+
+            // Tick camera transition (smooth exit from scenes)
+            CameraTransitionHelper.tick();
         }
     }
 
@@ -78,8 +88,29 @@ public class ClientForgeEvents {
         CameraOffset(double y, double z) { this.y = y; this.z = z; }
     }
 
-    private static CameraOffset getCameraOffset(com.schnurritv.sexmod.entity.SexModAnimation anim) {
+    private static CameraOffset getCameraOffset(net.minecraft.world.entity.Entity girl, com.schnurritv.sexmod.entity.SexModAnimation anim) {
         String name = anim.name().toLowerCase();
+        
+        // Check character-specific offsets first
+        String girlName = (girl instanceof com.schnurritv.sexmod.entity.BaseGirlEntity bg) ? bg.getGirlName() : "";
+        
+        if (girlName.equals("bee")) {
+            // Bee uses unified sex_* animations; camera should be closer
+            if (name.contains("start")) return new CameraOffset(1.2, 0.5);
+            if (name.contains("cum")) return new CameraOffset(1.5, 0.4);
+            return new CameraOffset(1.3, 0.5);
+        }
+        if (girlName.equals("allie")) {
+            // Allie uses reverse cowgirl + deepthroat; slightly higher camera
+            if (name.contains("blowjob") || name.contains("paizuri")) return new CameraOffset(1.0, 0.3);
+            return new CameraOffset(1.6, 0.5);
+        }
+        if (girlName.equals("cat")) {
+            // Cat has single unified scene
+            return new CameraOffset(1.3, 0.5);
+        }
+        
+        // Default offset by animation type
         if (name.contains("doggy")) return new CameraOffset(SexModConfig.DOGGY_Y.get(), SexModConfig.DOGGY_Z.get());
         if (name.contains("missionary")) return new CameraOffset(SexModConfig.MISSIONARY_Y.get(), SexModConfig.MISSIONARY_Z.get());
         if (name.contains("blowjob")) return new CameraOffset(SexModConfig.BLOWJOB_Y.get(), SexModConfig.BLOWJOB_Z.get());
@@ -135,6 +166,15 @@ public class ClientForgeEvents {
         Player player = mc.player;
         if (player == null || mc.level == null) return;
 
+        // If camera transition is active, override camera position
+        if (CameraTransitionHelper.isActive()) {
+            Vec3 transitionPos = CameraTransitionHelper.getCurrentPosition();
+            if (transitionPos != null) {
+                setCameraPosition(event, transitionPos.x, transitionPos.y, transitionPos.z);
+                return;
+            }
+        }
+
         if (!mc.options.getCameraType().isFirstPerson()) return;
 
         for (BaseGirlEntity girl : player.level().getEntitiesOfClass(BaseGirlEntity.class, player.getBoundingBox().inflate(10.0D))) {
@@ -146,26 +186,37 @@ public class ClientForgeEvents {
                 double girlY = girl.yo + (girl.getY() - girl.yo) * partialTick;
                 double girlZ = girl.zo + (girl.getZ() - girl.zo) * partialTick;
 
-                CameraOffset offset = getCameraOffset(girl.getSexModAnimation());
+                CameraOffset offset = getCameraOffset(girl, girl.getSexModAnimation());
                 Vec3 forward = Vec3.directionFromRotation(0, girl.getYRot());
                 double camX = girlX - (forward.x * offset.z);
-                double camY = girlY + offset.y + player.getEyeHeight();
+                // Camera Y: girl base Y + scene offset. Do NOT add player.getEyeHeight() —
+                // that would double-count (player teleported to bed height already in
+                // preparePlayerForScene, and offset.y is the intended cam height above girl).
+                double camY = girlY + offset.y;
                 double camZ = girlZ - (forward.z * offset.z);
 
-                try {
-                    java.lang.reflect.Method setPosMethod = event.getCamera().getClass().getDeclaredMethod("m_90568_", double.class, double.class, double.class);
-                    setPosMethod.setAccessible(true);
-                    setPosMethod.invoke(event.getCamera(), camX, camY, camZ);
-                } catch (Exception e1) {
-                    try {
-                        java.lang.reflect.Method setPosMethod = event.getCamera().getClass().getDeclaredMethod("setPosition", double.class, double.class, double.class);
-                        setPosMethod.setAccessible(true);
-                        setPosMethod.invoke(event.getCamera(), camX, camY, camZ);
-                    } catch (Exception e2) {
-                        // ignore
-                    }
-                }
+                // Record position for potential transition on scene exit
+                // (handled via sneak key in onClientTick before sending Stop)
+                setCameraPosition(event, camX, camY, camZ);
                 return;
+            }
+        }
+    }
+
+    /** Helper to set camera position using reflection (works across Forge/MC versions). */
+    private static void setCameraPosition(net.minecraftforge.client.event.ViewportEvent.ComputeCameraAngles event,
+                                           double x, double y, double z) {
+        try {
+            Method setPosMethod = event.getCamera().getClass().getDeclaredMethod("m_90568_", double.class, double.class, double.class);
+            setPosMethod.setAccessible(true);
+            setPosMethod.invoke(event.getCamera(), x, y, z);
+        } catch (Exception e1) {
+            try {
+                Method setPosMethod = event.getCamera().getClass().getDeclaredMethod("setPosition", double.class, double.class, double.class);
+                setPosMethod.setAccessible(true);
+                setPosMethod.invoke(event.getCamera(), x, y, z);
+            } catch (Exception e2) {
+                // ignore
             }
         }
     }

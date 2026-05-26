@@ -28,10 +28,10 @@ public class EntityRegistry {
             () -> EntityType.Builder.of(com.schnurritv.sexmod.entity.ellie.EllieEntity::new, MobCategory.CREATURE).sized(0.6f, 1.8f).build("ellie"));
             
     public static final RegistryObject<EntityType<com.schnurritv.sexmod.entity.slime.SlimeEntity>> SLIME = ENTITIES.register("slime", 
-            () -> EntityType.Builder.of(com.schnurritv.sexmod.entity.slime.SlimeEntity::new, MobCategory.CREATURE).sized(0.6f, 1.8f).build("slime"));
+            () -> EntityType.Builder.of(com.schnurritv.sexmod.entity.slime.SlimeEntity::new, MobCategory.CREATURE).sized(0.6f, 0.9f).build("slime"));
 
     public static final RegistryObject<EntityType<com.schnurritv.sexmod.entity.bee.BeeEntity>> BEE = ENTITIES.register("bee", 
-            () -> EntityType.Builder.of(com.schnurritv.sexmod.entity.bee.BeeEntity::new, MobCategory.CREATURE).sized(0.6f, 1.8f).build("bee"));
+            () -> EntityType.Builder.of(com.schnurritv.sexmod.entity.bee.BeeEntity::new, MobCategory.CREATURE).sized(0.6f, 1.2f).build("bee"));
 
     public static final RegistryObject<EntityType<com.schnurritv.sexmod.entity.bia.BiaEntity>> BIA = ENTITIES.register("bia", 
             () -> EntityType.Builder.of(com.schnurritv.sexmod.entity.bia.BiaEntity::new, MobCategory.CREATURE).sized(0.6f, 1.8f).build("bia"));
@@ -43,10 +43,10 @@ public class EntityRegistry {
             () -> EntityType.Builder.of(com.schnurritv.sexmod.entity.goblin.GoblinEntity::new, MobCategory.CREATURE).sized(0.6f, 1.8f).build("goblin"));
 
     public static final RegistryObject<EntityType<com.schnurritv.sexmod.entity.kobold.KoboldEntity>> KOBOLD = ENTITIES.register("kobold", 
-            () -> EntityType.Builder.of(com.schnurritv.sexmod.entity.kobold.KoboldEntity::new, MobCategory.CREATURE).sized(0.6f, 1.8f).build("kobold"));
+            () -> EntityType.Builder.of(com.schnurritv.sexmod.entity.kobold.KoboldEntity::new, MobCategory.CREATURE).sized(0.5f, 1.4f).build("kobold"));
 
     public static final RegistryObject<EntityType<com.schnurritv.sexmod.entity.cat.CatEntity>> CAT = ENTITIES.register("cat", 
-            () -> EntityType.Builder.of(com.schnurritv.sexmod.entity.cat.CatEntity::new, MobCategory.CREATURE).sized(0.6f, 1.8f).build("cat"));
+            () -> EntityType.Builder.of(com.schnurritv.sexmod.entity.cat.CatEntity::new, MobCategory.CREATURE).sized(0.6f, 0.8f).build("cat"));
 
     public static final RegistryObject<EntityType<com.schnurritv.sexmod.entity.galath.GalathEntity>> GALATH = ENTITIES.register("galath", 
             () -> EntityType.Builder.of(com.schnurritv.sexmod.entity.galath.GalathEntity::new, MobCategory.CREATURE).sized(0.6f, 1.8f).build("galath"));
@@ -61,7 +61,7 @@ public class EntityRegistry {
             () -> EntityType.Builder.of(com.schnurritv.sexmod.entity.mika.MikaEntity::new, MobCategory.CREATURE).sized(0.6f, 1.8f).build("mika"));
 
     public static final RegistryObject<EntityType<com.schnurritv.sexmod.entity.momo.MomoEntity>> MOMO = ENTITIES.register("momo", 
-            () -> EntityType.Builder.of(com.schnurritv.sexmod.entity.momo.MomoEntity::new, MobCategory.CREATURE).sized(0.6f, 1.8f).build("momo"));
+            () -> EntityType.Builder.of(com.schnurritv.sexmod.entity.momo.MomoEntity::new, MobCategory.CREATURE).sized(0.3f, 0.3f).build("momo"));
 
     // Items (Spawn Eggs)
     public static final RegistryObject<Item> JENNY_SPAWN_EGG = ITEMS.register("jenny_spawn_egg", 
@@ -112,6 +112,8 @@ public class EntityRegistry {
                     .title(Component.translatable("itemGroup.sexmod"))
                     .icon(() -> new ItemStack(JENNY_SPAWN_EGG.get()))
                     .displayItems((parameters, output) -> {
+                        // Kobold Egg Item
+                        output.accept(com.schnurritv.sexmod.entity.kobold.KoboldEntityRegistry.KOBOLD_EGG_ITEM.get());
                         // Spawn eggs
                         output.accept(JENNY_SPAWN_EGG.get());
                         output.accept(ELLIE_SPAWN_EGG.get());
