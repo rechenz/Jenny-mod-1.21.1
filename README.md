@@ -57,7 +57,7 @@ So this is an open call: if you're a modder who knows what they're doing, **plea
 
 ## 来自移植者的一段话
 
-这里是真人留言了，首先我要说明一点，我们可以找到https://fapcraftx.com/这个官网，这个网站声明是fapcraft模组的官网，但是这里面除了1.12.2的java版mod下载以外就全是假的，它的MCPE下载的是一个诡异的PEbeta版，不仅没有模组内容而且本体都全是bug，我严重怀疑这个网站的真实性。还有我是一个Unity开发者，我并不熟悉Java以及mc的api，所以我自己移植实在困难上天，我用我的openclaw搞了这个项目三天，用deepseek的api烧了我将近4个亿的token，也只是做了一个全是bug的半成品，我很难保证我之后会系统性地学习Java和mc的api，因为这和我的规划不符，所以我由衷感谢可以有大佬来接管这个项目，毕竟色色是第一生产力！
+这里是真人留言了，首先我要说明一点，我们可以找到[fapcraftx.com](https://fapcraftx.com/)这个官网，这个网站声明是fapcraft模组的官网，但是这里面除了1.12.2的java版mod下载以外就全是假的，它的MCPE下载的是一个诡异的PEbeta版，不仅没有模组内容而且本体都全是bug，我严重怀疑这个网站的真实性。还有我是一个Unity开发者，我并不熟悉Java以及mc的api，所以我自己移植实在困难上天，我用我的openclaw搞了这个项目三天，用deepseek的api烧了我将近4个亿的token，也只是做了一个全是bug的半成品，我很难保证我之后会系统性地学习Java和mc的api，因为这和我的规划不符，所以我由衷感谢可以有大佬来接管这个项目，毕竟色色是第一生产力！
 
 ---
 
