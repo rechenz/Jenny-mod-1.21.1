@@ -316,6 +316,21 @@ public class GoblinEntity extends BaseGirlEntity {
         }
 
         // ── Server side ──
+        // Shift + right-click: ride the goblin (piggyback, 1.12.2 style)
+        if (player.isShiftKeyDown()) {
+            if (this.isVehicle()) {
+                // Already has a rider — eject them
+                this.ejectPassengers();
+                player.displayClientMessage(Component.literal("You hop off the goblin."), true);
+            } else if (player.isPassenger()) {
+                player.displayClientMessage(Component.literal("You're already riding something."), true);
+            } else {
+                player.startRiding(this);
+                player.displayClientMessage(Component.literal("§dYou hop onto the goblin's back!"), true);
+            }
+            return InteractionResult.SUCCESS;
+        }
+
         // Queen handling — right-click on queen while she's on throne does nothing old-version style
         if (entityData.get(DATA_IS_QUEEN)) {
             return InteractionResult.SUCCESS;
@@ -604,6 +619,38 @@ public class GoblinEntity extends BaseGirlEntity {
         } catch (Exception e) {
             return null;
         }
+    }
+
+    // ==================== Piggyback riding (1.12.2 style) ====================
+
+    @Override
+    public boolean isVehicle() {
+        return true;
+    }
+
+    @Override
+    public net.minecraft.world.phys.Vec3 getPassengerRidingPosition(net.minecraft.world.entity.Entity passenger) {
+        // Sit on the goblin's shoulders
+        return new net.minecraft.world.phys.Vec3(0.0, getBbHeight() * 0.85, 0.0);
+    }
+
+    @Override
+    public void removePassenger(net.minecraft.world.entity.Entity passenger) {
+        super.removePassenger(passenger);
+        // When the rider dismounts, drop them at the goblin's side
+        if (!this.level().isClientSide && passenger instanceof Player player) {
+            player.displayClientMessage(Component.literal("You slide off the goblin."), true);
+        }
+    }
+
+    @Override
+    public void travel(net.minecraft.world.phys.Vec3 travelVector) {
+        // While carrying a passenger, keep walking speed (no movement penalty)
+        if (this.isVehicle() && !this.getPassengers().isEmpty()) {
+            // Reduce fall damage accumulation: goblin carries rider
+            this.fallDistance = Math.max(0.0F, this.fallDistance - 1.0F);
+        }
+        super.travel(travelVector);
     }
 
     private List<GoblinEntity> getGuardCandidates() {
