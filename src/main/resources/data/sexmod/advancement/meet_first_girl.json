@@ -1,7 +1,7 @@
-{
+﻿{
   "parent": "sexmod:root",
   "display": {
-    "icon": { "item": "sexmod:jenny_spawn_egg" },
+    "icon": { "id": "sexmod:jenny_spawn_egg" },
     "title": { "translate": "advancements.sexmod.meet_first_girl.title" },
     "description": { "translate": "advancements.sexmod.meet_first_girl.description" },
     "frame": "task"

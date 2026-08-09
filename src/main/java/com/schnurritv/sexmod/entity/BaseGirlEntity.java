@@ -27,11 +27,9 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import com.schnurritv.sexmod.client.gui.InteractionScreen;
 import com.schnurritv.sexmod.entity.ai.SexModFollowGoal;
 import com.schnurritv.sexmod.worldgen.GirlHouseGenerator;
 import net.minecraft.core.BlockPos;
@@ -267,7 +265,7 @@ public abstract class BaseGirlEntity extends SexEntity {
         // Otherwise open interaction screen (client only)
         if (this.level().isClientSide) {
             DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
-                Minecraft.getInstance().setScreen(new InteractionScreen(this));
+                com.schnurritv.sexmod.util.ClientScreenHelper.openInteraction(this);
             });
             return InteractionResult.SUCCESS;
         }

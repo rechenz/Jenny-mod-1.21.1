@@ -3,9 +3,6 @@ package com.schnurritv.sexmod.events;
 import com.schnurritv.sexmod.Main;
 import com.schnurritv.sexmod.entity.EntityRegistry;
 import com.schnurritv.sexmod.entity.SexEntity;
-import com.schnurritv.sexmod.client.renderer.GirlRenderer;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -31,29 +28,5 @@ public class ModEventBusEvents {
         event.put(EntityRegistry.MOMO.get(), SexEntity.createAttributes().build());
         // Kobold Egg
         event.put(com.schnurritv.sexmod.entity.kobold.KoboldEntityRegistry.KOBOLD_EGG.get(), SexEntity.createAttributes().build());
-    }
-
-    @Mod.EventBusSubscriber(modid = Main.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
-    public static class ClientEvents {
-        @SubscribeEvent
-        public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
-            event.registerEntityRenderer(EntityRegistry.JENNY.get(), ctx -> new GirlRenderer<>(ctx, "jenny"));
-            event.registerEntityRenderer(EntityRegistry.ELLIE.get(), ctx -> new GirlRenderer<>(ctx, "ellie"));
-            event.registerEntityRenderer(EntityRegistry.SLIME.get(), ctx -> new GirlRenderer<>(ctx, "slime"));
-            event.registerEntityRenderer(EntityRegistry.BEE.get(), ctx -> new GirlRenderer<>(ctx, "bee"));
-            event.registerEntityRenderer(EntityRegistry.BIA.get(), ctx -> new GirlRenderer<>(ctx, "bia"));
-            event.registerEntityRenderer(EntityRegistry.ALLIE.get(), ctx -> new GirlRenderer<>(ctx, "allie"));
-            event.registerEntityRenderer(EntityRegistry.GOBLIN.get(), ctx -> new GirlRenderer<>(ctx, "goblin"));
-            event.registerEntityRenderer(EntityRegistry.KOBOLD.get(), ctx -> new GirlRenderer<>(ctx, "kobold"));
-            event.registerEntityRenderer(EntityRegistry.CAT.get(), ctx -> new GirlRenderer<>(ctx, "cat"));
-            event.registerEntityRenderer(EntityRegistry.GALATH.get(), ctx -> new GirlRenderer<>(ctx, "galath"));
-            event.registerEntityRenderer(EntityRegistry.MANGLELIE.get(), ctx -> new GirlRenderer<>(ctx, "manglelie"));
-            event.registerEntityRenderer(EntityRegistry.LUCY.get(), ctx -> new GirlRenderer<>(ctx, "lucy"));
-            event.registerEntityRenderer(EntityRegistry.MIKA.get(), ctx -> new GirlRenderer<>(ctx, "mika"));
-            event.registerEntityRenderer(EntityRegistry.MOMO.get(), ctx -> new GirlRenderer<>(ctx, "momo"));
-            // Kobold Egg renderer
-            event.registerEntityRenderer(com.schnurritv.sexmod.entity.kobold.KoboldEntityRegistry.KOBOLD_EGG.get(),
-                    com.schnurritv.sexmod.client.renderer.KoboldEggRenderer::new);
-        }
     }
 }

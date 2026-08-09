@@ -4,3 +4,16 @@ build/
 *.jar
 !gradle-wrapper.jar
 test/
+testserver/
+tmp_old_ref/
+tmp_mc_src/
+tmp_mc_bin/
+tmp_mc_srg/
+tmp_fg/
+tmp_mdk_build.gradle
+tmp_er.txt
+tmp_bge.txt
+tmp_stm.txt
+tmp_stm2.txt
+META-INF/
+tools/__pycache__/

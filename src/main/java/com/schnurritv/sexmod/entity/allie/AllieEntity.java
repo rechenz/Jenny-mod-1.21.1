@@ -153,8 +153,7 @@ public class AllieEntity extends BaseGirlEntity {
             if (this.level().isClientSide) {
                 DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
                     // Show the allie action screen on client
-                    Minecraft.getInstance().setScreen(
-                        new com.schnurritv.sexmod.client.gui.AllieActionScreen(this));
+                    com.schnurritv.sexmod.util.ClientScreenHelper.openAllieAction(this);
                 });
             }
             return InteractionResult.SUCCESS;

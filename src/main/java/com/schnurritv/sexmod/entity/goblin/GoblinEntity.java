@@ -309,10 +309,7 @@ public class GoblinEntity extends BaseGirlEntity {
         if (level().isClientSide) {
             // If the goblin has stolen items (synced), open the catch dialog screen.
             if (!entityData.get(DATA_STOLEN_ITEM).isEmpty()) {
-                net.minecraftforge.fml.DistExecutor.unsafeRunWhenOn(
-                    net.minecraftforge.api.distmarker.Dist.CLIENT, () -> () ->
-                        net.minecraft.client.Minecraft.getInstance().setScreen(
-                            new com.schnurritv.sexmod.client.gui.GoblinCaughtScreen(this, player)));
+                com.schnurritv.sexmod.util.ClientScreenHelper.openGoblinCaught(this, player);
                 return InteractionResult.SUCCESS;
             }
             return super.mobInteract(player, hand);

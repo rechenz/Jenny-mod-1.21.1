@@ -1,7 +1,7 @@
-{
+﻿{
   "parent": "sexmod:meet_first_girl",
   "display": {
-    "icon": { "item": "sexmod:teddy_bear" },
+    "icon": { "id": "sexmod:teddy_bear" },
     "title": { "translate": "advancements.sexmod.first_gift.title" },
     "description": { "translate": "advancements.sexmod.first_gift.description" },
     "frame": "task"

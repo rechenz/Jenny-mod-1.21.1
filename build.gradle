@@ -4,7 +4,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '6.0.+', changing: true
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '6.0.54', changing: false
     }
 }
 
@@ -30,15 +30,17 @@ minecraft {
     mappings channel: 'official', version: '1.21.1'
     copyIdeResources = true
     runs {
-        client {
+        configureEach {
             workingDirectory project.file('run')
             property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
-            mods {
-                sexmod {
-                    source sourceSets.main
-                }
-            }
+        }
+        client {
+            source sourceSets.main
+        }
+        server {
+            source sourceSets.main
+            args '--nogui'
         }
     }
 }
@@ -52,6 +54,15 @@ repositories {
 dependencies {
     minecraft 'net.minecraftforge:forge:1.21.1-52.0.7'
     implementation fg.deobf('software.bernie.geckolib:geckolib-forge-1.21.1:4.6.6')
+    // Forge runtime requires jopt-simple 5.x on the module path (6.x has a different
+    // Automatic-Module-Name: 'joptsimple' vs the 'jopt.simple' modlauncher expects).
+    implementation 'net.sf.jopt-simple:jopt-simple:5.0.4'
+}
+
+configurations.configureEach {
+    resolutionStrategy {
+        force 'net.sf.jopt-simple:jopt-simple:5.0.4'
+    }
 }
 
 tasks.named('jar', Jar).configure {

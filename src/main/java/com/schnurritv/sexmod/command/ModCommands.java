@@ -41,6 +41,10 @@ public class ModCommands {
                         .executes(ctx -> resetQuest(ctx.getSource()))))
                 .then(Commands.literal("house")
                     .executes(ctx -> locateHouse(ctx.getSource())))
+                .then(Commands.literal("teststructure")
+                    .then(Commands.argument("name", com.mojang.brigadier.arguments.StringArgumentType.word())
+                        .executes(ctx -> testStructure(ctx.getSource(),
+                            com.mojang.brigadier.arguments.StringArgumentType.getString(ctx, "name")))))
         );
     }
 
@@ -169,6 +173,69 @@ public class ModCommands {
             "\u00a7d" + name + "\u00a77's house at \u00a7e" 
             + pos.getX() + " " + pos.getY() + " " + pos.getZ()
             + " \u00a77 — \u00a7a/tp " + pos.getX() + " " + (pos.getY() + 1) + " " + pos.getZ()), false);
+        return 1;
+    }
+
+    /**
+     * Debug: load a structure NBT from data/sexmod/structures/ (via StructureTemplateManager,
+     * which runs the DataFixer for legacy 1.12.2 templates) and place it at the player.
+     * Example: /sexmod teststructure jenny
+     */
+    private static int testStructure(CommandSourceStack src, String name) {
+        net.minecraft.server.level.ServerLevel level;
+        if (src.getEntity() instanceof ServerPlayer player) {
+            level = player.serverLevel();
+        } else {
+            net.minecraft.server.MinecraftServer server = src.getServer();
+            level = server.overworld();
+        }
+        net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager manager =
+                level.getStructureManager();
+
+        net.minecraft.resources.ResourceLocation loc =
+                net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("sexmod", name);
+        java.util.Optional<net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate> opt =
+                manager.get(loc);
+        if (opt.isEmpty()) {
+            // Try explicit structures/ prefix (legacy naming)
+            loc = net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("sexmod", "structures/" + name);
+            opt = manager.get(loc);
+        }
+        if (opt.isEmpty()) {
+            // Fallback: manual load via ResourceManager + DataFixer (same path as GirlHouseGenerator)
+            opt = com.schnurritv.sexmod.worldgen.GirlHouseGenerator.manualLoadStructure(
+                    src.getServer().overworld(), name);
+        }
+        if (opt.isEmpty()) {
+            src.sendFailure(Component.literal("Structure not found: sexmod:" + name
+                    + " (manager + manual both failed)"));
+            return 0;
+        }
+
+        net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate template = opt.get();
+        net.minecraft.core.BlockPos origin;
+        if (src.getEntity() instanceof ServerPlayer p) {
+            origin = p.blockPosition().offset(3, 0, 3);
+        } else {
+            origin = new net.minecraft.core.BlockPos(0, 0, 0);
+        }
+        // Find ground
+        int groundY = level.getHeightmapPos(net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING, origin).getY();
+        final net.minecraft.core.BlockPos placePos = new net.minecraft.core.BlockPos(origin.getX(), groundY, origin.getZ());
+        final int placedX = placePos.getX();
+        final int placedY = placePos.getY();
+        final int placedZ = placePos.getZ();
+
+        net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings settings =
+                new net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings()
+                        .setIgnoreEntities(true);
+        template.placeInWorld(level, placePos, placePos, settings, level.random, 3);
+
+        net.minecraft.core.Vec3i size = template.getSize();
+        src.sendSuccess(() -> Component.literal(
+                "\u00a7aPlaced sexmod:" + name + " (" + size.getX() + "x" + size.getY() + "x" + size.getZ()
+                + ") at " + placedX + " " + placedY + " " + placedZ
+                + " \u00a77(DataFixer-upgraded from legacy format if applicable)"), true);
         return 1;
     }
 }

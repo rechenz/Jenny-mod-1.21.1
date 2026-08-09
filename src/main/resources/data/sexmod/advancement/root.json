@@ -1,6 +1,6 @@
-{
+﻿{
   "display": {
-    "icon": { "item": "sexmod:red_rose" },
+    "icon": { "id": "sexmod:red_rose" },
     "title": { "translate": "advancements.sexmod.root.title" },
     "description": { "translate": "advancements.sexmod.root.description" },
     "background": "minecraft:textures/block/pink_wool.png",

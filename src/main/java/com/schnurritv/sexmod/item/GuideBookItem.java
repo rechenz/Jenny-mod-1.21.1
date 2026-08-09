@@ -115,8 +115,7 @@ public class GuideBookItem extends Item {
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         if (level.isClientSide) {
-            net.minecraft.client.Minecraft.getInstance().setScreen(
-                new GuideBookScreen(stack, PAGES));
+            com.schnurritv.sexmod.util.ClientScreenHelper.openGuideBook(stack, PAGES);
         }
         return InteractionResultHolder.success(stack);
     }

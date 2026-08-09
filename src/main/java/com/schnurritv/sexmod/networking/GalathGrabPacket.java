@@ -66,15 +66,14 @@ public class GalathGrabPacket {
             } else {
                 // Server→Client: Open or close the grab escape screen
                 DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
-                    Minecraft mc = Minecraft.getInstance();
+                    net.minecraft.client.Minecraft mc = net.minecraft.client.Minecraft.getInstance();
                     if (mc.level == null) return;
                     Entity entity = mc.level.getEntity(msg.entityId);
                     if (entity instanceof GalathEntity galath) {
                         if (msg.grabActive) {
-                            mc.setScreen(
-                                new com.schnurritv.sexmod.client.gui.GalathGrabScreen(galath, mc.player));
+                            com.schnurritv.sexmod.util.ClientScreenHelper.openGalathGrab(galath, mc.player);
                         } else {
-                            if (mc.screen instanceof com.schnurritv.sexmod.client.gui.GalathGrabScreen) {
+                            if (com.schnurritv.sexmod.util.ClientScreenHelper.isGalathGrabScreenOpen()) {
                                 mc.screen.onClose();
                             }
                         }

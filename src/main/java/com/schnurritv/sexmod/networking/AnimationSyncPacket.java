@@ -25,15 +25,18 @@ public class AnimationSyncPacket {
 
     public static void handle(AnimationSyncPacket msg, CustomPayloadEvent.Context ctx) {
         ctx.enqueueWork(() -> {
-            net.minecraft.client.Minecraft mc = net.minecraft.client.Minecraft.getInstance();
-            if (mc.level != null) {
-                net.minecraft.world.entity.Entity entity = mc.level.getEntity(msg.entityId);
-                if (entity instanceof SexEntity sexEntity) {
-                    try {
-                        sexEntity.setSexModAnimation(SexModAnimation.valueOf(msg.animationName));
-                    } catch (IllegalArgumentException ignored) {}
-                }
-            }
+            net.minecraftforge.fml.DistExecutor.unsafeRunWhenOn(
+                net.minecraftforge.api.distmarker.Dist.CLIENT, () -> () -> {
+                    net.minecraft.client.Minecraft mc = net.minecraft.client.Minecraft.getInstance();
+                    if (mc.level != null) {
+                        net.minecraft.world.entity.Entity entity = mc.level.getEntity(msg.entityId);
+                        if (entity instanceof SexEntity sexEntity) {
+                            try {
+                                sexEntity.setSexModAnimation(SexModAnimation.valueOf(msg.animationName));
+                            } catch (IllegalArgumentException ignored) {}
+                        }
+                    }
+                });
         });
         ctx.setPacketHandled(true);
     }
