@@ -62,6 +62,12 @@ public class NetworkHandler {
                 .decoder(EquipmentChangePacket::decode)
                 .consumerMainThread(EquipmentChangePacket::handle)
                 .add();
+
+        INSTANCE.messageBuilder(NpcEditPacket.class, NetworkDirection.PLAY_TO_SERVER)
+                .encoder(NpcEditPacket::encode)
+                .decoder(NpcEditPacket::decode)
+                .consumerMainThread(NpcEditPacket::handle)
+                .add();
     }
 
     public static void broadcastAnimationSync(SexEntity entity, SexModAnimation animation) {

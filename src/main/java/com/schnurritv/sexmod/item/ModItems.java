@@ -60,6 +60,9 @@ public class ModItems {
     public static final RegistryObject<Item> TRIBE_EGG = ITEMS.register("tribe_egg",
         () -> new TribeEggItem(new Item.Properties()));
 
+    public static final RegistryObject<Item> GIRL_WAND = ITEMS.register("girl_wand",
+        () -> new GirlWandItem(new Item.Properties()));
+
     // ── Helper ──
     private static RegistryObject<Item> register(String name, String tooltip) {
         return ITEMS.register(name, () -> new GiftItem(new Item.Properties(), tooltip, getAffectionValue(name)));

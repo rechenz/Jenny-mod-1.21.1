@@ -96,6 +96,21 @@ public final class ClientScreenHelper {
         });
     }
 
+    /** Open NpcEditorScreen (girl wand). */
+    public static void openNpcEditor(Object girlEntity) {
+        runOnClient(() -> {
+            try {
+                Class<?> cls = Class.forName("com.schnurritv.sexmod.client.gui.NpcEditorScreen");
+                java.lang.reflect.Constructor<?> ctor = cls.getConstructor(girlEntity.getClass());
+                Object screen = ctor.newInstance(girlEntity);
+                net.minecraft.client.Minecraft.getInstance().setScreen(
+                        (net.minecraft.client.gui.screens.Screen) screen);
+            } catch (Exception e) {
+                com.schnurritv.sexmod.Main.LOGGER.error("Failed to open NpcEditorScreen", e);
+            }
+        });
+    }
+
     /** Whether the current client screen is a GalathGrabScreen. */
     public static boolean isGalathGrabScreenOpen() {
         final boolean[] result = {false};
