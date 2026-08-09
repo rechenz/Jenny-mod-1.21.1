@@ -71,11 +71,15 @@ public class MemoryCrystalItem extends Item {
             return InteractionResultHolder.success(stack);
         }
 
-        // Bind: find nearest girl within 16 blocks
+        // Bind: find nearest girl within 16 blocks (audit L5: only bind
+        // girls you own — or unowned girls — so nobody can stalk others' homes)
         BaseGirlEntity nearest = null;
         double bestDist = 16 * 16;
+        String pid = player.getStringUUID();
         for (BaseGirlEntity girl : level.getEntitiesOfClass(BaseGirlEntity.class, player.getBoundingBox().inflate(16))) {
             if (!girl.isAlive()) continue;
+            String owner = girl.getAffectionData().getOwnerUUID();
+            if (!owner.isEmpty() && !owner.equals(pid)) continue;
             double d = girl.distanceToSqr(player);
             if (d < bestDist) {
                 bestDist = d;

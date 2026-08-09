@@ -177,6 +177,26 @@ public abstract class BaseGirlEntity extends SexEntity {
     public InteractionResult mobInteract(Player player, InteractionHand hand) {
         ItemStack held = player.getItemInHand(hand);
 
+        // Girl Wand (NPC editor): intercept BEFORE gift/menu handling.
+        // 1.21.1's Mob.interact only routes interactLivingEntity for NAME_TAG /
+        // spawn eggs — item-based entity interaction must hook mobInteract
+        // (audit H1: GirlWandItem.interactLivingEntity was dead code).
+        if (com.schnurritv.sexmod.item.GirlWandItem.isGirlWand(held)) {
+            if (this.level().isClientSide) {
+                com.schnurritv.sexmod.util.ClientScreenHelper.openNpcEditor(this);
+                return InteractionResult.SUCCESS;
+            }
+            // Server side: ownership feedback (edits themselves are validated
+            // in NpcEditPacket.handle, per-action).
+            String owner = affectionData.getOwnerUUID();
+            if (!owner.isEmpty() && !owner.equals(player.getStringUUID())) {
+                player.displayClientMessage(Component.literal(
+                        "§cThis girl belongs to someone else!"), true);
+                return InteractionResult.FAIL;
+            }
+            return InteractionResult.CONSUME;
+        }
+
         // Check if holding a gift item
         if (isGiftItem(held)) {
             if (this.level().isClientSide) {

@@ -13,55 +13,79 @@ import net.minecraftforge.fml.DistExecutor;
  * loading the common class → NoClassDefFoundError for client-only types
  * (e.g. net.minecraft.client.gui.components.Renderable, pulled in by Screen).
  * Reflection defers the lookup until the lambda actually runs on the client.
+ *
+ * <p>Constructor lookup uses {@link #findConstructor(Class, Object...)} which
+ * matches assignable parameter types (audit H2): screens take BaseGirlEntity
+ * while callers pass concrete subclasses like JennyEntity — a plain
+ * getConstructor(runtimeClass) would throw NoSuchMethodException.
  */
 public final class ClientScreenHelper {
 
     private ClientScreenHelper() {}
 
-    /** Open InteractionScreen (common entity right-click menu). */
-    public static void openInteraction(Object girlEntity) {
+    /**
+     * Find a constructor whose parameter types are assignable FROM the runtime
+     * classes of the given args (i.e. each arg's class is a subtype of the
+     * declared parameter type). Falls back to exact-match then superclass
+     * walk for robustness.
+     */
+    private static java.lang.reflect.Constructor<?> findConstructor(
+            Class<?> cls, Object... args) throws NoSuchMethodException {
+        Class<?>[] argTypes = new Class<?>[args.length];
+        for (int i = 0; i < args.length; i++) {
+            argTypes[i] = args[i] == null ? null : args[i].getClass();
+        }
+        // Pass 1: exact match
+        try {
+            return cls.getConstructor(argTypes);
+        } catch (NoSuchMethodException ignored) {
+            // fall through
+        }
+        // Pass 2: assignable match (constructor param must accept our arg type)
+        for (java.lang.reflect.Constructor<?> ctor : cls.getConstructors()) {
+            Class<?>[] params = ctor.getParameterTypes();
+            if (params.length != args.length) continue;
+            boolean ok = true;
+            for (int i = 0; i < params.length; i++) {
+                if (argTypes[i] == null) {
+                    if (params[i].isPrimitive()) { ok = false; break; }
+                } else if (!params[i].isAssignableFrom(argTypes[i])) {
+                    ok = false;
+                    break;
+                }
+            }
+            if (ok) return ctor;
+        }
+        throw new NoSuchMethodException(cls.getName());
+    }
+
+    private static void open(String screenClass, Object... args) {
         runOnClient(() -> {
             try {
-                Class<?> cls = Class.forName("com.schnurritv.sexmod.client.gui.InteractionScreen");
-                java.lang.reflect.Constructor<?> ctor = cls.getConstructor(girlEntity.getClass());
-                Object screen = ctor.newInstance(girlEntity);
+                Class<?> cls = Class.forName(screenClass);
+                java.lang.reflect.Constructor<?> ctor = findConstructor(cls, args);
+                Object screen = ctor.newInstance(args);
                 net.minecraft.client.Minecraft.getInstance().setScreen(
                         (net.minecraft.client.gui.screens.Screen) screen);
             } catch (Exception e) {
-                com.schnurritv.sexmod.Main.LOGGER.error("Failed to open InteractionScreen", e);
+                com.schnurritv.sexmod.Main.LOGGER.error("Failed to open " + screenClass, e);
             }
         });
+    }
+
+    /** Open InteractionScreen (common entity right-click menu). */
+    public static void openInteraction(Object girlEntity) {
+        open("com.schnurritv.sexmod.client.gui.InteractionScreen", girlEntity);
     }
 
     /** Open AllieActionScreen (Allie wish menu). */
     public static void openAllieAction(Object allieEntity) {
-        runOnClient(() -> {
-            try {
-                Class<?> cls = Class.forName("com.schnurritv.sexmod.client.gui.AllieActionScreen");
-                java.lang.reflect.Constructor<?> ctor = cls.getConstructor(allieEntity.getClass());
-                Object screen = ctor.newInstance(allieEntity);
-                net.minecraft.client.Minecraft.getInstance().setScreen(
-                        (net.minecraft.client.gui.screens.Screen) screen);
-            } catch (Exception e) {
-                com.schnurritv.sexmod.Main.LOGGER.error("Failed to open AllieActionScreen", e);
-            }
-        });
+        open("com.schnurritv.sexmod.client.gui.AllieActionScreen", allieEntity);
     }
 
     /** Open GoblinCaughtScreen (goblin catch dialog). */
     public static void openGoblinCaught(Object goblinEntity, Object player) {
-        runOnClient(() -> {
-            try {
-                Class<?> cls = Class.forName("com.schnurritv.sexmod.client.gui.GoblinCaughtScreen");
-                java.lang.reflect.Constructor<?> ctor = cls.getConstructor(
-                        goblinEntity.getClass(), net.minecraft.world.entity.player.Player.class);
-                Object screen = ctor.newInstance(goblinEntity, player);
-                net.minecraft.client.Minecraft.getInstance().setScreen(
-                        (net.minecraft.client.gui.screens.Screen) screen);
-            } catch (Exception e) {
-                com.schnurritv.sexmod.Main.LOGGER.error("Failed to open GoblinCaughtScreen", e);
-            }
-        });
+        open("com.schnurritv.sexmod.client.gui.GoblinCaughtScreen", goblinEntity, player);
     }
 
     /** Open GuideBookScreen (guide book item). */
@@ -82,33 +106,12 @@ public final class ClientScreenHelper {
 
     /** Open GalathGrabScreen (combat grab minigame). */
     public static void openGalathGrab(Object galathEntity, Object player) {
-        runOnClient(() -> {
-            try {
-                Class<?> cls = Class.forName("com.schnurritv.sexmod.client.gui.GalathGrabScreen");
-                java.lang.reflect.Constructor<?> ctor = cls.getConstructor(
-                        galathEntity.getClass(), net.minecraft.world.entity.player.Player.class);
-                Object screen = ctor.newInstance(galathEntity, player);
-                net.minecraft.client.Minecraft.getInstance().setScreen(
-                        (net.minecraft.client.gui.screens.Screen) screen);
-            } catch (Exception e) {
-                com.schnurritv.sexmod.Main.LOGGER.error("Failed to open GalathGrabScreen", e);
-            }
-        });
+        open("com.schnurritv.sexmod.client.gui.GalathGrabScreen", galathEntity, player);
     }
 
     /** Open NpcEditorScreen (girl wand). */
     public static void openNpcEditor(Object girlEntity) {
-        runOnClient(() -> {
-            try {
-                Class<?> cls = Class.forName("com.schnurritv.sexmod.client.gui.NpcEditorScreen");
-                java.lang.reflect.Constructor<?> ctor = cls.getConstructor(girlEntity.getClass());
-                Object screen = ctor.newInstance(girlEntity);
-                net.minecraft.client.Minecraft.getInstance().setScreen(
-                        (net.minecraft.client.gui.screens.Screen) screen);
-            } catch (Exception e) {
-                com.schnurritv.sexmod.Main.LOGGER.error("Failed to open NpcEditorScreen", e);
-            }
-        });
+        open("com.schnurritv.sexmod.client.gui.NpcEditorScreen", girlEntity);
     }
 
     /** Whether the current client screen is a GalathGrabScreen. */

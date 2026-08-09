@@ -38,20 +38,19 @@
 | 2 | **自然生成（生物群系）** | 各角色按生物群系生成 | ✅ 14 个 biome_modifier（add_spawns）已注册 | 权重配置化 |
 | 3 | **结构内角色+宝箱** | NBT entities 内嵌角色 | ⚠️ 转换时剥离 entities（1.12.2 实体 NBT 不兼容），角色靠自然生成/刷怪蛋 | 可选后续 |
 
-### P1 — 缺失物品（4/7 已完成）
+### P1 — 缺失物品（7/7 可做项完成，Luna 有意跳过）
 
 | # | 物品 | 1.12.2 | 1.21.1 | 说明 |
 |---|------|--------|--------|------|
-| 4 | **Allies Lamp（神灯）** | `item.allies_lamp` | ✅ 2026-08-09 | AlliesLampItem 召唤 Allie + 沙恐惧症 + 冷却 |
+| 4 | **Allies Lamp（神灯）** | `item.allies_lamp` | ✅ 2026-08-09 | AlliesLampItem 召唤 Allie + 沙恐惧症 + 冷却 + 全图重复检测 |
 | 5 | **Luna's Rod（Luna 法杖）** | `item.luna_rod` | ❌ 跳过 | 1.12.2 Luna 无 geo 模型（半成品角色），1.21.1 无 Luna 实体；Luna 声音/房屋保留 |
-| 6 | **Dragon Staff（龙法杖）** | `item.dragon_staff` + recipe | ✅ 2026-08-09 | DragonStaffItem 驯服 Kobold（KoboldEntity 接木棍+法杖） |
+| 6 | **Dragon Staff（龙法杖）** | `item.dragon_staff` + recipe | ✅ 2026-08-09 | DragonStaffItem 驯服 Kobold（耐久 128，驯服消耗 1） |
 | 7 | **Tribe Egg（部落蛋）** | `item.tribe_egg` | ✅ 2026-08-09 | TribeEggItem 孵化 Kobold 入部落 |
-| 8 | **Girl Wand（NPC 编辑法杖）** | `item.npc_editor_wand` + recipe | ❌ 待做 | 定制化 GUI |
-| 9 | **horny potion（发情药水）** | `effect.horny_potion` 4 变体 | ✅ 2026-08-09 | HornyPotionItem Regen+Speed，Kobold 免费互动（KoboldEntity 付款检查待接） |
-| 10 | **hehe 地图** | `item.item_map_secret` | ❌ 彩蛋 | 低优先 |
+| 8 | **Girl Wand（NPC 编辑法杖）** | `item.npc_editor_wand` + recipe | ✅ 2026-08-09 | GirlWandItem + NpcEditorScreen：好感/换装/改名/送回家（服务端权威） |
+| 9 | **horny potion（发情药水）** | `effect.horny_potion` 4 变体 | ✅ 2026-08-09 | HornyPotionItem + 专属 sexmod:horny 效果，Kobold 免费互动（免付款标记） |
+| 10 | **hehe 地图** | `item.item_map_secret` | ❌ 彩蛋 | 低优先，可后续 |
 
 ### P2 — 玩法系统（3/10 已完成 + 多项已核实实现）
-
 | # | 系统 | 1.12.2 | 1.21.1 | 说明 |
 |---|------|--------|--------|------|
 | 11 | **回家系统** | `Set new home` / `Go home` | ✅ 2026-08-09 | MemoryCrystalItem 绑定/传送；InteractionScreen 动作按钮待接 |

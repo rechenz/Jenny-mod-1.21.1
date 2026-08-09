@@ -121,8 +121,9 @@ public class ServerForgeEvents {
                     if (hasHeal && (owner.isEmpty() || owner.equals(playerId))) {
                         girl.heal(1.0f);
                     }
-                    if (hasBond) {
+                    if (hasBond && (owner.isEmpty() || owner.equals(playerId))) {
                         // Mark bond: affection decay is skipped while bracelet is held
+                        // (audit M3: ownership filter — don't boost other players' girls)
                         girl.setBondActive(true);
                     }
                 }
