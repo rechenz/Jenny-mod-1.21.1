@@ -5,30 +5,31 @@ import com.schnurritv.sexmod.entity.SexFighterEntity;
 import com.schnurritv.sexmod.networking.NetworkHandler;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
-import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
 /**
  * Equipment management screen for fighter characters.
  * <p>
- * Displays a 3×2 grid of equipment slots:
- * ┌──────────┐
- * │ Melee  │ Bow    │
- * │ Helmet │ Chest  │
- * │ Legs   │ Boots  │
- * └──────────┘
+ * Displays a 3×2 grid of equipment slots plus the player's inventory grid.
  * <p>
- * Players can drag items from their inventory onto the slots
- * to equip their girlfriend. The change is sent to the server.
+ * Interaction model (click-based, server-authoritative):
+ *  - Click an inventory slot to "pick it up" (highlighted). Click again to cancel.
+ *  - Click an equipment slot while holding an inventory item → server moves 1 item
+ *    from that inventory slot into the equipment slot (old equipment is returned first).
+ *  - Click an equipment slot while holding nothing → server moves the equipped item
+ *    back into the player's inventory (or drops it if full).
+ *
+ * The client never mutates the local inventory directly — all transfers are
+ * executed by the server via {@link com.schnurritv.sexmod.networking.EquipmentChangePacket},
+ * which keeps the server-side player inventory authoritative.
  */
 public class EquipmentScreen extends Screen {
 
     private final SexFighterEntity fighter;
     private int panelX, panelY;
     private static final int PANEL_W = 176;
-    private static final int PANEL_H = 120;
+    private static final int PANEL_H = 260;
 
     // Slot layout: 2 columns × 3 rows
     // Slot 0 (melee)  → col 0, row 0
@@ -45,6 +46,11 @@ public class EquipmentScreen extends Screen {
     private static final int ROW1_Y = ROW0_Y + SLOT_SPACING;
     private static final int ROW2_Y = ROW1_Y + SLOT_SPACING;
 
+    // Player inventory grid: 9 columns × 4 rows (27 main + 9 hotbar)
+    private static final int INV_COLS = 9;
+    private static final int INV_GRID_X = 8;
+    private static final int INV_GRID_Y = 122;
+
     private static final int[][] SLOT_POSITIONS = {
         {COL0_X, ROW0_Y}, // 0: melee
         {COL1_X, ROW0_Y}, // 1: bow
@@ -60,9 +66,8 @@ public class EquipmentScreen extends Screen {
         "Legs", "Boots"
     };
 
-    private int draggedSlot = -1;
-    private ItemStack draggedStack = ItemStack.EMPTY;
-    private boolean inserting = false; // true = inserting from player inv, false = removing
+    // Player inventory index currently "held" by the cursor (-1 = nothing held)
+    private int heldInvIndex = -1;
 
     private static final int COLOR_BG       = 0xE8221122;
     private static final int COLOR_PANEL    = 0xD0331133;
@@ -72,6 +77,8 @@ public class EquipmentScreen extends Screen {
     private static final int COLOR_SLOT_BG  = 0xFF442244;
     private static final int COLOR_SLOT_HL  = 0xFF664466;
     private static final int COLOR_HINT     = 0xFF887788;
+    private static final int COLOR_INV_BG   = 0xFF332233;
+    private static final int COLOR_CURSOR   = 0xFFAA88AA;
 
     public EquipmentScreen(SexFighterEntity fighter) {
         super(Component.literal("Equipment"));
@@ -100,7 +107,7 @@ public class EquipmentScreen extends Screen {
         g.drawString(this.font, Component.literal("§l" + name + " Equipment"),
                      panelX + 8, panelY + 8, COLOR_ACCENT, true);
 
-        // ── Render slots ──
+        // ── Render equipment slots ──
         for (int slot = 0; slot < 6; slot++) {
             int sx = panelX + SLOT_POSITIONS[slot][0];
             int sy = panelY + SLOT_POSITIONS[slot][1];
@@ -125,12 +132,37 @@ public class EquipmentScreen extends Screen {
         }
 
         // ── Instructions ──
-        String hint = "Drag items from inventory onto slots to equip";
-        g.drawString(this.font, hint, panelX + 8, panelY + PANEL_H - 16, COLOR_HINT, true);
+        String hint = "Click inventory item, then click an equip slot";
+        g.drawString(this.font, hint, panelX + 8, panelY + 110, COLOR_HINT, true);
 
-        // ── Dragged item under cursor ──
-        if (draggedSlot >= 0 && !draggedStack.isEmpty()) {
-            g.renderItem(draggedStack, mouseX - 8, mouseY - 8);
+        // ── Player inventory grid (27 main + 9 hotbar) ──
+        var player = net.minecraft.client.Minecraft.getInstance().player;
+        if (player != null) {
+            // Panel background for inventory area
+            g.fill(panelX + 4, panelY + INV_GRID_Y - 4, panelX + 4 + INV_COLS * SLOT_SIZE + 2, panelY + INV_GRID_Y + 4 * SLOT_SIZE + 2, COLOR_INV_BG);
+
+            for (int i = 0; i < 36; i++) {
+                int col = i % INV_COLS;
+                int row = i / INV_COLS;
+                int sx = panelX + INV_GRID_X + col * SLOT_SIZE;
+                int sy = panelY + INV_GRID_Y + row * SLOT_SIZE;
+
+                boolean hovered = mouseX >= sx && mouseX <= sx + SLOT_SIZE
+                               && mouseY >= sy && mouseY <= sy + SLOT_SIZE;
+                int bg = hovered ? COLOR_SLOT_HL : COLOR_SLOT_BG;
+                if (i == heldInvIndex) bg = COLOR_CURSOR;
+                g.fill(sx, sy, sx + SLOT_SIZE, sy + SLOT_SIZE, bg);
+                g.fill(sx, sy, sx + 1, sy + SLOT_SIZE, COLOR_BORDER);
+                g.fill(sx, sy, sx + SLOT_SIZE, sy + 1, COLOR_BORDER);
+                g.fill(sx + SLOT_SIZE - 1, sy, sx + SLOT_SIZE, sy + SLOT_SIZE, COLOR_BORDER);
+                g.fill(sx, sy + SLOT_SIZE - 1, sx + SLOT_SIZE, sy + SLOT_SIZE, COLOR_BORDER);
+
+                ItemStack stack = player.getInventory().getItem(i);
+                if (!stack.isEmpty()) {
+                    g.renderItem(stack, sx + 1, sy + 1);
+                    g.renderItemDecorations(this.font, stack, sx + 1, sy + 1);
+                }
+            }
         }
     }
 
@@ -138,82 +170,60 @@ public class EquipmentScreen extends Screen {
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (button != 0) return false;
 
-        // Check if clicking on a slot
+        // ── Player inventory click: pick up / cancel / re-pick ──
+        int invIndex = inventoryIndexAt(mouseX, mouseY);
+        if (invIndex >= 0) {
+            if (heldInvIndex == invIndex) {
+                heldInvIndex = -1; // click again to cancel
+            } else {
+                heldInvIndex = invIndex; // pick up (client-side marker only)
+            }
+            return true;
+        }
+
+        // ── Equipment slot click ──
         for (int slot = 0; slot < 6; slot++) {
             int sx = panelX + SLOT_POSITIONS[slot][0];
             int sy = panelY + SLOT_POSITIONS[slot][1];
             if (mouseX >= sx && mouseX <= sx + SLOT_SIZE && mouseY >= sy && mouseY <= sy + SLOT_SIZE) {
-                // Pick up / put down item
-                ItemStack current = fighter.getEquipmentSlot(slot);
-                if (current.isEmpty()) return true;
-                // Remove item from slot (player gets it back via inventory)
-                removeEquipment(slot);
+                if (heldInvIndex >= 0) {
+                    // Equip: server moves 1 item from heldInvIndex into this slot
+                    NetworkHandler.sendEquipmentChange(fighter.getId(), "equip", slot, heldInvIndex);
+                    heldInvIndex = -1;
+                } else {
+                    // Unequip: server moves the equipped item back into the player inventory
+                    NetworkHandler.sendEquipmentChange(fighter.getId(), "unequip", slot, -1);
+                }
                 return true;
             }
         }
         return super.mouseClicked(mouseX, mouseY, button);
     }
 
-    /**
-     * Remove equipment from a slot and give it back to the player.
-     */
-    private void removeEquipment(int slot) {
-        var player = net.minecraft.client.Minecraft.getInstance().player;
-        if (player == null) return;
-
-        ItemStack current = fighter.getEquipmentSlot(slot);
-        if (current.isEmpty()) return;
-
-        // Try to add to player inventory
-        if (!player.getInventory().add(current)) {
-            // Drop if inventory full
-            player.drop(current, false);
-        }
-
-        // Send empty stack to server
-        NetworkHandler.sendEquipmentChange(fighter.getId(), slot, ItemStack.EMPTY);
-    }
-
     @Override
     public boolean mouseReleased(double mouseX, double mouseY, int button) {
-        // If dragging from player inventory
-        if (button == 0 && isInventorySlot(mouseX, mouseY)) {
-            var mc = net.minecraft.client.Minecraft.getInstance();
-            var player = mc.player;
-            if (player == null) return false;
-
-            // Find which slot was the player clicking in their own inventory
-            // For simplicity, use the currently hovered inventory slot (handled by Screen)
-            ItemStack held = player.containerMenu.getCarried();
-            if (!held.isEmpty()) {
-                // Determine target slot based on mouse position
-                for (int slot = 0; slot < 6; slot++) {
-                    int sx = panelX + SLOT_POSITIONS[slot][0];
-                    int sy = panelY + SLOT_POSITIONS[slot][1];
-                    if (mouseX >= sx && mouseX <= sx + SLOT_SIZE && mouseY >= sy && mouseY <= sy + SLOT_SIZE) {
-                        // Insert the carried item into this equipment slot
-                        ItemStack toEquip = held.copy();
-                        toEquip.setCount(1);
-                        NetworkHandler.sendEquipmentChange(fighter.getId(), slot, toEquip);
-                        // Remove 1 from carried
-                        held.shrink(1);
-                        if (held.isEmpty()) {
-                            player.containerMenu.setCarried(ItemStack.EMPTY);
-                        }
-                        break;
-                    }
-                }
-            }
-        }
+        // All transfers are click-based and server-authoritative — nothing to do here.
         return super.mouseReleased(mouseX, mouseY, button);
     }
 
     /**
-     * Check if mouse is over the player's inventory area.
-     * For this simplified version, we just allow any valid slot area.
+     * Map a screen coordinate to a player inventory index (0-35), or -1 if outside.
+     * Layout: 9 cols × 4 rows starting at INV_GRID_X/INV_GRID_Y.
+     * Index 0-26 = main inventory (row-major), 27-35 = hotbar.
      */
-    private boolean isInventorySlot(double mouseX, double mouseY) {
-        return true; // Allow drop from any position - the network will validate on server
+    private int inventoryIndexAt(double mouseX, double mouseY) {
+        int sx0 = panelX + INV_GRID_X;
+        int sy0 = panelY + INV_GRID_Y;
+        for (int i = 0; i < 36; i++) {
+            int col = i % INV_COLS;
+            int row = i / INV_COLS;
+            int sx = sx0 + col * SLOT_SIZE;
+            int sy = sy0 + row * SLOT_SIZE;
+            if (mouseX >= sx && mouseX <= sx + SLOT_SIZE && mouseY >= sy && mouseY <= sy + SLOT_SIZE) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     @Override

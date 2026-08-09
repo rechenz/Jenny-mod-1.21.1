@@ -80,8 +80,8 @@ public class NetworkHandler {
         INSTANCE.send(new GoblinActionPacket(entityId, action), PacketDistributor.SERVER.noArg());
     }
 
-    public static void sendEquipmentChange(int entityId, int slot, net.minecraft.world.item.ItemStack stack) {
-        INSTANCE.send(new EquipmentChangePacket(entityId, slot, stack), PacketDistributor.SERVER.noArg());
+    public static void sendEquipmentChange(int entityId, String action, int slot, int srcSlot) {
+        INSTANCE.send(new EquipmentChangePacket(entityId, action, slot, srcSlot), PacketDistributor.SERVER.noArg());
     }
 
     /** Send a packet to a specific player (not tracking). */

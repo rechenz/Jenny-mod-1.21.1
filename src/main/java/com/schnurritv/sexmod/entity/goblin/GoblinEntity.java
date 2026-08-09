@@ -1,6 +1,7 @@
 package com.schnurritv.sexmod.entity.goblin;
 
 import com.schnurritv.sexmod.entity.BaseGirlEntity;
+import com.schnurritv.sexmod.entity.SexEntity;
 import com.schnurritv.sexmod.entity.SexModAnimation;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.entity.LevelEntityGetter;
@@ -191,6 +192,14 @@ public class GoblinEntity extends BaseGirlEntity {
 
     public int getStealCount() { return stealCount; }
 
+    /**
+     * Whether this goblin currently holds stolen items.
+     * Client-safe: based on the synced DATA_STOLEN_ITEM, so it works on both sides.
+     */
+    public boolean hasStolenItems() {
+        return stealCount > 0 || !entityData.get(DATA_STOLEN_ITEM).isEmpty();
+    }
+
     public void setStealCount(int count) { this.stealCount = count; }
 
     public List<ItemStack> getStolenItems() { return stolenItems; }
@@ -294,8 +303,22 @@ public class GoblinEntity extends BaseGirlEntity {
 
     @Override
     public InteractionResult mobInteract(Player player, InteractionHand hand) {
-        if (level().isClientSide) return InteractionResult.SUCCESS;
+        // ── Client side ──
+        // If the goblin has stolen items, open the catch dialog (GoblinCaughtScreen).
+        // Otherwise fall through to the base class which opens the normal InteractionScreen.
+        if (level().isClientSide) {
+            // If the goblin has stolen items (synced), open the catch dialog screen.
+            if (!entityData.get(DATA_STOLEN_ITEM).isEmpty()) {
+                net.minecraftforge.fml.DistExecutor.unsafeRunWhenOn(
+                    net.minecraftforge.api.distmarker.Dist.CLIENT, () -> () ->
+                        net.minecraft.client.Minecraft.getInstance().setScreen(
+                            new com.schnurritv.sexmod.client.gui.GoblinCaughtScreen(this, player)));
+                return InteractionResult.SUCCESS;
+            }
+            return super.mobInteract(player, hand);
+        }
 
+        // ── Server side ──
         // Queen handling — right-click on queen while she's on throne does nothing old-version style
         if (entityData.get(DATA_IS_QUEEN)) {
             return InteractionResult.SUCCESS;
@@ -308,12 +331,8 @@ public class GoblinEntity extends BaseGirlEntity {
         }
 
         // Old behavior: if goblin is RUNNING, player needs to get close
-        // For simplicity, if goblin has stolen items, show catch dialog
+        // For simplicity, if goblin has stolen items, show catch dialog (opened client-side)
         if (stealCount > 0) {
-            // Player interacts — open the catch dialog
-            if (player instanceof ServerPlayer sp) {
-                openCatchDialog(sp);
-            }
             return InteractionResult.SUCCESS;
         }
 
@@ -340,18 +359,6 @@ public class GoblinEntity extends BaseGirlEntity {
         return false; // Simplified — the actual check would iterate all entities
     }
 
-    /**
-     * Open the "caught goblin" dialog — either the existing GoblinCaughtScreen or
-     * open the InteractionScreen with special options.
-     */
-    private void openCatchDialog(ServerPlayer player) {
-        // Old behavior: two options: "take ur stuff back" or "use her"
-        player.displayClientMessage(Component.literal("§6[Goblin] Caught me! What now?"), false);
-        // The client will get the message and can right-click again to trigger the screen
-        // For now, return via the existing GoblinActionPacket mechanism.
-        // The client-side GoblinCaughtScreen is opened via the InteractionScreen for goblin.
-    }
-
     // ==================== tick ====================
 
     @Override
@@ -366,6 +373,9 @@ public class GoblinEntity extends BaseGirlEntity {
     }
 
     private void handleServerTick() {
+        // Don't run AI while locked in a scene (e.g. doUseHer blowjob)
+        if (entityData.get(SexEntity.IS_LOCKED)) return;
+
         // 1. Steal system for wild goblins
         if (!entityData.get(DATA_TAMED) && !entityData.get(DATA_IS_QUEEN)) {
             attemptSteal();
@@ -534,6 +544,10 @@ public class GoblinEntity extends BaseGirlEntity {
         baby.setPos(spawnPos.x, spawnPos.y, spawnPos.z);
         baby.setItemSlot(EquipmentSlot.MAINHAND, taken);
         baby.entityData.set(DATA_STOLEN_ITEM, taken);
+        // Keep state consistent: the baby is a thief with 1 stolen item,
+        // so the catch flow (CaughtScreen → return items) works end-to-end.
+        baby.setStealCount(1);
+        baby.getStolenItems().add(taken.copy());
         level().addFreshEntity(baby);
         nearest.displayClientMessage(Component.literal("§e<Goblin> I got your " + taken.getHoverName().getString() + " hehe~"), false);
 
@@ -660,6 +674,11 @@ public class GoblinEntity extends BaseGirlEntity {
         super.addAdditionalSaveData(tag);
         tag.putString("stolenOwner", entityData.get(DATA_STOLEN_OWNER));
         tag.putBoolean("isTamed", entityData.get(DATA_TAMED));
+        // Persist the synced stolen item so the client catch dialog still opens after reload
+        ItemStack stolenItem = entityData.get(DATA_STOLEN_ITEM);
+        if (!stolenItem.isEmpty()) {
+            tag.put("stolenItem", stolenItem.saveOptional(level().registryAccess()));
+        }
         tag.putString("queenName", entityData.get(DATA_QUEEN_NAME));
         tag.putBoolean("isQueen", entityData.get(DATA_IS_QUEEN));
         tag.putBoolean("isPreggo", entityData.get(DATA_PREGG0));
@@ -697,6 +716,16 @@ public class GoblinEntity extends BaseGirlEntity {
         super.readAdditionalSaveData(tag);
         entityData.set(DATA_STOLEN_OWNER, tag.getString("stolenOwner"));
         entityData.set(DATA_TAMED, tag.getBoolean("isTamed"));
+        // Restore the synced stolen item (keep in sync with stealCount/stolenItems)
+        if (tag.contains("stolenItem")) {
+            ItemStack stolenItem = ItemStack.parseOptional(level().registryAccess(), tag.getCompound("stolenItem"));
+            if (!stolenItem.isEmpty()) {
+                entityData.set(DATA_STOLEN_ITEM, stolenItem);
+                if (!stolenItems.contains(stolenItem)) {
+                    stolenItems.add(stolenItem.copy());
+                }
+            }
+        }
         entityData.set(DATA_QUEEN_NAME, tag.getString("queenName"));
         entityData.set(DATA_IS_QUEEN, tag.getBoolean("isQueen"));
         entityData.set(DATA_PREGG0, tag.getBoolean("isPreggo"));
@@ -778,12 +807,15 @@ public class GoblinEntity extends BaseGirlEntity {
 
     /**
      * Called when player selects "use her" (start scene).
+     * Old behavior: start a sex scene (paizuri or nelson depending on state).
+     * Goblin animations map BLOWJOB* -> nelson_*, PAIZURI* -> paizuri_*, so we hook into
+     * SceneManager with the standard entry points like every other character.
      */
     public void doUseHer(ServerPlayer player) {
-        // Old behavior: start a sex scene (paizuri or nelson depending on state)
+        if (level().isClientSide) return;
+        // Start a blowjob scene (goblin has nelson_intro/slow/fasts/cum animations)
         player.displayClientMessage(Component.literal("§eThe goblin purrs as you approach..."), false);
-        // In the old code this triggered START_THROWING → followed by scene transition
-        // For the new system, it should hook into SceneManager
+        com.schnurritv.sexmod.scene.SceneManager.startBlowjob(this, player);
     }
 
     // ==================== Selection/rendering ====================

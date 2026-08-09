@@ -15,11 +15,11 @@ Jenny, Ellie, Slime, Bee, Bia, Cat, Allie, Goblin, Kobold, Galath, Manglelie, Lu
 
 ### Known Issues
 
-- 🔴 **"Diamond Armor" visual glitch** — Some characters spawn with purple/white armor overlay
-- 🔴 **Goblin interaction incomplete** — Taming and catch scene not fully wired (`doUseHer` is a stub)
-- 🟡 **Combat animations** — SexFighterEntity has combat logic but attack anims depend on model
-- 🟡 **Equipment UI** — EquipmentScreen works but drag-from-inventory is limited
-- 🟡 **Worldgen houses** — NBT house templates incompatible with current StructureTemplate system (disabled)
+- ~~🔴 **"Diamond Armor" visual glitch**~~ — **Fixed**: `SexEntity.getItemBySlot()` returns EMPTY client-side and `setItemSlot()` forces empty, preventing MC's vanilla armor overlay from ever rendering on girl entities
+- ~~🔴 **Goblin interaction incomplete**~~ — **Fixed**: catch dialog (`GoblinCaughtScreen`) now opens on right-click when the goblin has stolen items; `doUseHer` is wired to `SceneManager.startBlowjob` (goblin nelson/paizuri animation chains)
+- 🟡 **Combat animations** — SexFighterEntity has combat logic but attack anims depend on model (characters without `attack` anims, e.g. Cat, fall back to idle)
+- ~~🟡 **Equipment UI**~~ — **Improved**: EquipmentScreen renders the player inventory grid; click-to-equip/click-to-unequip with **server-authoritative transfers** (no item duping/loss)
+- 🟡 **Worldgen houses** — NBT house templates incompatible with current StructureTemplate system (disabled); replaced by `GirlHouseGenerator.generateCottage()` (hardcoded cabin on first spawn)
 
 ### Dependencies
 
@@ -77,11 +77,11 @@ Jenny, Ellie, Slime, Bee, Bia, Cat, Allie, Goblin, Kobold, Galath, Manglelie, Lu
 
 ### 已知问题
 
-- 🔴 **「钻石甲」显示 bug** — 部分角色出生时身上有紫色/白色盔甲纹理（MC 内置 armor overlay 误触发，pending fix）
-- 🔴 **Goblin 交互不完整** — 驯服和 catch 后的场景触发未完全实现（`doUseHer` 为 stub）
-- 🟡 **战斗动画** — SexFighterEntity 的战斗逻辑已实现，但攻击动画播放依赖角色模型是否存在 `attack` 动画
-- 🟡 **装备 UI** — EquipmentScreen 基本可用，但拖拽来自玩家背包的功能受限
-- 🟡 **世界生成房屋** — NBT 房屋模板格式不兼容当前 StructureTemplate 系统，暂时禁用
+- ~~🔴 **「钻石甲」显示 bug**~~ — **已修复**：`SexEntity.getItemBySlot()` 客户端返回 EMPTY + `setItemSlot()` 强制清空，MC 内置 armor overlay 不会在角色实体上渲染
+- ~~🔴 **Goblin 交互不完整**~~ — **已修复**：goblin 偷到东西后右键会打开抓捕对话（`GoblinCaughtScreen`）；`doUseHer` 已接入 `SceneManager.startBlowjob`（nelson/paizuri 动画链）
+- 🟡 **战斗动画** — 战斗逻辑已实现，攻击动画依赖角色模型是否有 `attack` 动画（没有的如 Cat 回退 idle）
+- ~~🟡 **装备 UI**~~ — **已改进**：EquipmentScreen 渲染玩家背包网格，点击拾取/点击装备/点击卸下，交易由**服务端权威执行**（不会复制/丢失物品）
+- 🟡 **世界生成房屋** — NBT 模板不兼容 StructureTemplate（已禁用）；由 `GirlHouseGenerator.generateCottage()` 首次生成硬编码小屋替代
 
 ### 依赖
 

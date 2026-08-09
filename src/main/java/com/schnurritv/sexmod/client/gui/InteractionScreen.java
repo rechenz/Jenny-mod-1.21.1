@@ -143,9 +143,11 @@ public class InteractionScreen extends Screen {
             actions.add(new Action("📋 Ask for a quest", ActionType.QUEST_START, false));
         }
 
-        // Goblin: stolen items retrieval
-        if (girl instanceof com.schnurritv.sexmod.entity.goblin.GoblinEntity goblin && goblin.getStealCount() > 0) {
-            actions.add(new Action("💰 Return Stolen Items (" + goblin.getStealCount() + ")", ActionType.RETURN_ITEMS, false));
+        // Goblin: stolen items retrieval (client can only see the synced DATA_STOLEN_ITEM;
+        // stealCount is a server-only field, so check the synced item instead)
+        if (girl instanceof com.schnurritv.sexmod.entity.goblin.GoblinEntity goblin
+                && goblin.hasStolenItems()) {
+            actions.add(new Action("💰 Return Stolen Items", ActionType.RETURN_ITEMS, false));
         }
 
         // Cat: Head pat

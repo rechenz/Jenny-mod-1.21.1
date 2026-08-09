@@ -31,8 +31,9 @@ public class GoblinActionPacket {
                 if (entity instanceof GoblinEntity goblin) {
                     switch (msg.action) {
                         case "return" -> goblin.returnStolenItems(player);
-                        case "scene" -> player.displayClientMessage(
-                            net.minecraft.network.chat.Component.literal("§eThe goblin scurries off before you can act..."), false);
+                        case "scene" -> goblin.doUseHer(player);
+                        default -> player.displayClientMessage(
+                            net.minecraft.network.chat.Component.literal("§eThe goblin looks confused..."), false);
                     }
                 }
             }
