@@ -33,10 +33,14 @@ public class ModItems {
     public static final RegistryObject<Item> CRYSTAL_SLIME   = register("crystal_slime", "A crystallized slime ball. Slime girls find these fascinating.");
 
     // ── Utility items ──
-    public static final RegistryObject<Item> SUMMONING_WHISTLE = register("summoning_whistle", "A magical whistle. Calls your closest follower to your side.");
-    public static final RegistryObject<Item> HEALING_CHARM     = register("healing_charm", "A charm that slowly heals nearby girls. Passive aura effect.");
-    public static final RegistryObject<Item> BOND_BRACELET     = register("bond_bracelet", "Wearing this strengthens the bond with your companion. Slows affection decay.");
-    public static final RegistryObject<Item> MEMORY_CRYSTAL    = register("memory_crystal", "Stores a girl's home position. Right-click to set, use to recall.");
+    public static final RegistryObject<Item> SUMMONING_WHISTLE = ITEMS.register("summoning_whistle",
+        () -> new SummoningWhistleItem(new Item.Properties()));
+    public static final RegistryObject<Item> HEALING_CHARM     = ITEMS.register("healing_charm",
+        () -> new HealingCharmItem(new Item.Properties()));
+    public static final RegistryObject<Item> BOND_BRACELET     = ITEMS.register("bond_bracelet",
+        () -> new BondBraceletItem(new Item.Properties()));
+    public static final RegistryObject<Item> MEMORY_CRYSTAL    = ITEMS.register("memory_crystal",
+        () -> new MemoryCrystalItem(new Item.Properties()));
     public static final RegistryObject<Item> GUIDE_BOOK        = ITEMS.register("guide_book",
         () -> new GuideBookItem(new Item.Properties()));
 

@@ -5,6 +5,7 @@ import com.schnurritv.sexmod.entity.BaseGirlEntity;
 import com.schnurritv.sexmod.networking.SceneActionPacket;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -83,6 +84,42 @@ public class ServerForgeEvents {
 
         for (net.minecraft.server.level.ServerLevel level : server.getAllLevels()) {
             SceneActionPacket.tickDefendQuests(level);
+        }
+
+        // Passive charm/bracelet aura effects
+        tickPassiveItems(server);
+    }
+
+    /**
+     * Passive item auras (every 40 ticks = 2s):
+     * - HealingCharm: heals nearby girls 1 HP per tick-cycle
+     * - BondBracelet: slows affection decay (implemented via AffectionData
+     *   — see BaseGirlEntity tick; here we just notify nearby girls)
+     */
+    private static void tickPassiveItems(net.minecraft.server.MinecraftServer server) {
+        for (net.minecraft.server.level.ServerLevel level : server.getAllLevels()) {
+            for (Player player : level.players()) {
+                boolean hasHeal = false;
+                boolean hasBond = false;
+                for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
+                    ItemStack stack = player.getInventory().getItem(i);
+                    if (stack.getItem() instanceof com.schnurritv.sexmod.item.HealingCharmItem) hasHeal = true;
+                    if (stack.getItem() instanceof com.schnurritv.sexmod.item.BondBraceletItem) hasBond = true;
+                }
+                if (!hasHeal && !hasBond) continue;
+
+                for (BaseGirlEntity girl : level.getEntitiesOfClass(BaseGirlEntity.class,
+                        player.getBoundingBox().inflate(16.0D))) {
+                    if (!girl.isAlive()) continue;
+                    if (hasHeal) {
+                        girl.heal(1.0f);
+                    }
+                    if (hasBond) {
+                        // Mark bond: affection decay is skipped while bracelet is held
+                        girl.setBondActive(true);
+                    }
+                }
+            }
         }
     }
 }

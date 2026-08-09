@@ -471,6 +471,11 @@ public abstract class BaseGirlEntity extends SexEntity {
     private boolean hasHouse = false;
     @Nullable private BlockPos housePos = null;
 
+    /** True while a nearby player holds a Bond Bracelet (halves affection decay) */
+    private boolean bondActive = false;
+
+    public void setBondActive(boolean active) { this.bondActive = active; }
+
     /**
      * Whether this character gets a house on first spawn.
      * Human characters return true; monsters/creatures return false.
@@ -496,7 +501,9 @@ public abstract class BaseGirlEntity extends SexEntity {
             }
 
             long currentDay = this.level().getDayTime() / 24000;
-            affectionData.applyDecay(currentDay, SexModConfig.AFFECTION_DECAY_PER_DAY.get());
+            double decay = SexModConfig.AFFECTION_DECAY_PER_DAY.get();
+            if (bondActive) decay *= 0.5; // Bond Bracelet: halve decay
+            affectionData.applyDecay(currentDay, decay);
 
             // Jealousy check: if player has high affection with another nearby girl,
             // this girl gets jealous and loses affection periodically.
