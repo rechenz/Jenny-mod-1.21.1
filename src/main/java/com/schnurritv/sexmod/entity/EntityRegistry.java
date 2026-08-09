@@ -156,6 +156,7 @@ public class EntityRegistry {
                         // Kobold items (1.12.2 port)
                         output.accept(ModItems.DRAGON_STAFF.get());
                         output.accept(ModItems.HORNY_POTION.get());
+                        output.accept(ModItems.TRIBE_EGG.get());
                         // Guide
                         output.accept(ModItems.GUIDE_BOOK.get());
                     })

@@ -1,6 +1,6 @@
 {
-    "parent": "item/handheld",
-    "textures": {
-        "layer0": "sexmod:entity/kobold/egg"
-    }
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "sexmod:items/tribe_egg"
+  }
 }

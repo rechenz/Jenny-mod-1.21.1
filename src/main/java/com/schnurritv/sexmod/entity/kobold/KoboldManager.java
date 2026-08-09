@@ -120,6 +120,15 @@ public class KoboldManager {
     }
 
     @Nullable
+    public static UUID findTribeByOwner(UUID ownerUUID) {
+        for (UUID tribeId : TRIBES.keySet()) {
+            if (ownerUUID.equals(getOwner(tribeId))) {
+                return tribeId;
+            }
+        }
+        return null;
+    }
+
     public static Player getOwnerPlayer(UUID tribeId, Level level) {
         TribeData tribe = getTribe(tribeId);
         return tribe != null ? tribe.getOwner(level) : null;

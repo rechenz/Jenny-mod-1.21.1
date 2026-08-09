@@ -53,6 +53,8 @@ public class ModItems {
         () -> new DragonStaffItem(new Item.Properties()));
     public static final RegistryObject<Item> HORNY_POTION = ITEMS.register("horny_potion",
         () -> new HornyPotionItem(new Item.Properties()));
+    public static final RegistryObject<Item> TRIBE_EGG = ITEMS.register("tribe_egg",
+        () -> new TribeEggItem(new Item.Properties()));
 
     // ── Helper ──
     private static RegistryObject<Item> register(String name, String tooltip) {
