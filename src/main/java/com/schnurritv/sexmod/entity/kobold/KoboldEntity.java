@@ -300,11 +300,19 @@ public class KoboldEntity extends BaseGirlEntity {
             return InteractionResult.SUCCESS;
         }
 
-        // Untamed kobold: require payment (3 gold ingots + iron pickaxe) to interact
+        // Untamed kobold: require payment (3 gold ingots + iron pickaxe) to interact,
+        // unless the player is under the Horny Potion effect (1.12.2 free-interaction mechanic)
         if (!this.isTame()) {
             if (this.level().isClientSide) {
                 // Client side: still open interaction but will show payment screen
                 return super.mobInteract(player, hand);
+            }
+            // Horny Potion bypass: free interaction while the effect is active
+            if (player.hasEffect(net.minecraft.world.effect.MobEffects.REGENERATION)
+                    && player.hasEffect(net.minecraft.world.effect.MobEffects.MOVEMENT_SPEED)) {
+                player.displayClientMessage(Component.literal(
+                        "<" + getKoboldName() + "> §dHorny potion active... fine, come here!"), false);
+                return InteractionResult.SUCCESS;
             }
             int goldCount = 0;
             boolean hasPickaxe = false;

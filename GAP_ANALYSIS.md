@@ -30,40 +30,40 @@
 
 ## ❌ 1.12.2 有但 1.21.1 缺失/不完整（要补的）
 
-### P0 — 世界生成（热尘点名 NBT）
+### P0 — 世界生成（热尘点名 NBT）✅ 已完成 2026-08-09
 
 | # | 功能 | 1.12.2 实现 | 1.21.1 现状 | 方案 |
 |---|------|------------|-------------|------|
-| 1 | **角色房屋 NBT 结构** | `assets/sexmod/structures/*.nbt`（7 个：alex/bia/ellie/goblin/jenny/luna/ssa） | WorldGenHandler 禁用，靠 GirlHouseGenerator 硬编码小屋 | 把 7 个 NBT 转 1.21.1 格式放 `data/sexmod/structures/`，启用 chunk 生成 |
-| 2 | **自然生成（生物群系）** | 各角色按生物群系生成 | 仅刷怪蛋 | 注册 biome spawn（权重配置化） |
-| 3 | **结构内角色+宝箱** | NBT entities 内嵌角色 | 无 | NBT 升级后自动带角色，补宝箱 |
+| 1 | **角色房屋 NBT 结构** | `assets/sexmod/structures/*.nbt`（7 个：alex/bia/ellie/goblin/jenny/luna/ssa） | ✅ 已转换 7 个 NBT 为 1.21.1 原生格式（DataVersion 3955），GirlHouseGenerator NBT 优先加载 | tools/convert_structures_1211.py + manualLoadStructure |
+| 2 | **自然生成（生物群系）** | 各角色按生物群系生成 | ✅ 14 个 biome_modifier（add_spawns）已注册 | 权重配置化 |
+| 3 | **结构内角色+宝箱** | NBT entities 内嵌角色 | ⚠️ 转换时剥离 entities（1.12.2 实体 NBT 不兼容），角色靠自然生成/刷怪蛋 | 可选后续 |
 
-### P1 — 缺失物品
+### P1 — 缺失物品（4/7 已完成）
 
 | # | 物品 | 1.12.2 | 1.21.1 | 说明 |
 |---|------|--------|--------|------|
-| 4 | **Allies Lamp（神灯）** | `item.allies_lamp` | ❌ | 召唤 Allie 的入口，右键召唤 |
-| 5 | **Luna's Rod（Luna 法杖）** | `item.luna_rod` | ❌ | Luna 角色相关 |
-| 6 | **Dragon Staff（龙法杖）** | `item.dragon_staff` + recipe | ❌ | Kobold 法杖（驯服用） |
-| 7 | **Tribe Egg（部落蛋）** | `item.tribe_egg` | ❌ | Kobold 部落蛋 |
-| 8 | **Girl Wand（NPC 编辑法杖）** | `item.npc_editor_wand` + recipe | ❌ | 定制化 GUI |
-| 9 | **horny potion（发情药水）** | `effect.horny_potion` 4 变体 | ❌ | Kobold 互动门槛（金锭×3+铁镐 / 药水） |
-| 10 | **hehe 地图** | `item.item_map_secret` | ❌ | 彩蛋 |
+| 4 | **Allies Lamp（神灯）** | `item.allies_lamp` | ✅ 2026-08-09 | AlliesLampItem 召唤 Allie + 沙恐惧症 + 冷却 |
+| 5 | **Luna's Rod（Luna 法杖）** | `item.luna_rod` | ❌ 跳过 | 1.12.2 Luna 无 geo 模型（半成品角色），1.21.1 无 Luna 实体；Luna 声音/房屋保留 |
+| 6 | **Dragon Staff（龙法杖）** | `item.dragon_staff` + recipe | ✅ 2026-08-09 | DragonStaffItem 驯服 Kobold（KoboldEntity 接木棍+法杖） |
+| 7 | **Tribe Egg（部落蛋）** | `item.tribe_egg` | ✅ 2026-08-09 | TribeEggItem 孵化 Kobold 入部落 |
+| 8 | **Girl Wand（NPC 编辑法杖）** | `item.npc_editor_wand` + recipe | ❌ 待做 | 定制化 GUI |
+| 9 | **horny potion（发情药水）** | `effect.horny_potion` 4 变体 | ✅ 2026-08-09 | HornyPotionItem Regen+Speed，Kobold 免费互动（KoboldEntity 付款检查待接） |
+| 10 | **hehe 地图** | `item.item_map_secret` | ❌ 彩蛋 | 低优先 |
 
-### P2 — 玩法系统
+### P2 — 玩法系统（3/10 已完成 + 多项已核实实现）
 
 | # | 系统 | 1.12.2 | 1.21.1 | 说明 |
 |---|------|--------|--------|------|
-| 11 | **回家系统** | `Set new home` / `Go home` | 部分（memory_crystal 物品） | 加进 InteractionScreen 动作 |
-| 12 | **Goblin 背起/骑乘** | PICK_UP → 玩家挂背上 | ❌ placeholder | 玩家 setNoGravity+noClip+位置同步 |
-| 13 | **Goblin 女王完整链** | SIT 王座+守卫+受孕+VANISH | 部分 | 王座渲染/守卫列队 |
-| 14 | **Kobold 任务系统** | FALL_TREE / MINE 自动指派 | 骨架（KoboldTask 125 行） | 补砍树/采矿检测+执行 |
-| 15 | **Kobold 驯服 GUI** | 法杖→g7_class352 GUI | ❌ | 法杖右键→驯服界面 |
-| 16 | **Kobold 睡眠 REST** | 日夜循环找床睡 | ❌ | REST 模式 |
-| 17 | **Kobold 领地防御** | 领地块+全体反击 | 部分（getNearbyHostiles） | 补自动攻击 |
-| 18 | **Allie 召唤仪式完整台词** | 8 段台词+音效+SUMMON_SAND | 部分 | 补 8 段对话链+沙子 phobia |
-| 19 | **对话气泡** | void_a() 文字+音效 | InteractionScreen 对话框 | 可保留现状 |
-| 20 | **genderswap 请求** | 玩家间 sex 请求 | ❌ | 低优先 |
+| 11 | **回家系统** | `Set new home` / `Go home` | ✅ 2026-08-09 | MemoryCrystalItem 绑定/传送；InteractionScreen 动作按钮待接 |
+| 12 | **Goblin 背起/骑乘** | PICK_UP → 玩家挂背上 | ✅ 2026-08-09 | shift+右键骑乘（isVehicle + getPassengerRidingPosition） |
+| 13 | **Goblin 女王完整链** | SIT 王座+守卫+受孕+VANISH | ⚠️ 大部分已实现 | 王座渲染/守卫列队/受孕/消失链已接（RIDE + queen 逻辑） |
+| 14 | **Kobold 任务系统** | FALL_TREE / MINE 自动指派 | ✅ 已实现 | KoboldTask（FALL_TREE/MINE + detectAndCreateTreeTask 完整） |
+| 15 | **Kobold 驯服 GUI** | 法杖→g7_class352 GUI | ⚠️ 已实现 | 木棍/龙法杖右键直接驯服（简化版，无 GUI） |
+| 16 | **Kobold 睡眠 REST** | 日夜循环找床睡 | ✅ 已实现 | findBedAndSleep + REST/ACTIVE 切换 + 床注册 |
+| 17 | **Kobold 领地防御** | 领地块+全体反击 | ✅ 已实现 | getNearbyHostiles + 自动反击 |
+| 18 | **Allie 召唤仪式完整台词** | 8 段台词+音效+SUMMON_SAND | ✅ 已实现 | SUMMON_LINES 8 段 + SUMMON→SUMMON_WAIT 链 + 沙 phobia（神灯） |
+| 19 | **对话气泡** | void_a() 文字+音效 | ⚠️ InteractionScreen 对话框 | 可保留现状 |
+| 20 | **genderswap 请求** | 玩家间 sex 请求 | ❌ 低优先 | |
 
 ### P3 — 打磨
 
