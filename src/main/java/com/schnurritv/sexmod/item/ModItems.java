@@ -44,6 +44,16 @@ public class ModItems {
     public static final RegistryObject<Item> GALATH_COIN = ITEMS.register("galath_coin",
         () -> new GalathCoinItem(new Item.Properties()));
 
+    // ── Summoning items (1.12.2 port) ──
+    public static final RegistryObject<Item> ALLIES_LAMP = ITEMS.register("allies_lamp",
+        () -> new AlliesLampItem(new Item.Properties()));
+
+    // ── Kobold items (1.12.2 port) ──
+    public static final RegistryObject<Item> DRAGON_STAFF = ITEMS.register("dragon_staff",
+        () -> new DragonStaffItem(new Item.Properties()));
+    public static final RegistryObject<Item> HORNY_POTION = ITEMS.register("horny_potion",
+        () -> new HornyPotionItem(new Item.Properties()));
+
     // ── Helper ──
     private static RegistryObject<Item> register(String name, String tooltip) {
         return ITEMS.register(name, () -> new GiftItem(new Item.Properties(), tooltip, getAffectionValue(name)));

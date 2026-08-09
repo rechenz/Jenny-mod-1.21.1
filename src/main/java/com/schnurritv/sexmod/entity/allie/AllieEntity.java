@@ -29,7 +29,7 @@ public class AllieEntity extends BaseGirlEntity {
     private static final Random RAND = new Random();
 
     // ── Data syncer: stores the summoning item (or UUID reference) ──
-    protected static final EntityDataAccessor<String> SUMMON_OWNER = SynchedEntityData.defineId(AllieEntity.class, EntityDataSerializers.STRING);
+    public static final EntityDataAccessor<String> SUMMON_OWNER = SynchedEntityData.defineId(AllieEntity.class, EntityDataSerializers.STRING);
     // sexmodUses field from the summoning item (synced once to client)
     protected static final EntityDataAccessor<Integer> SEXMOD_USES = SynchedEntityData.defineId(AllieEntity.class, EntityDataSerializers.INT);
     // Sync flag: rich animation finished on server → signal client to play effects

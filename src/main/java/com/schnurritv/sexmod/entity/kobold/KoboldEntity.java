@@ -257,8 +257,9 @@ public class KoboldEntity extends BaseGirlEntity {
     public InteractionResult mobInteract(Player player, InteractionHand hand) {
         ItemStack held = player.getItemInHand(hand);
 
-        // Check if this is a tame staff (Stick)
-        if (held.getItem() == Items.STICK) {
+        // Check if this is a tame staff (Dragon Staff or vanilla stick for compat)
+        if (held.getItem() == Items.STICK
+                || com.schnurritv.sexmod.item.DragonStaffItem.isDragonStaff(held)) {
             if (this.level().isClientSide) {
                 return InteractionResult.SUCCESS;
             }

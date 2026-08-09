@@ -151,6 +151,11 @@ public class EntityRegistry {
                         output.accept(ModItems.MEMORY_CRYSTAL.get());
                         // Boss Drops
                         output.accept(ModItems.GALATH_COIN.get());
+                        // Summoning (1.12.2 port)
+                        output.accept(ModItems.ALLIES_LAMP.get());
+                        // Kobold items (1.12.2 port)
+                        output.accept(ModItems.DRAGON_STAFF.get());
+                        output.accept(ModItems.HORNY_POTION.get());
                         // Guide
                         output.accept(ModItems.GUIDE_BOOK.get());
                     })

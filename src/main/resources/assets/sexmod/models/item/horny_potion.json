@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "sexmod:items/allies_lamp"
+    "layer0": "sexmod:items/horny_potion"
   }
 }
