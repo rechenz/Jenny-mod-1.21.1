@@ -63,10 +63,12 @@ public class AlliesLampItem extends Item {
             return InteractionResultHolder.success(stack);
         }
 
-        // Check if player already has an Allie
+        // Check if player already has an Allie — scan the ENTIRE level, not just
+        // 64 blocks (audit M4: 64-block radius let players stack infinite Allies
+        // by walking away or changing dimension).
         UUID pid = player.getUUID();
         for (var allie : level.getEntitiesOfClass(com.schnurritv.sexmod.entity.allie.AllieEntity.class,
-                player.getBoundingBox().inflate(64))) {
+                player.getBoundingBox().inflate(1.0E9D))) {
             String owner = allie.getEntityData().get(
                     com.schnurritv.sexmod.entity.allie.AllieEntity.SUMMON_OWNER);
             if (pid.toString().equals(owner)) {
@@ -75,10 +77,15 @@ public class AlliesLampItem extends Item {
             }
         }
 
-        // Summon Allie
+        // Summon Allie — find open air above the player so she doesn't suffocate (audit L6)
         var allie = EntityRegistry.ALLIE.get().create(level);
         if (allie != null) {
-            allie.setPos(player.getX(), player.getY() + 0.5, player.getZ());
+            net.minecraft.core.BlockPos.MutableBlockPos pos = player.blockPosition().mutable();
+            while (pos.getY() < level.getMaxBuildHeight() - 1
+                    && !(level.getBlockState(pos).isAir() && level.getBlockState(pos.above()).isAir())) {
+                pos.move(0, 1, 0);
+            }
+            allie.setPos(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5);
             allie.setYRot(player.getYRot());
             allie.getEntityData().set(com.schnurritv.sexmod.entity.allie.AllieEntity.SUMMON_OWNER,
                     pid.toString());

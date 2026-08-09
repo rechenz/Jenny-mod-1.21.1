@@ -70,6 +70,11 @@ public class KoboldEntity extends BaseGirlEntity {
     private int stuckCheckTimer = 0;
     private Vec3 lastPos = Vec3.ZERO;
 
+    // ── Payment unlock (audit M1): player pays 3 gold + pickaxe once,
+    //    then interacts freely for 24000 ticks (20 min) without re-charging.
+    private String paidPlayerUUID = "";
+    private long paidUntilGameTime = 0;
+
     public KoboldEntity(EntityType<? extends PathfinderMob> type, Level level) {
         super(type, level);
     }
@@ -191,6 +196,16 @@ public class KoboldEntity extends BaseGirlEntity {
         compound.putString("KoboldColor", tribeColor.name());
         compound.putBoolean("KoboldSleeping", isSleeping());
         compound.putBoolean("KoboldLeader", isLeader());
+        // Persist master (owner) UUID — needed to rebuild the tribe after restart (audit H2)
+        String masterUuid = getMasterUUID();
+        if (!masterUuid.isEmpty()) {
+            compound.putString("KoboldMaster", masterUuid);
+        }
+        // Persist payment unlock (audit M1)
+        if (!paidPlayerUUID.isEmpty()) {
+            compound.putString("KoboldPaidBy", paidPlayerUUID);
+            compound.putLong("KoboldPaidUntil", paidUntilGameTime);
+        }
         if (tribeId != null) {
             compound.putUUID("TribeId", tribeId);
         }
@@ -212,6 +227,9 @@ public class KoboldEntity extends BaseGirlEntity {
         }
         if (compound.contains("KoboldSleeping")) setSleeping(compound.getBoolean("KoboldSleeping"));
         if (compound.contains("KoboldLeader")) setLeader(compound.getBoolean("KoboldLeader"));
+        if (compound.contains("KoboldMaster")) setMasterUUID(compound.getString("KoboldMaster"));
+        if (compound.contains("KoboldPaidBy")) paidPlayerUUID = compound.getString("KoboldPaidBy");
+        if (compound.contains("KoboldPaidUntil")) paidUntilGameTime = compound.getLong("KoboldPaidUntil");
         if (compound.hasUUID("TribeId")) {
             this.tribeId = compound.getUUID("TribeId");
             // Re-register with manager on load
@@ -277,11 +295,24 @@ public class KoboldEntity extends BaseGirlEntity {
                         KoboldManager.createTribe(tribeId, color);
                         KoboldManager.setOwner(tribeId, ownerId);
                     }
+                } else {
+                    // Kobold already carries a tribeId — verify ownership before taking over (audit H3)
+                    UUID tribeOwner = KoboldManager.getOwner(tribeId);
+                    if (tribeOwner != null && !tribeOwner.equals(ownerId)) {
+                        player.displayClientMessage(Component.literal(
+                                "<" + getKoboldName() + "> This kobold already belongs to another tribe!"), false);
+                        return InteractionResult.FAIL;
+                    }
                 }
                 KoboldManager.addMember(tribeId, this);
                 KoboldManager.setOwner(tribeId, ownerId);
                 setTame(true);
                 setMasterUUID(ownerId.toString());
+                // Dragon Staff loses durability on a successful tame (audit L3)
+                if (com.schnurritv.sexmod.item.DragonStaffItem.isDragonStaff(held)
+                        && !player.isCreative()) {
+                    held.hurtAndBreak(1, player, net.minecraft.world.entity.EquipmentSlot.MAINHAND);
+                }
                 player.displayClientMessage(Component.literal("<" + getKoboldName() + "> Tamed!"), false);
                 return InteractionResult.CONSUME;
             } else {
@@ -303,16 +334,22 @@ public class KoboldEntity extends BaseGirlEntity {
         // Untamed kobold: require payment (3 gold ingots + iron pickaxe) to interact,
         // unless the player is under the Horny Potion effect (1.12.2 free-interaction mechanic)
         if (!this.isTame()) {
+            // Client side: open the interaction screen optimistically; the server
+            // enforces payment below (audit M1 — client never deducts anything).
             if (this.level().isClientSide) {
-                // Client side: still open interaction but will show payment screen
                 return super.mobInteract(player, hand);
             }
-            // Horny Potion bypass: free interaction while the effect is active
-            if (player.hasEffect(net.minecraft.world.effect.MobEffects.REGENERATION)
-                    && player.hasEffect(net.minecraft.world.effect.MobEffects.MOVEMENT_SPEED)) {
+            // Horny Potion bypass: free interaction while the dedicated effect is active
+            // (audit M2 — checking vanilla Regen+Speed would false-positive)
+            if (player.hasEffect(com.schnurritv.sexmod.effects.ModEffects.hornyHolder())) {
                 player.displayClientMessage(Component.literal(
                         "<" + getKoboldName() + "> §dHorny potion active... fine, come here!"), false);
                 return InteractionResult.SUCCESS;
+            }
+            // Already paid recently — don't charge twice (audit M1)
+            long gameTime = this.level().getGameTime();
+            if (paidPlayerUUID.equals(player.getStringUUID()) && gameTime < paidUntilGameTime) {
+                return super.mobInteract(player, hand);
             }
             int goldCount = 0;
             boolean hasPickaxe = false;
@@ -322,7 +359,7 @@ public class KoboldEntity extends BaseGirlEntity {
                 if (item.getItem() == Items.IRON_PICKAXE) hasPickaxe = true;
             }
             if (goldCount >= 3 && hasPickaxe) {
-                // Consume payment
+                // Consume payment once, then unlock interaction for 20 minutes (24000 ticks)
                 int toRemove = 3;
                 for (int i = 0; i < player.getInventory().getContainerSize() && toRemove > 0; i++) {
                     ItemStack item = player.getInventory().getItem(i);
@@ -332,8 +369,11 @@ public class KoboldEntity extends BaseGirlEntity {
                         toRemove -= remove;
                     }
                 }
-                player.displayClientMessage(Component.literal("<" + getKoboldName() + "> Payment accepted!"), false);
-                return InteractionResult.SUCCESS;
+                paidPlayerUUID = player.getStringUUID();
+                paidUntilGameTime = gameTime + 24000;
+                player.displayClientMessage(Component.literal(
+                        "<" + getKoboldName() + "> Payment accepted! You may interact freely for a while."), false);
+                return super.mobInteract(player, hand);
             } else {
                 player.displayClientMessage(Component.literal("Need 3 Gold Ingots + Iron Pickaxe to interact with this kobold!"), false);
                 return InteractionResult.FAIL;
@@ -358,6 +398,21 @@ public class KoboldEntity extends BaseGirlEntity {
 
         // ── Tame checks ──
         if (isTame() && tribeId != null) {
+            // If the tribe was lost (server restart), rebuild it from the master
+            if (!KoboldManager.tribeExists(tribeId)) {
+                String masterUuid = getMasterUUID();
+                if (!masterUuid.isEmpty()) {
+                    try {
+                        KoboldManager.createTribe(tribeId, tribeColor);
+                        KoboldManager.setOwner(tribeId, UUID.fromString(masterUuid));
+                        com.schnurritv.sexmod.Main.LOGGER.info(
+                                "KoboldManager: rebuilt tribe {} for kobold {} owner {}",
+                                tribeId, getUUID(), masterUuid);
+                    } catch (Exception e) {
+                        com.schnurritv.sexmod.Main.LOGGER.warn("KoboldManager: failed to rebuild tribe", e);
+                    }
+                }
+            }
             // Ensure registered in manager
             KoboldManager.addMember(tribeId, this);
 

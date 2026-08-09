@@ -20,7 +20,6 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraft.client.Minecraft;
 
 import java.util.Random;
 import java.util.UUID;
@@ -88,6 +87,15 @@ public class AllieEntity extends BaseGirlEntity {
 
     @Override
     public String getGirlName() { return "allie"; }
+
+    /**
+     * Allie is summoned (not a house dweller) — never auto-generate a cottage
+     * at the summon spot, which would flatten terrain around the player
+     * (audit M5).
+     */
+    @Override
+    public boolean needsHouse() { return false; }
+
     @Override
     public String getGeoFileName() { return "armored"; }
     @Override

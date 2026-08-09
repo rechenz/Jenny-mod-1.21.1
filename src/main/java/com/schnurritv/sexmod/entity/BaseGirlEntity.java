@@ -473,8 +473,22 @@ public abstract class BaseGirlEntity extends SexEntity {
 
     /** True while a nearby player holds a Bond Bracelet (halves affection decay) */
     private boolean bondActive = false;
+    /** Game time when bond was last refreshed (auto-expire after 3s) */
+    private long bondLastRefresh = -100;
 
-    public void setBondActive(boolean active) { this.bondActive = active; }
+    public void setBondActive(boolean active) {
+        this.bondActive = active;
+        if (active) {
+            this.bondLastRefresh = this.level().getGameTime();
+        }
+    }
+
+    /** Auto-expire bond if the bracelet holder left */
+    public void tickBondExpiry() {
+        if (bondActive && this.level().getGameTime() - bondLastRefresh > 60) {
+            bondActive = false;
+        }
+    }
 
     /**
      * Whether this character gets a house on first spawn.
@@ -491,6 +505,10 @@ public abstract class BaseGirlEntity extends SexEntity {
     @Override
     public void tick() {
         super.tick();
+        // Auto-expire Bond Bracelet effect if holder left (H1 audit fix)
+        if (!this.level().isClientSide) {
+            tickBondExpiry();
+        }
         if (!this.level().isClientSide) {
             // First-spawn house generation
             if (needsHouse() && !hasHouse) {

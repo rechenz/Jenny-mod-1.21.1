@@ -61,5 +61,6 @@
   "advancements.sexmod.affection_max.title": "命中注定",
   "advancements.sexmod.affection_max.description": "与一个女孩的好感度达到 100",
   "advancements.sexmod.collect_all.title": "后宫之王",
-  "advancements.sexmod.collect_all.description": "集齐全部 14 个女孩"
+  "advancements.sexmod.collect_all.description": "集齐全部 14 个女孩",
+  "effect.sexmod.horny": "发情"
 }

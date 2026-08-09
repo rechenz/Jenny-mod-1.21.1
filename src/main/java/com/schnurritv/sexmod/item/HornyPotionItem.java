@@ -1,8 +1,8 @@
 package com.schnurritv.sexmod.item;
 
+import com.schnurritv.sexmod.effects.ModEffects;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodProperties;
@@ -26,8 +26,11 @@ public class HornyPotionItem extends Item {
                         .alwaysEdible()
                         .nutrition(1)
                         .saturationModifier(0)
-                        .effect(new MobEffectInstance(MobEffects.REGENERATION, 200, 0), 1.0f)
-                        .effect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 400, 0), 1.0f)
+                        // Dedicated marker effect (audit M2) — vanilla Regen+Speed
+                        // would false-positive on golden apples / beacons / other mods.
+                        .effect(new MobEffectInstance(ModEffects.hornyHolder(), 600, 0), 1.0f)
+                        .effect(new MobEffectInstance(net.minecraft.world.effect.MobEffects.REGENERATION, 200, 0), 1.0f)
+                        .effect(new MobEffectInstance(net.minecraft.world.effect.MobEffects.MOVEMENT_SPEED, 400, 0), 1.0f)
                         .build()));
     }
 

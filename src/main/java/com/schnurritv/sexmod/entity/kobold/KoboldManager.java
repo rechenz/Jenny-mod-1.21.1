@@ -162,9 +162,10 @@ public class KoboldManager {
             kobold.tribeId = tribeId;
             kobold.tribeColor = tribe.color;
         } else {
-            // Tribe no longer exists — clear kobold's tribeId to avoid stale state
-            kobold.tribeId = null;
-            kobold.tribeColor = EyeAndKoboldColor.PURPLE;
+            // Tribe not loaded (e.g. after server restart). Keep the kobold's
+            // tribeId as recovery clue instead of destroying it (audit H2/M6).
+            com.schnurritv.sexmod.Main.LOGGER.warn("KoboldManager: tribe {} missing, keeping kobold {} tribeId",
+                    tribeId, kobold.getUUID());
         }
     }
 

@@ -48,17 +48,19 @@ public class MemoryCrystalItem extends Item {
                 player.displayClientMessage(Component.literal("§7Crystal is empty. Right-click near a girl to bind."), true);
                 return InteractionResultHolder.success(stack);
             }
-            Entity bound = null;
-            for (Entity e : ((ServerLevel) level).getEntities().getAll()) {
-                if (e.getStringUUID().equals(ownerUUID)) {
-                    bound = e;
-                    break;
-                }
-            }
+            // Direct UUID lookup via LevelEntityGetter (audit L4: avoid full-entity scan)
+            Entity bound = ((ServerLevel) level).getEntities().get(java.util.UUID.fromString(ownerUUID));
             if (bound instanceof BaseGirlEntity girl) {
                 if (girl.getHousePos() != null) {
                     var pos = girl.getHousePos();
-                    player.teleportTo(pos.getX() + 0.5, pos.getY() + 1, pos.getZ() + 0.5);
+                    // Safe landing spot (audit L4): search upward for open air at the house
+                    net.minecraft.core.BlockPos.MutableBlockPos landing = pos.mutable();
+                    while (landing.getY() < level.getMaxBuildHeight() - 1
+                            && !(level.getBlockState(landing).isAir()
+                                    && level.getBlockState(landing.above()).isAir())) {
+                        landing.move(0, 1, 0);
+                    }
+                    player.teleportTo(landing.getX() + 0.5, landing.getY(), landing.getZ() + 0.5);
                     player.displayClientMessage(Component.literal("§dYou recall the path home..."), true);
                 } else {
                     player.displayClientMessage(Component.literal("§7" + girl.getGirlName() + " has no home yet."), true);

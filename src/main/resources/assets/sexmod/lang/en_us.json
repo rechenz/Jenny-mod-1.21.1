@@ -62,5 +62,6 @@
   "advancements.sexmod.affection_max.title": "Destined",
   "advancements.sexmod.affection_max.description": "Reach 100 affection with a girl",
   "advancements.sexmod.collect_all.title": "Harem King",
-  "advancements.sexmod.collect_all.description": "Collect all 14 girls"
+  "advancements.sexmod.collect_all.description": "Collect all 14 girls",
+  "effect.sexmod.horny": "Horny"
 }

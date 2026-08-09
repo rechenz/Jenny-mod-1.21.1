@@ -101,17 +101,24 @@ public class ServerForgeEvents {
             for (Player player : level.players()) {
                 boolean hasHeal = false;
                 boolean hasBond = false;
-                for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
-                    ItemStack stack = player.getInventory().getItem(i);
+                // Main inventory + offhand + armor (audit L1: container size only covers main 36 slots)
+                var inv = player.getInventory();
+                int totalSlots = inv.getContainerSize() + inv.armor.size() + inv.offhand.size();
+                for (int i = 0; i < totalSlots; i++) {
+                    ItemStack stack = inv.getItem(i);
+                    if (stack == null || stack.isEmpty()) continue;
                     if (stack.getItem() instanceof com.schnurritv.sexmod.item.HealingCharmItem) hasHeal = true;
                     if (stack.getItem() instanceof com.schnurritv.sexmod.item.BondBraceletItem) hasBond = true;
                 }
                 if (!hasHeal && !hasBond) continue;
 
+                String playerId = player.getStringUUID();
                 for (BaseGirlEntity girl : level.getEntitiesOfClass(BaseGirlEntity.class,
                         player.getBoundingBox().inflate(16.0D))) {
                     if (!girl.isAlive()) continue;
-                    if (hasHeal) {
+                    // Owner filter: only heal girls owned by this player (or unowned) (audit L2)
+                    String owner = girl.getAffectionData().getOwnerUUID();
+                    if (hasHeal && (owner.isEmpty() || owner.equals(playerId))) {
                         girl.heal(1.0f);
                     }
                     if (hasBond) {
